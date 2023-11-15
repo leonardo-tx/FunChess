@@ -92,7 +92,8 @@ Example:
 const nextConfig = {
     reactStrictMode: false,
     env: {
-        apiUrl: "http://192.168.0.3:5183/Api/"
+        apiUrl: "192.168.0.3:5183",
+        apiProtocol: "http",
     }
 }
 ```
