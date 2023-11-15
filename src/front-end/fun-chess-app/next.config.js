@@ -2,7 +2,8 @@
 const nextConfig = {
     reactStrictMode: false,
     env: {
-        apiUrl: "http://localhost:5183/Api/"
+        apiUrl: "localhost:5183",
+        apiProtocol: "http",
     }
 }
 

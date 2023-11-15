@@ -101,11 +101,12 @@ export default function Play(): JSX.Element {
 
 function getHubConnection(): HubConnection {
     return new HubConnectionBuilder()
-        .withUrl("ws://192.168.0.3:5183/Hub/Queue", { 
+        .withUrl(`ws://${process.env.apiUrl}/Hub/Queue`, { 
             withCredentials: true, 
             skipNegotiation: true, 
-            transport: HttpTransportType.WebSockets
+            transport: HttpTransportType.WebSockets,
         })
+        .withAutomaticReconnect()
         .build();
 }
 

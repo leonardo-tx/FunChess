@@ -1,6 +1,6 @@
 import ApiResponse from "@/core/responses/ApiResponse";
 
-const baseUrl = process.env.apiUrl;
+const baseUrl = `${process.env.apiProtocol}://${process.env.apiUrl}/Api/`;
 
 type Method = "GET" | "POST" | "PUT" | "DELETE"
 
