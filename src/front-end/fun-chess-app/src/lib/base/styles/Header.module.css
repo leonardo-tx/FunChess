@@ -1,0 +1,32 @@
+.header {
+    padding: 0px 4px;
+    display: flex;
+    align-items: center;
+    grid-area: header;
+}
+
+.sidebar-open-button {
+    border-radius: 8px;
+    transition: background-color 0.1s ease-in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: transparent;
+    color: inherit;
+    border: none;
+    cursor: pointer;
+
+    @media only screen and (min-width: 769px) {
+        display: none;
+    }
+}
+
+.sidebar-open-button:hover:not(:active) {
+    background-color: #2e2f3a;
+}
+
+.sidebar-open-button:active {
+    background-color: #3d3e4d;
+}

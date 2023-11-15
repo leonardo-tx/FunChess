@@ -1,0 +1,78 @@
+.gray-solid {
+    background-color: rgb(63, 63, 63);
+    color: #dadada
+}
+
+.gray-solid:hover:not(:active) {
+    background-color: rgb(73, 73, 73);
+}
+
+.gray-solid:active {
+    background-color: rgb(83, 83, 83);
+}
+
+.gray-outline {
+    border: 1px solid rgb(63, 63, 63);
+    color: #dadada
+}
+
+.gray-outline:hover:not(:active) {
+    background-color: rgba(73, 73, 73, 0.3);
+}
+
+.gray-outline:active {
+    background-color: rgba(94, 94, 94, 0.3);
+}
+
+.gray-link {
+    color: #dadada;
+}
+
+.gray-link:active {
+    color: #adadad
+}
+
+.purple-solid {
+    background-color: rgb(168, 129, 230);
+}
+
+.purple-solid:hover:not(:active) {
+    background-color: rgb(146, 104, 214);
+}
+
+.purple-solid:active {
+    background-color: rgb(120, 84, 179);
+}
+
+.purple-outline {
+    border: 1px solid rgb(168, 129, 230);
+    color: rgb(168, 129, 230);
+}
+
+.purple-outline:hover:not(:active) {
+    background-color: rgb(146, 104, 214, 0.3);
+}
+
+.purple-outline:active {
+    background-color: rgb(146, 104, 214, 0.4);
+}
+
+.cyan-solid {
+    background-color: rgb(129, 230, 217);
+}
+
+.cyan-solid:hover:not(:active) {
+    background-color: rgb(82, 210, 198);
+}
+
+.cyan-solid:active {
+    background-color: rgb(49, 167, 155);
+}
+
+.cyan-link {
+    color: rgb(129, 230, 217);
+}
+
+.cyan-link:active {
+    color: rgb(49, 167, 155);
+}

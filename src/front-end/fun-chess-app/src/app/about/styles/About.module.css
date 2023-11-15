@@ -1,0 +1,36 @@
+.about-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2em;
+    padding: 0px 20px;
+}
+
+.about-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    max-width: 600px;
+    width: clamp(0px, min(100%, 600px), 600px);
+}
+
+.icon-row {
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
+.button-group {
+    display: flex;
+    gap: 14px;
+}
+
+.button-group > a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.button-group > a:hover {
+    text-decoration: underline;
+}
