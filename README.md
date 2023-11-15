@@ -1,5 +1,7 @@
 # FunChess
 
+[![.NET](https://github.com/leonardo-tx/FunChess/actions/workflows/dotnet.yml/badge.svg)](https://github.com/leonardo-tx/FunChess/actions/workflows/dotnet.yml)
+
 An online chess project developed for the college back-end discipline :video_game:
 
 FunChess is developed with C# for the API and Typescript + React + NextJs for the web server.
