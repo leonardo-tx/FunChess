@@ -1,5 +1,7 @@
+import { StatusCodes } from "http-status-codes";
+
 export default interface ApiResponse<TResult> {
-    status: number;
+    status: StatusCodes;
     result?: TResult;
     message?: string;
 }

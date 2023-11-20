@@ -1,4 +1,5 @@
 import ApiResponse from "@/core/responses/ApiResponse";
+import { StatusCodes } from "http-status-codes";
 
 const baseUrl = `${process.env.apiProtocol}://${process.env.apiUrl}/Api/`;
 
@@ -29,6 +30,6 @@ export default async function fetcher<T>(path: string, { method, cache, credenti
         } 
     } catch (error) {
         console.log(error)
-        return { status: -1 };
+        return { status: StatusCodes.SERVICE_UNAVAILABLE };
     }
 }

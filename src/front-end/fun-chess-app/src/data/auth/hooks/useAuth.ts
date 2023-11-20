@@ -5,12 +5,13 @@ import { loginAccount, logoutAccount, registerAccount } from "@/data/auth/fetche
 import LoginForm from "../../../core/auth/forms/LoginForm";
 import RegisterForm from "../../../core/auth/forms/RegisterForm";
 import { getCurrentAccount } from "../fetchers/account-fetchers";
+import { StatusCodes } from "http-status-codes";
 
 export default function useAuth(): { 
     currentAccount: CurrentAccount | null, 
     authenticated: boolean, 
     logout: () => void,
-    login: (form: LoginForm) => Promise<number>
+    login: (form: LoginForm) => Promise<StatusCodes>
     register: (form: RegisterForm) => Promise<number>
 } {
     const [currentAccount, setCurrentAccount] = useAtom(accountAtom);
@@ -23,11 +24,11 @@ export default function useAuth(): {
         });
     }
 
-    const login = async (form: LoginForm): Promise<number> => {
-        if (authenticated) return -1;
+    const login = async (form: LoginForm): Promise<StatusCodes> => {
+        if (authenticated) return StatusCodes.UNAUTHORIZED;
         
         const loginResponse = await loginAccount(form);
-        if (loginResponse.status !== 200) return loginResponse.status;
+        if (loginResponse.status !== StatusCodes.OK) return loginResponse.status;
         
         const currentAccountResponse = await getCurrentAccount();
         if (currentAccountResponse.status === 200) {
