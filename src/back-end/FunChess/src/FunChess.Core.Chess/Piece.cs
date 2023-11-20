@@ -25,18 +25,9 @@ public abstract class Piece : IEquatable<Piece>
     
     private byte Value { get; }
 
-    internal virtual bool Move(Board board, Move move, out SpecialMove specialMove)
-    {
-        specialMove = SpecialMove.None;
-        if (!MoveIsValid(board, move, out specialMove)) return false;
+    public abstract bool Move(Board board, Move move);
 
-        board.InternalBoard[move.Next.Index] = board.InternalBoard[move.Previous.Index];
-        board.InternalBoard[move.Previous.Index] = Cell.Empty;
-
-        return true;
-    }
-
-    internal abstract bool MoveIsValid(Board board, Move move, out SpecialMove specialMove);
+    public abstract bool MoveIsValid(Board board, Move move, out SpecialMove specialMove);
 
     public bool Equals(Piece? other)
     {

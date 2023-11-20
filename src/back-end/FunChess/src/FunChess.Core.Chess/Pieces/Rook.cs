@@ -6,9 +6,12 @@ namespace FunChess.Core.Chess.Pieces;
 
 internal sealed class Rook : Piece
 {
-    internal override bool Move(Board board, Move move, out SpecialMove specialMove)
+    public override bool Move(Board board, Move move)
     {
-        if (!base.Move(board, move, out specialMove)) return false;
+        if (!MoveIsValid(board, move, out _)) return false;
+        
+        board.InternalBoard[move.Next.Index] = board.InternalBoard[move.Previous.Index];
+        board.InternalBoard[move.Previous.Index] = Cell.Empty;
         
         CastlingPlay plays = board.Teams[board.Turn].CastlingPlays;
         if ((plays & CastlingPlay.LeftCastling) == CastlingPlay.LeftCastling && move.Previous.Index is 0 or 56)
@@ -24,7 +27,7 @@ internal sealed class Rook : Piece
         return true;
     }
     
-    internal override bool MoveIsValid(Board board, Move move, out SpecialMove specialMove)
+    public override bool MoveIsValid(Board board, Move move, out SpecialMove specialMove)
     {
         specialMove = SpecialMove.None;
         if (move.DiffX == 0)

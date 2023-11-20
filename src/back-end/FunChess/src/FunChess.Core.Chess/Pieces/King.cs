@@ -8,9 +8,12 @@ internal sealed class King : Piece
 {
     private const int MoveLength = 1;
 
-    internal override bool Move(Board board, Move move, out SpecialMove specialMove)
+    public override bool Move(Board board, Move move)
     {
-        if (!base.Move(board, move, out specialMove)) return false;
+        if (!MoveIsValid(board, move, out SpecialMove specialMove)) return false;
+        
+        board.InternalBoard[move.Next.Index] = board.InternalBoard[move.Previous.Index];
+        board.InternalBoard[move.Previous.Index] = Cell.Empty;
         board.Teams[board.Turn].CastlingPlays = CastlingPlay.None;
         
         switch (specialMove)
@@ -46,7 +49,7 @@ internal sealed class King : Piece
         }
     }
 
-    internal override bool MoveIsValid(Board board, Move move, out SpecialMove specialMove)
+    public override bool MoveIsValid(Board board, Move move, out SpecialMove specialMove)
     {
         specialMove = SpecialMove.None;
         bool moveIsValid = move.DiffX is >= -MoveLength and <= MoveLength && move.DiffY is >= -MoveLength and <= MoveLength;

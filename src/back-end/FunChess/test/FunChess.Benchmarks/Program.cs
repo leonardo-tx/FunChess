@@ -1,10 +1,8 @@
-﻿using System.Diagnostics;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using FunChess.Core.Auth;
 using FunChess.Core.Auth.Forms;
 using FunChess.Core.Chess;
-using FunChess.Core.Chess.Constants;
 using FunChess.Core.Chess.Enums;
 using FunChess.Core.Chess.Structs;
 

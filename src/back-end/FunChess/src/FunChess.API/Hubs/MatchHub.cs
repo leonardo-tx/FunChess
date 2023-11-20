@@ -1,5 +1,5 @@
+using System.Security.Claims;
 using FunChess.Core.Auth.Attributes;
-using FunChess.Core.Auth.Extensions;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Repositories;
 using FunChess.Core.Chess.Structs;
@@ -19,7 +19,12 @@ public sealed class MatchHub : Hub
 
     public override async Task OnConnectedAsync()
     {
-        ulong id = Context.User!.GetAccountId();
+        string? textId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (textId is null || !ulong.TryParse(textId, out ulong id))
+        {
+            Context.Abort();
+            return;
+        }
         Match? match = _queueRepository.FindAccountMatch(id);
 
         if (match is null) return;
@@ -37,7 +42,12 @@ public sealed class MatchHub : Hub
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        ulong id = Context.User!.GetAccountId();
+        string? textId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (textId is null || !ulong.TryParse(textId, out ulong id))
+        {
+            Context.Abort();
+            return Task.CompletedTask;
+        }
         Match? match = _queueRepository.FindAccountMatch(id);
 
         if (match is null) return Task.CompletedTask;
@@ -50,16 +60,26 @@ public sealed class MatchHub : Hub
     [HubMethodName("Enqueue")]
     public Task<bool> EnqueueMethod()
     {
-        ulong id = Context.User!.GetAccountId();
+        string? textId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (textId is null || !ulong.TryParse(textId, out ulong id))
+        {
+            Context.Abort();
+            return Task.FromResult(false);
+        }
         return Task.FromResult(_queueRepository.Enqueue(id, Context.ConnectionId));
     }
 
     [HubMethodName("Move")]
     public async Task<bool> MoveMethod(string moveText)
     {
+        string? textId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (textId is null || !ulong.TryParse(textId, out ulong id))
+        {
+            Context.Abort();
+            return false;
+        }
         if (!Move.TryParse(moveText, out Move? move)) return false;
         
-        ulong id = Context.User!.GetAccountId();
         Match? match = _queueRepository.FindAccountMatch(id);
         
         if (match is null) return false;

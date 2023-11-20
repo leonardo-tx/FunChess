@@ -5,7 +5,17 @@ namespace FunChess.Core.Chess.Pieces;
 
 internal sealed class Knight : Piece
 {
-    internal override bool MoveIsValid(Board board, Move move, out SpecialMove specialMove)
+    public override bool Move(Board board, Move move)
+    {
+        if (!MoveIsValid(board, move, out _)) return false;
+
+        board.InternalBoard[move.Next.Index] = board.InternalBoard[move.Previous.Index];
+        board.InternalBoard[move.Previous.Index] = Cell.Empty;
+
+        return true;
+    }
+    
+    public override bool MoveIsValid(Board board, Move move, out SpecialMove specialMove)
     {
         specialMove = SpecialMove.None;
         if (move.DiffX is 1 or -1)

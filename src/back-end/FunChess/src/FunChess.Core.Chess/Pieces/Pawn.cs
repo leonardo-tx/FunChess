@@ -10,9 +10,12 @@ internal sealed class Pawn : Piece
     private const int MoveLength = 1;
     private const int InitialMoveLength = 2;
 
-    internal override bool Move(Board board, Move move, out SpecialMove specialMove)
+    public override bool Move(Board board, Move move)
     {
-        if (!base.Move(board, move, out specialMove)) return false;
+        if (!MoveIsValid(board, move, out SpecialMove specialMove)) return false;
+        
+        board.InternalBoard[move.Next.Index] = board.InternalBoard[move.Previous.Index];
+        board.InternalBoard[move.Previous.Index] = Cell.Empty;
         switch (specialMove)
         {
             case SpecialMove.PawnLong:
@@ -34,7 +37,7 @@ internal sealed class Pawn : Piece
         return true;
     }
 
-    internal override bool MoveIsValid(Board board, Move move , out SpecialMove specialMove)
+    public override bool MoveIsValid(Board board, Move move , out SpecialMove specialMove)
     {
         return board.Turn == Team.White 
             ? WhiteMoveIsValid(board, move, out specialMove) 

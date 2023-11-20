@@ -30,7 +30,7 @@ public class Account
     public ulong Id { get; set; }
 
     [MinLength(3)]
-    [MaxLength(64)]
+    [MaxLength(20)]
     [Required]
     public string Username
     {
@@ -55,6 +55,8 @@ public class Account
     }
     
     public DateOnly Creation { get; set; }
+
+    public List<Friendship> Friendships { get; set; } = new();
     
     [DataType(DataType.Password)]
     public string PasswordHash { get; set; } = null!;
@@ -101,10 +103,10 @@ public class Account
     private static void ThrowIfUsernameIsInvalid([NotNull] string? username)
     {
         if (username is null) throw new ArgumentNullException(nameof(username), "Username cannot be null.");
-        if (username.Length is < 3 or > 64) throw new ArgumentOutOfRangeException
+        if (username.Length is < 3 or > 20) throw new ArgumentOutOfRangeException
         (
             nameof(username), username.Length, 
-            "Username was out of range. Must be greater than 2 and less than 65."
+            "Username was out of range. Must be greater than 2 and less than 21."
         );
     }
 }

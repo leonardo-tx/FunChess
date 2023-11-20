@@ -23,6 +23,8 @@ public sealed class Board
         Turn = turn;
     }
 
+    private MatchState? _lastMatchState;
+
     internal readonly Cell[] InternalBoard;
 
     internal readonly Dictionary<Team, DetailedTeam> Teams;
@@ -37,7 +39,7 @@ public sealed class Board
     {
         if (!PieceCanMove(move)) return false;
 
-        InternalBoard[move.Previous.Index].Piece!.Move(this, move, out _);
+        InternalBoard[move.Previous.Index].Piece!.Move(this, move);
         ChangeTurn();
 
         return true;
@@ -46,10 +48,10 @@ public sealed class Board
     public bool PieceCanMove(Move move)
     {
         Cell selectedCell = InternalBoard[move.Previous.Index];
-        if (selectedCell.IsEmpty() || move.Previous.Index == move.Next.Index || !selectedCell.IsFromTeam(Turn)) return false;
+        if (!selectedCell.IsFromTeam(Turn) || move.Previous.Index == move.Next.Index) return false;
 
         Cell targetCell = InternalBoard[move.Next.Index];
-        if (!targetCell.IsEmpty() && targetCell.IsFromTeam(Turn)) return false;
+        if (targetCell.IsFromTeam(Turn)) return false;
         
         if (!selectedCell.Piece.MoveIsValid(this, move, out _)) return false;
 
@@ -66,12 +68,22 @@ public sealed class Board
 
     public MatchState GetMatchState()
     {
+        if (_lastMatchState.HasValue) return _lastMatchState.Value;
+        
         bool kingInCheck = KingInCheck();
-        
-        if (!kingInCheck) return HasAtLeastOneMove() ? MatchState.Running : MatchState.Stalemate;
-        if (HasAtLeastOneMove()) return MatchState.Running;
-        
-        return (MatchState)NextTurn;
+
+        if (!kingInCheck)
+        {
+            _lastMatchState = HasAtLeastOneMove() ? MatchState.Running : MatchState.Stalemate;
+            return _lastMatchState.Value;
+        }
+        if (HasAtLeastOneMove())
+        {
+            _lastMatchState = MatchState.Running;
+            return _lastMatchState.Value;
+        }
+        _lastMatchState = (MatchState)NextTurn;
+        return _lastMatchState.Value;
     }
 
     private bool HasAtLeastOneMove()
@@ -79,7 +91,7 @@ public sealed class Board
         for (int i = 0; i < BoardConstants.TotalSize; i++)
         {
             Cell currentCell = InternalBoard[i];
-            if (currentCell.IsEmpty() || !currentCell.IsFromTeam(Turn)) continue;
+            if (!currentCell.IsFromTeam(Turn)) continue;
 
             Position previous = new(i);
             for (int j = 0; j < BoardConstants.TotalSize; j++)
@@ -129,6 +141,7 @@ public sealed class Board
 
     private void ChangeTurn()
     {
+        _lastMatchState = null;
         Turn = NextTurn;
         Teams[Turn].ExposedEnPassant = null;
     }
