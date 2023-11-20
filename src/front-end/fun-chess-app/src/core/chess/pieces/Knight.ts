@@ -4,6 +4,12 @@ import SpecialMove from "../enums/SpecialMove";
 import Move from "../structs/Move";
 
 class Knight extends Piece {
+    private constructor() {
+        super(32);
+    }
+
+    public static readonly instance: Piece = new Knight();
+
     public override moveIsValid(_board: Board, move: Move): [boolean, SpecialMove] {
         const specialMove = SpecialMove.None;
         if (move.diffX === 1 || move.diffX === -1) {

@@ -1,16 +1,23 @@
 import Piece from "../Piece";
 import Board from "../Board";
 import Cell from "../Cell";
-import { MAX_INDEX, MIN_INDEX, QueenPiece } from "../constants/board-constants";
+import { MAX_INDEX, MIN_INDEX } from "../constants/board-constants";
 import SpecialMove from "../enums/SpecialMove";
 import Team from "../enums/Team";
 import Move from "../structs/Move";
 import { checkNorth, checkSouth } from "../utils/cells-utils";
+import Queen from "./Queen";
 
 const MOVE_LENGTH = 1;
 const INITIAL_MOVE_LENGTH = 2;
 
 class Pawn extends Piece {
+    private constructor() {
+        super(128);
+    }
+
+    public static readonly instance: Piece = new Pawn();
+
     public override move(board: Board, move: Move): [boolean, SpecialMove] {
         const tuple = super.move(board, move)
         if (!tuple[0]) return tuple;
@@ -27,10 +34,10 @@ class Pawn extends Piece {
                 return tuple;
         }
         if (board.turn === Team.White) {
-            if (move.next.y === MAX_INDEX) board.internalBoard[move.next.index] = Cell.get(QueenPiece, Team.White);
+            if (move.next.y === MAX_INDEX) board.internalBoard[move.next.index] = Cell.get(Queen.instance, Team.White);
             return tuple;
         }
-        if (move.next.y === MIN_INDEX) board.internalBoard[move.next.index] = Cell.get(QueenPiece, Team.Black);
+        if (move.next.y === MIN_INDEX) board.internalBoard[move.next.index] = Cell.get(Queen.instance, Team.Black);
         return tuple;
     }
 

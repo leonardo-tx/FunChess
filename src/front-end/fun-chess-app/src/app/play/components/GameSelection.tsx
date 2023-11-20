@@ -1,59 +1,55 @@
 import { Heading, VStack, Text } from "@chakra-ui/react";
 import styled from "@emotion/styled";
-import { JSX, useEffect, useState } from "react";
-import { FaGamepad, FaUserGroup } from "react-icons/fa6";
+import Link from "next/link";
+import { JSX } from "react";
+import { FaComputer, FaGamepad, FaUserGroup } from "react-icons/fa6";
 import { IoEarth } from "react-icons/io5";
 
-interface Props {
-    connectToQueue: () => void;
-    onQueue: boolean;
-}
-
-export default function MatchBox({ connectToQueue, onQueue }: Props): JSX.Element {
-    const [time, setTime] = useState<number | null>(null);
-
-    useEffect(() => {
-        if (!onQueue) { setTime(null); return; }
-
-        const initialQueueTime = Date.now();
-        const interval = setInterval(() => setTime(Date.now() - initialQueueTime), 1000)
-
-        return () => clearInterval(interval);
-    }, [onQueue])
-
+export default function GameSelection(): JSX.Element {
     return (
-        <MatchContainer>
+        <Container>
                 <Heading fontWeight={700} size="lg" as="h2">Jogar Xadrez</Heading>
                 <FaGamepad size={50} />
                 <ButtonsContainer>
-                    <MatchButton onClick={() => connectToQueue()}>
-                        <IoEarth size={40} />
+                    <MatchButton href="/play/online">
+                        <IoEarth size={30} />
                         <VStack alignItems="flex-start">
                             <Text>Modo online</Text>
                             <Text fontWeight={300} fontSize="smaller">Jogue uma partida contra outra pessoa</Text>
                         </VStack>
                     </MatchButton>
-                    <MatchButton>
-                        <FaUserGroup size={40} />
+                    <MatchButton href="/play/friend">
+                        <FaUserGroup size={30} />
                         <VStack alignItems="flex-start">
                             <Text>Jogar com um amigo</Text>
                             <Text fontWeight={300} fontSize="smaller">Convide um amigo de sua lista para jogar uma partida</Text>
                         </VStack>
                     </MatchButton>
+                    <MatchButton href="/play/local">
+                        <FaComputer size={30} />
+                        <VStack alignItems="flex-start">
+                            <Text>Modo local</Text>
+                            <Text fontWeight={300} fontSize="smaller">Jogue uma partida offline</Text>
+                        </VStack>
+                    </MatchButton>
                 </ButtonsContainer>
-                {time !== null && <Text>{Math.floor(time / 1000 / 60 % 60).toLocaleString('pt-BR')} : {Math.floor(time / 1000 % 60).toLocaleString('pt-BR', { minimumIntegerDigits: 2 })}</Text>}
-            </MatchContainer>
+            </Container>
     );
 }
 
-const MatchContainer = styled.div`
+const Container = styled.div`
     background-color: #23232c;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    padding: 10px 40px;
+    padding: 20px 40px;
     border-radius: 8px;
+    height: 100%;
+
+    @media only screen and (max-width: 1024px) {
+        width: 100%;
+    }
 `;
 
 const ButtonsContainer = styled.div`
@@ -62,7 +58,7 @@ const ButtonsContainer = styled.div`
     gap: 8px;
 `
 
-const MatchButton = styled.button`
+const MatchButton = styled(Link)`
     display: flex;
     gap: 15px;
     align-items: center;

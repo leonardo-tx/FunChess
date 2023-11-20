@@ -5,6 +5,12 @@ import Move from "../structs/Move";
 import { checkEast, checkNorth, checkNortheast, checkNorthwest, checkSouth, checkSoutheast, checkSouthwest, checkWest } from "../utils/cells-utils";
 
 class Queen extends Piece {
+    private constructor() {
+        super(8);
+    }
+
+    public static readonly instance: Piece = new Queen();
+
     public override moveIsValid(board: Board, move: Move): [boolean, SpecialMove] {
         const specialMove = SpecialMove.None;
         if (move.diffX === move.diffY) {

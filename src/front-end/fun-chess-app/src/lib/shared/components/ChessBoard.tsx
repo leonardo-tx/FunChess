@@ -13,10 +13,11 @@ interface Props {
     board: Cell[];
     onMove: (move: Move) => boolean;
     inverse?: boolean;
+    disable?: boolean;
 }
 
-export default function ChessBoard({ board, onMove, inverse = false }: Props): JSX.Element {
-    const [chessBoard, setChessBoard] = useState({ inverse: false, sizeBoard: 0 });
+export default function ChessBoard({ board, onMove, inverse = false, disable = false }: Props): JSX.Element {
+    const [chessBoard, setChessBoard] = useState({ inverse: false, sizeBoard: 0, disable: false });
     const [selectedCell, setSelectedCell] = useState<number | null>(null);
     const [targetCell, setTargetCell] = useState<number | null>(null);
     const [pressed, setPressed] = useState(false);
@@ -25,8 +26,8 @@ export default function ChessBoard({ board, onMove, inverse = false }: Props): J
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        setChessBoard({ inverse, sizeBoard });
-    }, [inverse, sizeBoard, setChessBoard])
+        setChessBoard({ inverse, sizeBoard, disable });
+    }, [inverse, sizeBoard, disable, setChessBoard])
 
     useEffect(() => {
         if (ref.current === null) return;

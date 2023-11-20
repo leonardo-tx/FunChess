@@ -1,6 +1,11 @@
 import Piece from "./Piece";
-import "./constants/board-constants";
 import Team from "./enums/Team";
+import Bishop from "./pieces/Bishop";
+import King from "./pieces/King";
+import Knight from "./pieces/Knight";
+import Pawn from "./pieces/Pawn";
+import Queen from "./pieces/Queen";
+import Rook from "./pieces/Rook";
 
 class Cell {
     private static readonly CellsVariations = new Map<number, Cell>();
@@ -9,9 +14,12 @@ class Cell {
 
     static {
         for (let i = 1; i <= 2; i++) {
-            for (let j = 4; j <= 128; j <<= 1) {
-                Cell.CellsVariations.set(j + i, new Cell(Piece.parse(j), i));
-            }
+            Cell.CellsVariations.set(i + 4, new Cell(King.instance, i));
+            Cell.CellsVariations.set(i + 8, new Cell(Queen.instance, i));
+            Cell.CellsVariations.set(i + 16, new Cell(Rook.instance, i));
+            Cell.CellsVariations.set(i + 32, new Cell(Knight.instance, i));
+            Cell.CellsVariations.set(i + 64, new Cell(Bishop.instance, i));
+            Cell.CellsVariations.set(i + 128, new Cell(Pawn.instance, i));
         }
     }
 

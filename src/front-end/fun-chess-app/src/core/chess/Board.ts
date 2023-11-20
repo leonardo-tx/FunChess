@@ -1,9 +1,10 @@
 import Cell from "./Cell";
 import DetailedTeam from "./DetailedTeam";
 import Piece from "./Piece";
-import { BOARD_TOTAL_SIZE, KingPiece, getInitialBoard } from "./constants/board-constants";
+import { BOARD_TOTAL_SIZE, getInitialBoard } from "./constants/board-constants";
 import CastlingPlay from "./enums/CastlingPlay";
 import Team from "./enums/Team";
+import King from "./pieces/King";
 import Move from "./structs/Move";
 import Position from "./structs/Position";
 
@@ -92,7 +93,7 @@ export default class Board {
     private getKingPosition(): Position {
         for (let i = 0; i < BOARD_TOTAL_SIZE; i++) {
             const currentCell = this.internalBoard[i];
-            if (!currentCell.isEmpty() && currentCell.isFromTeam(this._turn) && currentCell.piece === KingPiece) return new Position(i);
+            if (!currentCell.isEmpty() && currentCell.isFromTeam(this._turn) && currentCell.piece === King.instance) return new Position(i);
         }
         throw new Error("Invalid board! Missing king.");
     }

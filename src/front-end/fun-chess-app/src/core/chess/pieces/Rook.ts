@@ -6,6 +6,12 @@ import Move from "../structs/Move";
 import { checkEast, checkNorth, checkSouth, checkWest } from "../utils/cells-utils";
 
 class Rook extends Piece {
+    private constructor() {
+        super(16);
+    }
+
+    public static readonly instance: Piece = new Rook();
+
     public override move(board: Board, move: Move): [boolean, SpecialMove] {
         const tuple = super.move(board, move);
         if (!tuple[0]) return tuple;

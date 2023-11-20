@@ -7,11 +7,17 @@ import Team from "../enums/Team";
 import Move from "../structs/Move";
 import Position from "../structs/Position";
 import { checkEast, checkWest } from "../utils/cells-utils";
-import { RookPiece } from "../constants/board-constants";
+import Rook from "./Rook";
 
 const MOVE_LENGTH = 1;
 
 class King extends Piece {
+    private constructor() {
+        super(4);
+    }
+
+    public static readonly instance: Piece = new King();
+
     public override move(board: Board, move: Move): [boolean, SpecialMove] {
         const tuple = super.move(board, move);
         if (!tuple[0]) return tuple;
@@ -64,7 +70,7 @@ class King extends Piece {
 
                 previous = new Position(board.turn === Team.White ? 7 : 63);
                 next = new Position(board.turn === Team.White ? 5 : 61);
-                return [RookPiece.moveIsValid(board, new Move(previous, next))[0], specialMove];
+                return [Rook.instance.moveIsValid(board, new Move(previous, next))[0], specialMove];
             case -2:
                 specialMove = SpecialMove.LeftCastling;
                 if ((possiblePlays & CastlingPlay.LeftCastling) === CastlingPlay.None) return [false, specialMove];
@@ -72,7 +78,7 @@ class King extends Piece {
 
                 previous = new Position(board.turn === Team.White ? 0 : 56);
                 next = new Position(board.turn === Team.White ? 3 : 59);
-                return [RookPiece.moveIsValid(board, new Move(previous, next))[0], specialMove];
+                return [Rook.instance.moveIsValid(board, new Move(previous, next))[0], specialMove];
         }
         return [false, specialMove];
     }

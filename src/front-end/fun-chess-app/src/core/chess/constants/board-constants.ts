@@ -1,8 +1,7 @@
 import Cell from "../Cell";
-import type Piece from "../Piece";
-import King from "../pieces/King";
-import Bishop from "../pieces/Bishop";
 import Team from "../enums/Team";
+import Bishop from "../pieces/Bishop";
+import King from "../pieces/King";
 import Knight from "../pieces/Knight";
 import Pawn from "../pieces/Pawn";
 import Queen from "../pieces/Queen";
@@ -16,19 +15,12 @@ export const MAX_INDEX = BOARD_LENGTH - 1;
 
 export const MIN_INDEX = 0;
 
-export const KingPiece: Piece = new King();
-export const QueenPiece: Piece = new Queen();
-export const RookPiece: Piece = new Rook();
-export const KnightPiece: Piece = new Knight();
-export const BishopPiece: Piece = new Bishop();
-export const PawnPiece: Piece = new Pawn();
-
 export function getInitialBoard(): Cell[] {
     return [
-        Cell.get(RookPiece, Team.White), Cell.get(KnightPiece, Team.White), Cell.get(BishopPiece, Team.White), Cell.get(QueenPiece, Team.White),
-        Cell.get(KingPiece, Team.White), Cell.get(BishopPiece, Team.White), Cell.get(KnightPiece, Team.White), Cell.get(RookPiece, Team.White),
-        Cell.get(PawnPiece, Team.White), Cell.get(PawnPiece, Team.White), Cell.get(PawnPiece, Team.White), Cell.get(PawnPiece, Team.White),
-        Cell.get(PawnPiece, Team.White), Cell.get(PawnPiece, Team.White), Cell.get(PawnPiece, Team.White), Cell.get(PawnPiece, Team.White),
+        Cell.get(Rook.instance, Team.White), Cell.get(Knight.instance, Team.White), Cell.get(Bishop.instance, Team.White), Cell.get(Queen.instance, Team.White),
+        Cell.get(King.instance, Team.White), Cell.get(Bishop.instance, Team.White), Cell.get(Knight.instance, Team.White), Cell.get(Rook.instance, Team.White),
+        Cell.get(Pawn.instance, Team.White), Cell.get(Pawn.instance, Team.White), Cell.get(Pawn.instance, Team.White), Cell.get(Pawn.instance, Team.White),
+        Cell.get(Pawn.instance, Team.White), Cell.get(Pawn.instance, Team.White), Cell.get(Pawn.instance, Team.White), Cell.get(Pawn.instance, Team.White),
         Cell.Empty, Cell.Empty, Cell.Empty, Cell.Empty,
         Cell.Empty, Cell.Empty, Cell.Empty, Cell.Empty,
         Cell.Empty, Cell.Empty, Cell.Empty, Cell.Empty,
@@ -37,9 +29,9 @@ export function getInitialBoard(): Cell[] {
         Cell.Empty, Cell.Empty, Cell.Empty, Cell.Empty,
         Cell.Empty, Cell.Empty, Cell.Empty, Cell.Empty,
         Cell.Empty, Cell.Empty, Cell.Empty, Cell.Empty,
-        Cell.get(PawnPiece, Team.Black), Cell.get(PawnPiece, Team.Black), Cell.get(PawnPiece, Team.Black), Cell.get(PawnPiece, Team.Black),
-        Cell.get(PawnPiece, Team.Black), Cell.get(PawnPiece, Team.Black), Cell.get(PawnPiece, Team.Black), Cell.get(PawnPiece, Team.Black),
-        Cell.get(RookPiece, Team.Black), Cell.get(KnightPiece, Team.Black), Cell.get(BishopPiece, Team.Black), Cell.get(QueenPiece, Team.Black),
-        Cell.get(KingPiece, Team.Black), Cell.get(BishopPiece, Team.Black), Cell.get(KnightPiece, Team.Black), Cell.get(RookPiece, Team.Black)
+        Cell.get(Pawn.instance, Team.Black), Cell.get(Pawn.instance, Team.Black), Cell.get(Pawn.instance, Team.Black), Cell.get(Pawn.instance, Team.Black),
+        Cell.get(Pawn.instance, Team.Black), Cell.get(Pawn.instance, Team.Black), Cell.get(Pawn.instance, Team.Black), Cell.get(Pawn.instance, Team.Black),
+        Cell.get(Rook.instance, Team.Black), Cell.get(Knight.instance, Team.Black), Cell.get(Bishop.instance, Team.Black), Cell.get(Queen.instance, Team.Black),
+        Cell.get(King.instance, Team.Black), Cell.get(Bishop.instance, Team.Black), Cell.get(Knight.instance, Team.Black), Cell.get(Rook.instance, Team.Black)
     ];
 }

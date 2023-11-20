@@ -4,18 +4,24 @@ import Cell from "@/core/chess/Cell";
 import Piece from "@/core/chess/Piece";
 import styled from "@emotion/styled";
 import { useMemo, useRef } from "react";
-import { BOARD_LENGTH, BishopPiece, KingPiece, KnightPiece, PawnPiece, QueenPiece, RookPiece } from "@/core/chess/constants/board-constants";
+import { BOARD_LENGTH } from "@/core/chess/constants/board-constants";
 import Team from "@/core/chess/enums/Team";
 import { IconType } from "react-icons";
 import { FaChessBishop, FaChessKing, FaChessKnight, FaChessPawn, FaChessQueen, FaChessRook } from "react-icons/fa6";
 import Draggable, { DraggableBounds, DraggableEventHandler } from "react-draggable";
+import Pawn from "@/core/chess/pieces/Pawn";
+import Rook from "@/core/chess/pieces/Rook";
+import Bishop from "@/core/chess/pieces/Bishop";
+import King from "@/core/chess/pieces/King";
+import Knight from "@/core/chess/pieces/Knight";
+import Queen from "@/core/chess/pieces/Queen";
 
 interface Props {
     index: number;
     active: boolean;
     pressed: boolean;
     dragSelected: boolean;
-    chessBoard: { inverse: boolean, sizeBoard: number };
+    chessBoard: { inverse: boolean, sizeBoard: number, disable: boolean };
     cell: Cell
     onStart: (index: number) => void;
     onDrag: DraggableEventHandler;
@@ -26,7 +32,7 @@ interface Props {
 export default function ChessCell({ index, active, pressed, dragSelected, chessBoard, cell, onStart, onDrag, onStop, onClick }: Props) {
     const ref = useRef<Draggable>(null);
     
-    const { inverse, sizeBoard } = chessBoard;
+    const { inverse, sizeBoard, disable } = chessBoard;
     const PieceIcon = piecesVariants.get(Piece.toByte(cell.piece));
 
     const bounds: DraggableBounds = useMemo(() => {
@@ -46,11 +52,11 @@ export default function ChessCell({ index, active, pressed, dragSelected, chessB
 
     return (
         <Border $dragSelected={dragSelected}>
-            <Container onClick={() => onClick(index)} $active={active} $index={index} $dragSelected={dragSelected}>
+            <Container $disable={disable} onClick={() => onClick(index)} $active={active} $index={index} $dragSelected={dragSelected}>
                 {PieceIcon !== undefined && 
                     <Draggable 
                         ref={ref} 
-                        disabled={!(!pressed || active)} 
+                        disabled={disable || !(!pressed || active)} 
                         onStart={() => onStart(index)} 
                         onStop={onStop} 
                         onDrag={onDrag} 
@@ -80,6 +86,7 @@ const Container = styled("div", { shouldForwardProp: (propName) => propName !== 
     $index: number;
     $active: boolean;
     $dragSelected: boolean;
+    $disable: boolean;
 }>`
     background-color: ${props => props.$active ? "#9545b4" : (props.$index + Math.floor(props.$index / 8)) % 2 === 0 ? "#5d45b4" : "#c5bbcc"};
     height: 100%;
@@ -88,7 +95,7 @@ const Container = styled("div", { shouldForwardProp: (propName) => propName !== 
     & svg {
         height: 100%;
         width: 100%;
-        cursor: grab;
+        cursor: ${(props) => props.$disable ? "default" : "grab"};
         padding: ${(props) => props.$dragSelected ? 4 : 10}%;
         ${props => props.$active && "z-index: 1;"}
         position: relative;
@@ -97,9 +104,9 @@ const Container = styled("div", { shouldForwardProp: (propName) => propName !== 
 
 const piecesVariants = new Map<number, IconType>();
 
-piecesVariants.set(Piece.toByte(PawnPiece), FaChessPawn);
-piecesVariants.set(Piece.toByte(RookPiece), FaChessRook);
-piecesVariants.set(Piece.toByte(KnightPiece), FaChessKnight);
-piecesVariants.set(Piece.toByte(BishopPiece), FaChessBishop);
-piecesVariants.set(Piece.toByte(QueenPiece), FaChessQueen);
-piecesVariants.set(Piece.toByte(KingPiece), FaChessKing);
+piecesVariants.set(Piece.toByte(Pawn.instance), FaChessPawn);
+piecesVariants.set(Piece.toByte(Rook.instance), FaChessRook);
+piecesVariants.set(Piece.toByte(Knight.instance), FaChessKnight);
+piecesVariants.set(Piece.toByte(Bishop.instance), FaChessBishop);
+piecesVariants.set(Piece.toByte(Queen.instance), FaChessQueen);
+piecesVariants.set(Piece.toByte(King.instance), FaChessKing);
