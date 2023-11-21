@@ -19,6 +19,8 @@
     <ProjectReference Include="..\FunChess.Core.Responses\FunChess.Core.Responses.csproj" />
     <ProjectReference Include="..\FunChess.DAL\FunChess.DAL.csproj" />
 
+
+
   </ItemGroup>
 
 

@@ -82,7 +82,7 @@ public sealed class AuthController : ControllerBase
         ulong id = User.GetAccountId();
         Account account = (await _accountManager.FindAccount(id))!;
         
-        _ = _accountManager.Delete(account);
+        await _accountManager.Delete(account);
         
         Response.Cookies.Delete("access_token");
         return Ok();

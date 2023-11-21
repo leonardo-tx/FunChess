@@ -1,5 +1,6 @@
 using System.Text;
 using FunChess.API.Hubs;
+using FunChess.API.Loaders;
 using FunChess.API.Services;
 using FunChess.Core.Auth.Repositories;
 using FunChess.Core.Auth.Settings;
@@ -82,12 +83,29 @@ internal sealed class Startup
             app.UseSwaggerUI();
         }
         MigrateNewChangesToDatabase(app);
+        LoadLoaders(app);
         
         app.UseAuthentication();
         app.UseAuthorization();
+
+        IConfigurationSection section = app.Configuration.GetSection("CorsAllowedHosts");
+        string[] hosts = section.Get<string[]>()!;
+        
         app.UseCors(options =>
         {
-            options.SetIsOriginAllowed(origin => new Uri(origin).Host == "192.168.0.3");
+            options.SetIsOriginAllowed(origin =>
+            {
+                string originHost = new Uri(origin).Host;
+                bool allowed = false;
+                foreach (string host in hosts)
+                {
+                    if (host != originHost) continue;
+                    
+                    allowed = true;
+                    break;
+                }
+                return allowed;
+            });
             options.AllowAnyHeader();
             options.AllowCredentials();
             options.AllowAnyMethod();
@@ -97,12 +115,20 @@ internal sealed class Startup
         
         app.Run();
     }
+
+    private static void LoadLoaders(IApplicationBuilder app)
+    {
+        using IServiceScope serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        
+        AccountLoader accountLoader = ActivatorUtilities.CreateInstance<AccountLoader>(serviceScope.ServiceProvider);
+        accountLoader.Start().Wait();
+    }
     
     private static void MigrateNewChangesToDatabase(IApplicationBuilder app)
     {
-        using IServiceScope? serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>()?.CreateScope();
+        using IServiceScope serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
 
-        var context = serviceScope?.ServiceProvider.GetRequiredService<DatabaseContext>();
-        context?.Database.Migrate();
+        var context = serviceScope.ServiceProvider.GetRequiredService<DatabaseContext>();
+        context.Database.Migrate();
     }
 }
