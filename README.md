@@ -80,6 +80,16 @@ Example:
 }
 ```
 
+Path: ```./src/back-end/FunChess/src/FunChess.API/Properties/appsettings.json```
+
+In the file, is needed to modify the CorsAllowedHosts, to the local IP of your machine or to a domain.
+
+```json
+{
+  "CorsAllowedHosts": ["localhost", "192.168.0.3"]
+}
+```
+
 #### Web Application
 
 Path: ```./src/front-end/fun-chess-app/next.config.js/```
