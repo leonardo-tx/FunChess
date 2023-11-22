@@ -2,11 +2,12 @@ using FunChess.Core.Auth;
 using FunChess.Core.Auth.Forms;
 using FunChess.Core.Auth.Repositories;
 using FunChess.Core.Auth.Settings;
+using FunChess.Core.Loader;
 using Microsoft.Extensions.Options;
 
 namespace FunChess.API.Loaders;
 
-public sealed class AccountLoader
+public sealed class AccountLoader : LoaderBase
 {
     private const string FilePath = "LoaderFiles/accounts.dat";
     
@@ -21,40 +22,44 @@ public sealed class AccountLoader
     private readonly IAccountManager _accountManager;
     private readonly PasswordSettings _passwordSettings;
     
-    public async Task Start()
+    public override async Task ExecuteAsync()
     {
-        _logger.LogInformation("Starting AccountLoader");
         if (!File.Exists(FilePath)) return;
 
         IEnumerable<string> lines = File.ReadLines(FilePath);
+
+        int lineCount = 0;
         foreach (string line in lines)
         {
-            string[] accountInfo = line.Split(';');
-            AccountForm accountForm = new()
-            {
-                Email = accountInfo[0], 
-                Username = accountInfo[1], 
-                Password = accountInfo[2]
-            };
-            Account account;
-            
             try
             {
-                account = new Account(accountForm, _passwordSettings.Pepper);
+                await CreateAccountFromLine(line);
             }
             catch (ArgumentException ex)
             {
-                _logger.LogError("Account information is invalid. {0}", ex.Message);
-                continue;
+                _logger.LogError("Account information from line {0} is invalid. {1}", lineCount, ex.Message);
             }
-            
-            if (await _accountManager.FindAccount(account.Email) is not null)
-            {
-                _logger.LogError("Unable to add the account with email {0}, because it already exists.", account.Email);
-                continue;
-            }
-            await _accountManager.Add(account);
-            _logger.LogInformation("The account with e-mail {0} was created successfully.", account.Email);
+            ++lineCount;
         }
+    }
+
+    private async Task CreateAccountFromLine(string textLine)
+    {
+        string[] accountInfo = textLine.Split(';');
+        AccountForm accountForm = new()
+        {
+            Email = accountInfo[0], 
+            Username = accountInfo[1], 
+            Password = accountInfo[2]
+        };
+        Account account = new Account(accountForm, _passwordSettings.Pepper);
+            
+        if (await _accountManager.FindAccount(account.Email) is not null)
+        {
+            _logger.LogError("Unable to add the account with email {0}, because it already exists.", account.Email);
+            return;
+        }
+        await _accountManager.Add(account);
+        _logger.LogInformation("The account with e-mail {0} was created successfully.", account.Email);
     }
 }

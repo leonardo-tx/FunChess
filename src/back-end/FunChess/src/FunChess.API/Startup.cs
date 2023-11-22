@@ -1,10 +1,10 @@
 using System.Text;
 using FunChess.API.Hubs;
-using FunChess.API.Loaders;
 using FunChess.API.Services;
 using FunChess.Core.Auth.Repositories;
 using FunChess.Core.Auth.Settings;
 using FunChess.Core.Chess.Repositories;
+using FunChess.Core.Loader.Extensions;
 using FunChess.DAL.Auth;
 using FunChess.DAL.Chess;
 using FunChess.DAL.Context;
@@ -83,7 +83,6 @@ internal sealed class Startup
             app.UseSwaggerUI();
         }
         MigrateNewChangesToDatabase(app);
-        LoadLoaders(app);
         
         app.UseAuthentication();
         app.UseAuthorization();
@@ -113,15 +112,8 @@ internal sealed class Startup
         app.MapControllers();
         app.MapHub<MatchHub>("Hub/Queue");
         
+        app.RunLoaders();
         app.Run();
-    }
-
-    private static void LoadLoaders(IApplicationBuilder app)
-    {
-        using IServiceScope serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-        
-        AccountLoader accountLoader = ActivatorUtilities.CreateInstance<AccountLoader>(serviceScope.ServiceProvider);
-        accountLoader.Start().Wait();
     }
     
     private static void MigrateNewChangesToDatabase(IApplicationBuilder app)

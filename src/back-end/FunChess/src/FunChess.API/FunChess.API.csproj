@@ -16,14 +16,9 @@
   <ItemGroup>
     <ProjectReference Include="..\FunChess.Core.Auth\FunChess.Core.Auth.csproj" />
     <ProjectReference Include="..\FunChess.Core.Chess\FunChess.Core.Chess.csproj" />
+    <ProjectReference Include="..\FunChess.Core.Loader\FunChess.Core.Loader.csproj" />
     <ProjectReference Include="..\FunChess.Core.Responses\FunChess.Core.Responses.csproj" />
     <ProjectReference Include="..\FunChess.DAL\FunChess.DAL.csproj" />
-
-
-
   </ItemGroup>
-
-
-
 
 </Project>
