@@ -63,11 +63,13 @@ export default function ChessCell({ index, active, pressed, dragSelected, chessB
                         position={{ y: 0, x: 0 }}
                         bounds={bounds}
                     >
-                        <PieceIcon 
-                            strokeWidth="8px" 
-                            stroke="black" 
-                            color={cell.team === Team.White ? '#d1d1d1' : '#242424'}
-                        />
+                        <div>
+                            <PieceIcon 
+                                strokeWidth="8px" 
+                                stroke="black" 
+                                color={cell.team === Team.White ? '#d1d1d1' : '#242424'}
+                            />
+                        </div>
                     </Draggable>}
             </Container>
         </Border>
@@ -92,13 +94,18 @@ const Container = styled("div", { shouldForwardProp: (propName) => propName !== 
     height: 100%;
     width: 100%;
 
-    & svg {
+    & div {
         height: 100%;
         width: 100%;
         cursor: ${(props) => props.$disable ? "default" : "grab"};
-        padding: ${(props) => props.$dragSelected ? 4 : 10}%;
+        padding: ${(props) => props.$dragSelected ? 4.8 : 10}%;
         ${props => props.$active && "z-index: 1;"}
         position: relative;
+    }
+
+    & svg {
+        height: 100%;
+        width: 100%;
     }
 `;
 

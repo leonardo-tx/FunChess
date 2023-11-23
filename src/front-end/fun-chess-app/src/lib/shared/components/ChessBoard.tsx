@@ -1,6 +1,6 @@
 "use client";
 
-import { BOARD_LENGTH, MAX_INDEX, MIN_INDEX, getInitialBoard } from "@/core/chess/constants/board-constants";
+import { BOARD_LENGTH, MAX_INDEX, MIN_INDEX } from "@/core/chess/constants/board-constants";
 import { JSX, useCallback, useEffect, useRef, useState } from "react";
 import ChessCell from "./ChessCell";
 import styled from "@emotion/styled";

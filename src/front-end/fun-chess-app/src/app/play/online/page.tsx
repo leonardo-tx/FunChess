@@ -83,7 +83,7 @@ export default function PlayOnline(): JSX.Element {
     };
 
     return pageLoaded ? (
-        <Container>
+        <Container $onMatch={matchInfo !== null}>
             <MatchBoardContainer>
                 <PlayerBanner 
                     matchInfo={matchInfo}
@@ -120,7 +120,9 @@ function getHubConnection(): HubConnection {
         .build();
 }
 
-const Container = styled.div`
+const Container = styled("div", { shouldForwardProp: (propName) => propName !== 'theme' && !propName.startsWith("$")})<{
+    $onMatch: boolean
+}>`
     display: flex;
     padding: 0px 3%;
     gap: 4em;
@@ -128,7 +130,7 @@ const Container = styled.div`
     align-items: center;
 
     @media only screen and (max-width: 1024px) {
-        flex-direction: column-reverse;
+        flex-direction: ${props => props.$onMatch ? "column" : "column-reverse"};
         padding: 2px 5px;
     }
 `;
