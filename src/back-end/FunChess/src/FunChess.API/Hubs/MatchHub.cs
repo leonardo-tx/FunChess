@@ -25,35 +25,26 @@ public sealed class MatchHub : Hub
             Context.Abort();
             return;
         }
+        _queueRepository.AddConnection(Context.ConnectionId);
         Match? match = _queueRepository.FindAccountMatch(id);
 
         if (match is null) return;
         Player player = match.GetPlayerById(id);
-
-        if (!player.Disconnected)
+        
+        if (_queueRepository.ConnectionExists(player.ConnectionId))
         {
             Context.Abort();
             return;
         }
-        player.Disconnected = false;
+        player.ConnectionId = Context.ConnectionId;
+        
         await Clients.Client(Context.ConnectionId).SendAsync("Match", new SimpleMatch(match), match.Board.ToString(), player.Team);
         await Groups.AddToGroupAsync(Context.ConnectionId, match.Id);
     }
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        string? textId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (textId is null || !ulong.TryParse(textId, out ulong id))
-        {
-            Context.Abort();
-            return Task.CompletedTask;
-        }
-        Match? match = _queueRepository.FindAccountMatch(id);
-
-        if (match is null) return Task.CompletedTask;
-        Player player = match.GetPlayerById(id);
-
-        player.Disconnected = true;
+        _queueRepository.RemoveConnection(Context.ConnectionId);
         return Task.CompletedTask;
     }
 

@@ -21,11 +21,7 @@ public sealed class QueueService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            while (_queueRepository.QueueCount > 1)
-            {
-                await CreateMatch(stoppingToken);
-            }
-            await Task.Delay(500, stoppingToken);
+            await CreateMatch(stoppingToken);
         }
     }
 
@@ -33,21 +29,16 @@ public sealed class QueueService : BackgroundService
     {
         QueueAccount queueAccount1 = await GetQueueAccount(stoppingToken);
         QueueAccount queueAccount2 = await GetQueueAccount(stoppingToken);
-        while (queueAccount1.AccountId == queueAccount2.AccountId)
-        {
-            if (_queueRepository.QueueCount == 0) continue;
-            queueAccount2 = await GetQueueAccount(stoppingToken);
-        }
         
         Match match = new
         (
             900.00f,
-            new Player(queueAccount1.AccountId, Team.White), 
-            new Player(queueAccount2.AccountId, Team.Black)
+            new Player(queueAccount1, Team.White), 
+            new Player(queueAccount2, Team.Black)
         );
 
-        _queueRepository.AddToOnMatch(queueAccount1.AccountId, match);
-        _queueRepository.AddToOnMatch(queueAccount2.AccountId, match);
+        _queueRepository.AddAccountToMatch(queueAccount1.AccountId, match);
+        _queueRepository.AddAccountToMatch(queueAccount2.AccountId, match);
         
         await _matchHub.Groups.AddToGroupAsync(queueAccount1.ConnectionId, match.Id, stoppingToken);
         await _matchHub.Groups.AddToGroupAsync(queueAccount2.ConnectionId, match.Id, stoppingToken);
@@ -60,21 +51,20 @@ public sealed class QueueService : BackgroundService
 
     private async Task<QueueAccount> GetQueueAccount(CancellationToken stoppingToken)
     {
-        QueueAccount? queueAccountResult = null;
+        QueueAccount? result = null;
         do
         {
-            while (_queueRepository.QueueCount == 0)
-            {
-                await Task.Delay(500, stoppingToken);
-            }
+            while (_queueRepository.QueueCount == 0) await Task.Delay(500, stoppingToken);
+            
             QueueAccount queueAccount = _queueRepository.Dequeue();
-
-            if (_queueRepository.FindAccountMatch(queueAccount.AccountId) is null)
+            if (!_queueRepository.ConnectionExists(queueAccount.ConnectionId))
             {
-                queueAccountResult = queueAccount;
+                _queueRepository.RemoveAccountWithoutMatch(queueAccount.AccountId);
+                continue;
             }
-        } while (queueAccountResult is null);
-        
-        return queueAccountResult;
+            result = queueAccount;
+        } while (result is null);
+
+        return result;
     }
 }

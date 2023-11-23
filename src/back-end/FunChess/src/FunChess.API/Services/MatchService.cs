@@ -28,10 +28,10 @@ public sealed class MatchService : BackgroundService
 
     private async Task FindFinishedMatches(CancellationToken stoppingToken)
     {
-        IEnumerable<Match> matches = _queueRepository.GetAllMatches();
-        foreach (Match match in matches)
+        IEnumerable<Match?> matches = _queueRepository.GetAllMatches();
+        foreach (Match? match in matches)
         {
-            if (match.MatchState == MatchState.Running) continue;
+            if (match is null || match.MatchState == MatchState.Running) continue;
             _queueRepository.FinishMatch(match);
 
             await _matchHub.Clients.Group(match.Id).SendAsync("End", match.MatchState, stoppingToken);
