@@ -1,20 +1,18 @@
+using FunChess.Core.Hub.Repositories;
+
 namespace FunChess.Core.Chess.Repositories;
 
 public interface IQueueRepository
 {
     public int QueueCount { get; }
 
-    public bool AddConnection(string connectionId);
-
-    public bool RemoveConnection(string connectionId);
-
-    public bool ConnectionExists(string connectionId);
+    public IConnectionRepository Connections { get; }
     
     public bool Enqueue(ulong accountId, string connectionId);
     
     public QueueAccount Dequeue();
 
-    public bool AddAccountToMatch(ulong accountId, Match match);
+    public void RegisterMatchToAccounts(Match match);
 
     public bool RemoveAccountWithoutMatch(ulong accountId);
 

@@ -8,10 +8,9 @@ public sealed class Match
     public Match(float secondsLimit, Player player1, Player player2)
     {
         SecondsLimit = secondsLimit;
-        Players = new[] { player1, player2 };
+        WhiteTeamPlayer = player1;
+        BlackTeamPlayer = player2;
     }
-
-    public string Id { get; } = Guid.NewGuid().ToString();
     
     public Board Board { get; } = new();
     
@@ -26,7 +25,7 @@ public sealed class Match
         get
         {
             if (_boardMatchState != MatchState.Running) return _boardMatchState;
-            Player player = Players.Span[(int)Board.Turn - 1];
+            Player player = GetPlayerByTurn();
 
             float spentSeconds = (float)(DateTime.UtcNow - LastMoveDateTime).TotalSeconds;
             float totalPlayerSpentSeconds = player.SpentSeconds + spentSeconds;
@@ -39,7 +38,9 @@ public sealed class Match
         }
     }
     
-    public ReadOnlyMemory<Player> Players { get; }
+    public Player WhiteTeamPlayer { get; }
+    
+    public Player BlackTeamPlayer { get; }
 
     public bool MoveAtBoard(ulong accountId, Move move)
     {
@@ -60,17 +61,14 @@ public sealed class Match
 
     public Player GetPlayerById(ulong accountId)
     {
-        ReadOnlySpan<Player> players = Players.Span;
-        for (int i = 0; i < 2; i++)
-        {
-            Player player = players[i];
-            if (player.AccountId == accountId) return player;
-        }
+        if (WhiteTeamPlayer.AccountId == accountId) return WhiteTeamPlayer;
+        if (BlackTeamPlayer.AccountId == accountId) return BlackTeamPlayer;
+
         throw new ArgumentException($"The {nameof(accountId)} does not belong to any player.", nameof(accountId));
     }
 
     private Player GetPlayerByTurn()
     {
-        return Players.Span[(int)Board.Turn - 1];
+        return Board.Turn == Team.White ? WhiteTeamPlayer : BlackTeamPlayer;
     }
 }

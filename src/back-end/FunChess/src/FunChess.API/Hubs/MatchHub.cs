@@ -25,13 +25,13 @@ public sealed class MatchHub : Hub
             Context.Abort();
             return;
         }
-        _queueRepository.AddConnection(Context.ConnectionId);
+        _queueRepository.Connections.Add(Context.ConnectionId);
         Match? match = _queueRepository.FindAccountMatch(id);
 
         if (match is null) return;
         Player player = match.GetPlayerById(id);
         
-        if (_queueRepository.ConnectionExists(player.ConnectionId))
+        if (_queueRepository.Connections.Exists(player.ConnectionId))
         {
             Context.Abort();
             return;
@@ -39,12 +39,11 @@ public sealed class MatchHub : Hub
         player.ConnectionId = Context.ConnectionId;
         
         await Clients.Client(Context.ConnectionId).SendAsync("Match", new SimpleMatch(match), match.Board.ToString(), player.Team);
-        await Groups.AddToGroupAsync(Context.ConnectionId, match.Id);
     }
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        _queueRepository.RemoveConnection(Context.ConnectionId);
+        _queueRepository.Connections.Remove(Context.ConnectionId);
         return Task.CompletedTask;
     }
 
@@ -75,8 +74,12 @@ public sealed class MatchHub : Hub
         
         if (match is null) return false;
         if (!match.MoveAtBoard(id, move.Value)) return false;
-        
-        await Clients.Group(match.Id).SendAsync("BoardUpdate", new SimpleMatch(match), move.ToString());
+
+        await Clients.Clients
+        (
+            match.WhiteTeamPlayer.ConnectionId,
+            match.BlackTeamPlayer.ConnectionId
+        ).SendAsync("BoardUpdate", new SimpleMatch(match), move.ToString());
         return true;
     }
 }

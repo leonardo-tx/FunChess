@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace FunChess.API.Services;
 
-public sealed class MatchService : BackgroundService
+public sealed class MatchBackgroundService : BackgroundService
 {
-    public MatchService(IHubContext<MatchHub> matchHub, IQueueRepository queueRepository)
+    public MatchBackgroundService(IHubContext<MatchHub> matchHub, IQueueRepository queueRepository)
     {
         _matchHub = matchHub;
         _queueRepository = queueRepository;
@@ -34,7 +34,11 @@ public sealed class MatchService : BackgroundService
             if (match is null || match.MatchState == MatchState.Running) continue;
             _queueRepository.FinishMatch(match);
 
-            await _matchHub.Clients.Group(match.Id).SendAsync("End", match.MatchState, stoppingToken);
+            await _matchHub.Clients.Clients
+            (
+                match.WhiteTeamPlayer.ConnectionId,
+                match.BlackTeamPlayer.ConnectionId
+            ).SendAsync("End", match.MatchState, stoppingToken);
         }
     }
 }

@@ -7,8 +7,4 @@
     </PropertyGroup>
 
 
-    <ItemGroup>
-      <ProjectReference Include="..\FunChess.Core.Hub\FunChess.Core.Hub.csproj" />
-    </ItemGroup>
-
 </Project>

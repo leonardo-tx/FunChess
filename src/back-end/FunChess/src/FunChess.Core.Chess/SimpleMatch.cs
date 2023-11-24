@@ -11,7 +11,7 @@ public readonly struct SimpleMatch
         SecondsLimit = match.SecondsLimit;
         TimeStamp = (match.LastMoveDateTime.Ticks - MinDateTime.Ticks) / 10000;
         MatchState = match.MatchState;
-        Players = match.Players.ToArray();
+        Players = new[] { match.WhiteTeamPlayer, match.BlackTeamPlayer };
     }
     
     public float SecondsLimit { get; }

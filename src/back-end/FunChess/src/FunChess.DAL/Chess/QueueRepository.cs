@@ -1,41 +1,20 @@
 using System.Collections.Concurrent;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Repositories;
+using FunChess.Core.Hub.Repositories;
+using FunChess.DAL.Hub;
 
 namespace FunChess.DAL.Chess;
 
 public sealed class QueueRepository : IQueueRepository
 {
     private readonly ConcurrentQueue<QueueAccount> _queue = new();
-    private readonly HashSet<string> _connectedIds = new();
     private readonly ConcurrentDictionary<ulong, Match?> _accountsOnMatch = new();
 
     public int QueueCount => _queue.Count;
 
-    public bool AddConnection(string connectionId)
-    {
-        lock (_connectedIds)
-        {
-            return _connectedIds.Add(connectionId);
-        }
-    }
+    public IConnectionRepository Connections { get; } = new ConnectionRepository();
 
-    public bool RemoveConnection(string connectionId)
-    {
-        lock (_connectedIds)
-        {
-            return _connectedIds.Remove(connectionId);
-        }
-    }
-
-    public bool ConnectionExists(string connectionId)
-    {
-        lock (_connectedIds)
-        {
-            return _connectedIds.Contains(connectionId);
-        }
-    }
-    
     public bool Enqueue(ulong accountId, string connectionId)
     {
         if (!_accountsOnMatch.TryAdd(accountId, null)) return false;
@@ -52,9 +31,15 @@ public sealed class QueueRepository : IQueueRepository
         return queueUser!;
     }
 
-    public bool AddAccountToMatch(ulong accountId, Match match)
+    public void RegisterMatchToAccounts(Match match)
     {
-        return _accountsOnMatch.TryUpdate(accountId, match, null);
+        bool updatedFirst = _accountsOnMatch.TryUpdate(match.WhiteTeamPlayer.AccountId, match, null);
+        bool updatedSecond = _accountsOnMatch.TryUpdate(match.BlackTeamPlayer.AccountId, match, null);
+
+        if (!updatedFirst || !updatedSecond)
+        {
+            throw new ArgumentException("Invalid match, one or two players are already on a match.");
+        }
     }
 
     public bool RemoveAccountWithoutMatch(ulong accountId)
@@ -67,11 +52,8 @@ public sealed class QueueRepository : IQueueRepository
 
     public void FinishMatch(Match match)
     {
-        ReadOnlySpan<Player> players = match.Players.Span;
-        for (int i = 0; i < players.Length; i++)
-        {
-            _accountsOnMatch.Remove(players[i].AccountId, out _);
-        }
+        _accountsOnMatch.Remove(match.WhiteTeamPlayer.AccountId, out _);
+        _accountsOnMatch.Remove(match.BlackTeamPlayer.AccountId, out _);
     }
 
     public Match? FindAccountMatch(ulong accountId)

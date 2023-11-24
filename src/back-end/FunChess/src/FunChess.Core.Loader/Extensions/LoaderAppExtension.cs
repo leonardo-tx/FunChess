@@ -19,13 +19,11 @@ public static class LoaderAppExtension
             loaderTypes.AddRange(loaderTypesEnumerable);
         }
         using IServiceScope serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-
-        var tasks = new Task[loaderTypes.Count];
+        
         for (int i = 0; i < loaderTypes.Count; i++)
         {
             var loader = (LoaderBase)ActivatorUtilities.CreateInstance(serviceScope.ServiceProvider, loaderTypes[i]);
-            tasks[i] = loader.ExecuteAsync();
+            loader.ExecuteAsync().Wait();
         }
-        Task.WaitAll(tasks);
     }
 }

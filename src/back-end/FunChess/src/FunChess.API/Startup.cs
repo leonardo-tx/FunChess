@@ -71,8 +71,8 @@ internal sealed class Startup
         services.AddScoped<ITokenManager, TokenManager>();
         services.AddScoped<IAccountManager, AccountManager>();
         services.AddSingleton<IQueueRepository, QueueRepository>();
-        services.AddHostedService<QueueService>();
-        services.AddHostedService<MatchService>();
+        services.AddHostedService<QueueBackgroundService>();
+        services.AddHostedService<MatchBackgroundService>();
     }
 
     public void ConfigureApp(WebApplication app)
