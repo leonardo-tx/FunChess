@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using FunChess.Core.Chess.Enums;
 
 namespace FunChess.Core.Chess;

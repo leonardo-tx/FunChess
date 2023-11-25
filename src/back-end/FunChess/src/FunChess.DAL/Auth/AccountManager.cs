@@ -3,7 +3,6 @@ using FunChess.Core.Auth;
 using FunChess.Core.Auth.Forms;
 using FunChess.Core.Auth.Repositories;
 using FunChess.Core.Auth.Settings;
-using FunChess.Core.Responses;
 using FunChess.DAL.Context;
 using FunChess.DAL.Generic;
 using Microsoft.EntityFrameworkCore;
