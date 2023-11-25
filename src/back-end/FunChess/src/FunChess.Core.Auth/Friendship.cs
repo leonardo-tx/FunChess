@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace FunChess.Core.Auth;
 
 public sealed class Friendship
@@ -20,10 +18,12 @@ public sealed class Friendship
 
     public ulong AccountId { get; set; }
 
-    public Account Account { get; set; }
+    public Account Account { get; set; } = null!;
 
     public ulong FriendId { get; set; }
 
-    public Account Friend { get; set; }
+    public Account Friend { get; set; } = null!;
+
+    public List<Message> Messages { get; set; } = new();
 }
     

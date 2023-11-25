@@ -11,6 +11,8 @@ public class DatabaseContext : DbContext
     }
 
     internal DbSet<Account> Accounts { get; set; } = null!;
+
+    internal DbSet<Friendship> Friendships { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder builder)
     {

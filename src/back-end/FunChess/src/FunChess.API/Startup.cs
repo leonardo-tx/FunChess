@@ -70,6 +70,7 @@ internal sealed class Startup
 
         services.AddScoped<ITokenManager, TokenManager>();
         services.AddScoped<IAccountManager, AccountManager>();
+        services.AddScoped<IFriendshipRepository, FriendshipRepository>();
         services.AddSingleton<IQueueRepository, QueueRepository>();
         services.AddHostedService<QueueBackgroundService>();
         services.AddHostedService<MatchBackgroundService>();
