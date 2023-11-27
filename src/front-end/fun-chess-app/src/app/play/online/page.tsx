@@ -69,6 +69,8 @@ export default function PlayOnline(): JSX.Element {
         });
     }, []);
 
+    if (!pageLoaded) return <></>;
+
     const connectToQueue = (): void => {
         if (connection === null || matchInfo !== null) return;
         if (connection.state === HubConnectionState.Connected) {
@@ -82,7 +84,7 @@ export default function PlayOnline(): JSX.Element {
         });
     };
 
-    return pageLoaded ? (
+    return (
         <Container $onMatch={matchInfo !== null}>
             <MatchBoardContainer>
                 <PlayerBanner 
@@ -106,7 +108,7 @@ export default function PlayOnline(): JSX.Element {
             </MatchBoardContainer>
             {matchInfo !== null || <OnlineMatchSelection onQueue={onQueue} connectToQueue={connectToQueue} />}
         </Container>
-    ) : <></>;
+    );
 }
 
 function getHubConnection(): HubConnection {

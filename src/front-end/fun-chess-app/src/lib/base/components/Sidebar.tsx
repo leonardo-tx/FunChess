@@ -17,7 +17,7 @@ interface Props {
 }
 
 export default function Sidebar({ closed, onClose }: Props): JSX.Element {
-    const { authenticated, logout } = useAuth();
+    const { authenticated, currentAccount, logout } = useAuth();
 
     const ref = useRef<HTMLElement>(null);
     useHandleMouseDownEvent(ref, closed, onClose);
@@ -35,10 +35,9 @@ export default function Sidebar({ closed, onClose }: Props): JSX.Element {
             <ul className={styles["sidebar-menu"]}>
                 {authenticated ? 
                     <>
-                        <MenuLinkItem icon={<IoHome />} href="/" />
                         <MenuLinkItem icon={<IoGameController />} href="/play" />
                         <MenuLinkItem icon={<FaUserGroup />} href="/friends" />
-                        <MenuLinkItem icon={<FaUser />} href="/profile" />
+                        <MenuLinkItem icon={<FaUser />} href={`/profile?id=${currentAccount!.id}`} />
                         <MenuListItem closed={closed} icon={<BsThreeDots />}>
                             <MenuButtonItem 
                                 icon={<IoExitOutline />} 
