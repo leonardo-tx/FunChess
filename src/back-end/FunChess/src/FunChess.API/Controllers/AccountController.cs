@@ -10,7 +10,7 @@ namespace FunChess.API.Controllers;
 [ApiController, Route("Api/[controller]")]
 public class AccountController : ControllerBase
 {
-    public AccountController(IAccountManager accountManager)
+    public AccountController(IAccountManager accountManager, IFriendshipRepository friendshipRepository)
     {
         _accountManager = accountManager;
     }

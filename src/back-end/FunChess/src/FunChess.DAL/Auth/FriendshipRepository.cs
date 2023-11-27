@@ -6,19 +6,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FunChess.DAL.Auth;
 
-public class FriendshipRepository : GenericDatabaseRepository, IFriendshipRepository
+public sealed class FriendshipRepository : GenericDatabaseRepository, IFriendshipRepository
 {
-    protected FriendshipRepository(DatabaseContext context) : base(context)
+    public FriendshipRepository(DatabaseContext context) : base(context)
     {
     }
 
-    public async Task Add(Account account1, Account account2)
-    {
-        Friendship friendshipRelation1 = new(account1, account2);
-        Friendship friendshipRelation2 = new(account2, account1);
-
-        await Context.Friendships.AddRangeAsync(friendshipRelation1, friendshipRelation2);
+    public async Task Invite(Account sender, Account receiver)
+    { 
+        (
+            FriendshipRequest senderRequest, 
+            FriendshipRequest receiverRequest
+        ) = FriendshipRequest.GetFriendshipRequests(sender, receiver);
+        
+        await Context.FriendshipRequests.AddRangeAsync(senderRequest, receiverRequest);
         await Context.SaveChangesAsync();
+    }
+
+    public async Task<bool> AcceptInvite(ulong senderId, ulong receiverId)
+    {
+        FriendshipRequest? senderRequest = await Context.FriendshipRequests.FindAsync(senderId, receiverId);
+        if (senderRequest is null) return false;
+
+        FriendshipRequest? receiverRequest = await Context.FriendshipRequests.FindAsync(receiverId, senderId);
+        if (receiverRequest is null) return false;
+
+        (Friendship sender, Friendship receiver) = Friendship.GetFriendships(senderRequest, receiverRequest);
+        Context.FriendshipRequests.RemoveRange(senderRequest, receiverRequest);
+        
+        await Context.Friendships.AddRangeAsync(sender, receiver);
+        await Context.SaveChangesAsync();
+        
+        return true;
     }
 
     public async Task Remove(Account account1, Account account2)
@@ -42,7 +61,19 @@ public class FriendshipRepository : GenericDatabaseRepository, IFriendshipReposi
         return await Context.Friendships.FindAsync(account1.Id, account2.Id);
     }
 
-    public IAsyncEnumerable<Friendship> GetAllFromAccount(Account account)
+    public async Task<FriendshipRequest?> FindRequest(Account account1, Account account2)
+    {
+        return await Context.FriendshipRequests.FindAsync(account1.Id, account2.Id);
+    }
+
+    public IAsyncEnumerable<FriendshipRequest> GetAllRequests(Account account)
+    {
+        return Context.FriendshipRequests
+            .Where(request => request.AccountId == account.Id)
+            .AsAsyncEnumerable();
+    }
+
+    public IAsyncEnumerable<Friendship> GetAllFriendships(Account account)
     {
         return Context.Friendships
             .Where(friendship => friendship.AccountId == account.Id)

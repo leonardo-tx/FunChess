@@ -12,6 +12,8 @@ public class DatabaseContext : DbContext
 
     internal DbSet<Account> Accounts { get; set; } = null!;
 
+    internal DbSet<FriendshipRequest> FriendshipRequests { get; set; } = null!;
+
     internal DbSet<Friendship> Friendships { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder builder)
@@ -31,8 +33,19 @@ public class DatabaseContext : DbContext
             .WithMany(p => p.Friendships)
             .HasForeignKey(f => f.AccountId)
             .OnDelete(DeleteBehavior.Cascade);
-
         builder.Entity<Friendship>()
+            .HasOne(f => f.Friend)
+            .WithMany()
+            .HasForeignKey(f => f.FriendId)
+            .OnDelete(DeleteBehavior.NoAction);
+        
+        builder.Entity<FriendshipRequest>().HasKey(f => new { f.AccountId, f.FriendId });
+        builder.Entity<FriendshipRequest>()
+            .HasOne(f => f.Account)
+            .WithMany(p => p.FriendshipRequests)
+            .HasForeignKey(f => f.AccountId)
+            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<FriendshipRequest>()
             .HasOne(f => f.Friend)
             .WithMany()
             .HasForeignKey(f => f.FriendId)

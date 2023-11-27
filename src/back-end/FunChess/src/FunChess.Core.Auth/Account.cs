@@ -57,6 +57,8 @@ public class Account
     public DateOnly Creation { get; set; }
 
     public List<Friendship> Friendships { get; set; } = new();
+
+    public List<FriendshipRequest> FriendshipRequests { get; set; } = new();
     
     [DataType(DataType.Password)]
     public string PasswordHash { get; set; } = null!;
