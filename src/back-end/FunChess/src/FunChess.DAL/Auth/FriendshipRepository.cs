@@ -1,97 +1,89 @@
+using System.Collections.Concurrent;
 using FunChess.Core.Auth;
 using FunChess.Core.Auth.Repositories;
-using FunChess.DAL.Context;
-using FunChess.DAL.Generic;
-using Microsoft.EntityFrameworkCore;
 
 namespace FunChess.DAL.Auth;
 
-public sealed class FriendshipRepository : GenericDatabaseRepository, IFriendshipRepository
+public sealed class FriendshipRepository : IFriendshipRepository
 {
-    public FriendshipRepository(DatabaseContext context) : base(context)
-    {
-    }
-
-    public async Task Invite(Account sender, Account receiver)
+    private ConcurrentDictionary<int, FriendshipRequest> Requests { get; } = new();
+    private ConcurrentDictionary<int, Friendship> Friendships { get; } = new();
+    
+    public Task Invite(Account sender, Account receiver)
     { 
         (
             FriendshipRequest senderRequest, 
             FriendshipRequest receiverRequest
         ) = FriendshipRequest.GetFriendshipRequests(sender, receiver);
         
-        await Context.FriendshipRequests.AddRangeAsync(senderRequest, receiverRequest);
-        await Context.SaveChangesAsync();
+        Requests.TryAdd(HashCode.Combine(senderRequest.AccountId, senderRequest.FriendId), senderRequest);
+        Requests.TryAdd(HashCode.Combine(receiverRequest.AccountId, receiverRequest.FriendId), receiverRequest);
+        
+        return Task.CompletedTask;
     }
 
-    public async Task<bool> AcceptInvite(ulong senderId, ulong receiverId)
+    public Task<bool> AcceptInvite(ulong senderId, ulong receiverId)
     {
-        FriendshipRequest? senderRequest = await Context.FriendshipRequests.FindAsync(senderId, receiverId);
-        if (senderRequest is null) return false;
-
-        FriendshipRequest? receiverRequest = await Context.FriendshipRequests.FindAsync(receiverId, senderId);
-        if (receiverRequest is null) return false;
+        int senderKey = HashCode.Combine(senderId, receiverId);
+        int receiverKey = HashCode.Combine(receiverId, senderId);
+        if (!Requests.TryRemove(senderKey, out var senderRequest)) return Task.FromResult(false);
+        if (!Requests.TryRemove(receiverKey, out var receiverRequest)) return Task.FromResult(false);
 
         (Friendship sender, Friendship receiver) = Friendship.GetFriendships(senderRequest, receiverRequest);
-        Context.FriendshipRequests.RemoveRange(senderRequest, receiverRequest);
+        Friendships.TryAdd(senderKey, sender);
+        Friendships.TryAdd(receiverKey, receiver);
         
-        await Context.Friendships.AddRangeAsync(sender, receiver);
-        await Context.SaveChangesAsync();
+        return Task.FromResult(true);
+    }
+
+    public Task Remove(Account account1, Account account2)
+    {
+        int relationKey1 = HashCode.Combine(account1.Id, account2.Id);
+        int relationKey2 = HashCode.Combine(account2.Id, account1.Id);
         
-        return true;
-    }
-
-    public async Task Remove(Account account1, Account account2)
-    {
-        Friendship? friendshipRelation1 = await Context.Friendships.FindAsync(account1.Id, account2.Id);
-        if (friendshipRelation1 is not null)
-        {
-            Context.Friendships.Remove(friendshipRelation1);
-        }
+        Friendships.TryRemove(relationKey1, out _);
+        Friendships.TryRemove(relationKey2, out _);
         
-        Friendship? friendshipRelation2 = await Context.Friendships.FindAsync(account2.Id, account1.Id);
-        if (friendshipRelation2 is not null)
-        {
-            Context.Friendships.Remove(friendshipRelation2);
-        }
-        await Context.SaveChangesAsync();
+        return Task.CompletedTask;
     }
 
-    public async Task<Friendship?> Find(Account account1, Account account2)
+    public Task<Friendship?> Find(Account account1, Account account2)
     {
-        return await Context.Friendships.FindAsync(account1.Id, account2.Id);
+        Friendships.TryGetValue(HashCode.Combine(account1.Id, account2.Id), out Friendship? friendship);
+        return Task.FromResult(friendship);
     }
 
-    public async Task<FriendshipRequest?> FindRequest(Account account1, Account account2)
+    public Task<FriendshipRequest?> FindRequest(Account account1, Account account2)
     {
-        return await Context.FriendshipRequests.FindAsync(account1.Id, account2.Id);
+        Requests.TryGetValue(HashCode.Combine(account1.Id, account2.Id), out FriendshipRequest? request);
+        return Task.FromResult(request);
     }
 
-    public IAsyncEnumerable<FriendshipRequest> GetAllRequests(Account account)
+    public IEnumerable<FriendshipRequest> GetAllRequests(Account account)
     {
-        return Context.FriendshipRequests
+        return Requests.Values
             .Where(request => request.AccountId == account.Id)
-            .AsAsyncEnumerable();
+            .AsEnumerable();
     }
 
-    public IAsyncEnumerable<Friendship> GetAllFriendships(Account account)
+    public IEnumerable<Friendship> GetAllFriendships(Account account)
     {
-        return Context.Friendships
+        return Friendships.Values
             .Where(friendship => friendship.AccountId == account.Id)
-            .AsAsyncEnumerable();
+            .AsEnumerable();
     }
 
-    public async Task<IEnumerable<Message>> GetAllMessages(Account account1, Account account2)
+    public Task<IEnumerable<Message>> GetAllMessages(Account account1, Account account2)
     {
-        Friendship? friendship1 = await Context.Friendships
-            .Include(friendship => friendship.Messages)
-            .FirstOrDefaultAsync(friendship => friendship.AccountId == account1.Id && friendship.FriendId == account2.Id);
+        Friendship? friendship1 = Friendships.Values
+            .FirstOrDefault(friendship => friendship.AccountId == account1.Id && friendship.FriendId == account2.Id);
         if (friendship1 is null) throw new ArgumentException("There is no friendship between the two given accounts.");
         
-        Friendship? friendship2 = await Context.Friendships
-            .Include(f => f.Messages)
-            .FirstOrDefaultAsync(friendship => friendship.AccountId == account2.Id && friendship.FriendId == account1.Id);
+        Friendship? friendship2 = Friendships.Values
+            .FirstOrDefault(friendship => friendship.AccountId == account2.Id && friendship.FriendId == account1.Id);
         if (friendship2 is null) throw new ArgumentException("There is no friendship between the two given accounts.");
         
-        return friendship1.Messages.Concat(friendship2.Messages).OrderBy(message => message.Creation);
+        IEnumerable<Message> messages = friendship1.Messages.Concat(friendship2.Messages).OrderBy(message => message.Creation);
+        return Task.FromResult(messages);
     }
 }

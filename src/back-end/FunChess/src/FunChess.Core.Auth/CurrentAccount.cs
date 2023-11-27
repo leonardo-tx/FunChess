@@ -20,4 +20,9 @@ public sealed class CurrentAccount
             Creation = account.Creation
         };
     }
+
+    public override string ToString()
+    {
+        return $"{Id} | {Email} | {Username} | {Creation}";
+    }
 }

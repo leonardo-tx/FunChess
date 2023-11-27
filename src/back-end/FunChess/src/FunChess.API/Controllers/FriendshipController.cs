@@ -26,7 +26,7 @@ public sealed class FriendshipsController : ControllerBase
         ulong id = User.GetAccountId();
         Account account = (await _accountManager.FindAccount(id))!;
 
-        IAsyncEnumerable<Friendship> friends = _friendshipRepository.GetAllFriendships(account);
+        IEnumerable<Friendship> friends = _friendshipRepository.GetAllFriendships(account);
         return Ok(new ApiResponse(friends));
     }
 
@@ -36,7 +36,7 @@ public sealed class FriendshipsController : ControllerBase
         ulong id = User.GetAccountId();
         Account account = (await _accountManager.FindAccount(id))!;
 
-        IAsyncEnumerable<FriendshipRequest> requests = _friendshipRepository.GetAllRequests(account);
+        IEnumerable<FriendshipRequest> requests = _friendshipRepository.GetAllRequests(account);
         return Ok(new ApiResponse(requests));
     }
 

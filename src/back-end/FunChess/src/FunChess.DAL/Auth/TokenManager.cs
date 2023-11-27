@@ -4,16 +4,14 @@ using System.Text;
 using FunChess.Core.Auth;
 using FunChess.Core.Auth.Repositories;
 using FunChess.Core.Auth.Settings;
-using FunChess.DAL.Context;
-using FunChess.DAL.Generic;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FunChess.DAL.Auth;
 
-public sealed class TokenManager : GenericDatabaseRepository, ITokenManager
+public sealed class TokenManager : ITokenManager
 {
-    public TokenManager(DatabaseContext context, IOptions<TokenSettings> tokenSettings) : base(context)
+    public TokenManager(IOptions<TokenSettings> tokenSettings)
     {
         _tokenSettings = tokenSettings.Value;
         

@@ -12,9 +12,9 @@ public interface IFriendshipRepository
 
     public Task<FriendshipRequest?> FindRequest(Account account1, Account account2);
 
-    public IAsyncEnumerable<FriendshipRequest> GetAllRequests(Account account);
+    public IEnumerable<FriendshipRequest> GetAllRequests(Account account);
 
-    public IAsyncEnumerable<Friendship> GetAllFriendships(Account account);
+    public IEnumerable<Friendship> GetAllFriendships(Account account);
 
     public Task<IEnumerable<Message>> GetAllMessages(Account account1, Account account2);
 }

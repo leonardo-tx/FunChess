@@ -8,8 +8,6 @@ public interface IAccountManager
     public Task Add(Account account);
 
     public Task Delete(Account account);
-
-    public Task<HttpStatusCode> Update(Account account, AccountForm form);
     
     public Task<Account?> FindAccount(ulong id);
 

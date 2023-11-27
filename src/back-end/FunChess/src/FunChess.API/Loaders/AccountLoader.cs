@@ -52,7 +52,7 @@ public sealed class AccountLoader : LoaderBase
             Username = accountInfo[1], 
             Password = accountInfo[2]
         };
-        Account account = new Account(accountForm, _passwordSettings.Pepper);
+        Account account = new(accountForm, _passwordSettings.Pepper);
             
         if (await _accountManager.FindAccount(account.Email) is not null)
         {
@@ -60,6 +60,6 @@ public sealed class AccountLoader : LoaderBase
             return;
         }
         await _accountManager.Add(account);
-        _logger.LogInformation("The account with e-mail {0} was created successfully.", account.Email);
+        _logger.LogInformation("The account {account} was created successfully.", CurrentAccount.Parse(account));
     }
 }
