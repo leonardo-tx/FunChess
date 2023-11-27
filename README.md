@@ -49,7 +49,17 @@ Upon arrival, execute the following command:
 dotnet run -c Release --launch-profile http
 ```
 
-## Test on local network
+## How to run the unit tests
+
+To run the unit tests go to the following directory: ```./src/back-end/FunChess```
+
+Upon arrival, execute the following command:
+
+```bash
+dotnet test
+```
+
+## Run on local network
 
 If you want multiple devices on the local network to be able to 
 access the service without problems, you will need to use a common 
@@ -77,6 +87,7 @@ Example:
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    }
 }
 ```
 
