@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using FunChess.Core.Auth.Attributes;
 using FunChess.Core.Chess;
-using FunChess.Core.Chess.Repositories;
+using FunChess.Core.Chess.Services;
 using FunChess.Core.Chess.Structs;
 using Microsoft.AspNetCore.SignalR;
 
@@ -10,12 +10,12 @@ namespace FunChess.API.Hubs;
 [AuthorizeCustom]
 public sealed class MatchHub : Hub
 {
-    public MatchHub(IQueueRepository queueRepository)
+    public MatchHub(IQueueService queueService)
     {
-        _queueRepository = queueRepository;
+        _queueService = queueService;
     }
 
-    private readonly IQueueRepository _queueRepository;
+    private readonly IQueueService _queueService;
 
     public override async Task OnConnectedAsync()
     {
@@ -25,13 +25,13 @@ public sealed class MatchHub : Hub
             Context.Abort();
             return;
         }
-        _queueRepository.Connections.Add(Context.ConnectionId);
-        Match? match = _queueRepository.FindAccountMatch(id);
+        _queueService.Connections.Add(Context.ConnectionId);
+        Match? match = _queueService.FindAccountMatch(id);
 
         if (match is null) return;
         Player player = match.GetPlayerById(id);
         
-        if (_queueRepository.Connections.Exists(player.ConnectionId))
+        if (_queueService.Connections.Exists(player.ConnectionId))
         {
             Context.Abort();
             return;
@@ -43,7 +43,7 @@ public sealed class MatchHub : Hub
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        _queueRepository.Connections.Remove(Context.ConnectionId);
+        _queueService.Connections.Remove(Context.ConnectionId);
         return Task.CompletedTask;
     }
 
@@ -56,7 +56,7 @@ public sealed class MatchHub : Hub
             Context.Abort();
             return Task.FromResult(false);
         }
-        return Task.FromResult(_queueRepository.Enqueue(id, Context.ConnectionId));
+        return Task.FromResult(_queueService.Enqueue(id, Context.ConnectionId));
     }
 
     [HubMethodName("Move")]
@@ -70,7 +70,7 @@ public sealed class MatchHub : Hub
         }
         if (!Move.TryParse(moveText, out Move? move)) return false;
         
-        Match? match = _queueRepository.FindAccountMatch(id);
+        Match? match = _queueService.FindAccountMatch(id);
         
         if (match is null) return false;
         if (!match.MoveAtBoard(id, move.Value)) return false;

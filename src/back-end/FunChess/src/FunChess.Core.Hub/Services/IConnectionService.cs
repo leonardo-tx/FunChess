@@ -1,6 +1,6 @@
-namespace FunChess.Core.Hub.Repositories;
+namespace FunChess.Core.Hub.Services;
 
-public interface IConnectionRepository
+public interface IConnectionService
 {
     public bool Add(string connectionId);
 

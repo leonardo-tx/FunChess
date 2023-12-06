@@ -1,6 +1,8 @@
+using System.Runtime.InteropServices;
 using FunChess.Core.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.Extensions.Configuration;
 
 namespace FunChess.DAL.Context;
 
@@ -50,5 +52,20 @@ public class DatabaseContext : DbContext
             .WithMany()
             .HasForeignKey(f => f.FriendId)
             .OnDelete(DeleteBehavior.NoAction);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder builder)
+    {
+        string partialPath = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            ? @"\..\FunChess.API\appsettings.json"
+            : "/../FunChess.API/appsettings.json";
+        
+        IConfigurationRoot configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile(Directory.GetCurrentDirectory() + partialPath)
+            .Build();
+        
+        var dbConnection = configuration.GetConnectionString("DbConnection");
+        builder.UseSqlServer(dbConnection);
     }
 }

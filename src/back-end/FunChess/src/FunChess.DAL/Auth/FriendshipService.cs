@@ -1,14 +1,14 @@
 using FunChess.Core.Auth;
-using FunChess.Core.Auth.Repositories;
+using FunChess.Core.Auth.Services;
 using FunChess.DAL.Context;
 using FunChess.DAL.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace FunChess.DAL.Auth;
 
-public sealed class FriendshipRepository : GenericDatabaseRepository, IFriendshipRepository
+public sealed class FriendshipService : GenericDbService, IFriendshipService
 {
-    public FriendshipRepository(DatabaseContext context) : base(context)
+    public FriendshipService(DatabaseContext context) : base(context)
     {
     }
 

@@ -1,7 +1,7 @@
 using System.Net;
 using FunChess.Core.Auth;
 using FunChess.Core.Auth.Forms;
-using FunChess.Core.Auth.Repositories;
+using FunChess.Core.Auth.Services;
 using FunChess.Core.Auth.Settings;
 using FunChess.DAL.Context;
 using FunChess.DAL.Generic;
@@ -10,15 +10,15 @@ using Microsoft.Extensions.Options;
 
 namespace FunChess.DAL.Auth;
 
-public sealed class AccountManager : GenericDatabaseRepository, IAccountManager
+public sealed class AccountService : GenericDbService, IAccountService
 {
-    public AccountManager(DatabaseContext context, ITokenManager tokenManager, IOptions<PasswordSettings> passwordSettings): base(context)
+    public AccountService(DatabaseContext context, ITokenService tokenService, IOptions<PasswordSettings> passwordSettings): base(context)
     {
-        _tokenManager = tokenManager;
+        _tokenService = tokenService;
         _passwordSettings = passwordSettings.Value;
     }
 
-    private readonly ITokenManager _tokenManager;
+    private readonly ITokenService _tokenService;
     
     private readonly PasswordSettings _passwordSettings;
     

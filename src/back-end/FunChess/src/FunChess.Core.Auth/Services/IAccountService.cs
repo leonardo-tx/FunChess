@@ -1,9 +1,9 @@
 using System.Net;
 using FunChess.Core.Auth.Forms;
 
-namespace FunChess.Core.Auth.Repositories;
+namespace FunChess.Core.Auth.Services;
 
-public interface IAccountManager
+public interface IAccountService
 {
     public Task Add(Account account);
 

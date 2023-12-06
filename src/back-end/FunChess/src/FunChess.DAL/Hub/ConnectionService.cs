@@ -1,8 +1,8 @@
-using FunChess.Core.Hub.Repositories;
+using FunChess.Core.Hub.Services;
 
 namespace FunChess.DAL.Hub;
 
-public sealed class ConnectionRepository : IConnectionRepository
+public sealed class ConnectionService : IConnectionService
 {
     private readonly HashSet<string> _connectedIds = new();
     

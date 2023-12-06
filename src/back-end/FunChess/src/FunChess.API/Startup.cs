@@ -1,9 +1,9 @@
 using System.Text;
 using FunChess.API.Hubs;
-using FunChess.API.Services;
-using FunChess.Core.Auth.Repositories;
+using FunChess.API.Workers;
+using FunChess.Core.Auth.Services;
 using FunChess.Core.Auth.Settings;
-using FunChess.Core.Chess.Repositories;
+using FunChess.Core.Chess.Services;
 using FunChess.Core.Loader.Extensions;
 using FunChess.DAL.Auth;
 using FunChess.DAL.Chess;
@@ -25,14 +25,13 @@ internal sealed class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        string dbConnection = _configuration.GetConnectionString("DbConnection")!;
         IConfigurationSection passwordSettingsSection = _configuration.GetSection("PasswordSettings");
         IConfigurationSection tokenSettingsSection = _configuration.GetSection("TokenSettings");
         
         var tokenSettings = tokenSettingsSection.Get<TokenSettings>()!;
         byte[] key = Encoding.ASCII.GetBytes(tokenSettings.SecretKey);
         
-        services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(dbConnection));
+        services.AddDbContext<DatabaseContext>();
         services.Configure<PasswordSettings>(passwordSettingsSection);
         services.Configure<TokenSettings>(tokenSettingsSection);
         services.AddCors();
@@ -68,12 +67,12 @@ internal sealed class Startup
             };
         });
 
-        services.AddScoped<ITokenManager, TokenManager>();
-        services.AddScoped<IAccountManager, AccountManager>();
-        services.AddScoped<IFriendshipRepository, FriendshipRepository>();
-        services.AddSingleton<IQueueRepository, QueueRepository>();
-        services.AddHostedService<QueueBackgroundService>();
-        services.AddHostedService<MatchBackgroundService>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<IFriendshipService, FriendshipService>();
+        services.AddSingleton<IQueueService, QueueService>();
+        services.AddHostedService<QueueWorker>();
+        services.AddHostedService<MatchWorker>();
     }
 
     public void ConfigureApp(WebApplication app)

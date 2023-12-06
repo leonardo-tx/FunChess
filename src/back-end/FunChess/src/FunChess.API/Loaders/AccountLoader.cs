@@ -1,6 +1,6 @@
 using FunChess.Core.Auth;
 using FunChess.Core.Auth.Forms;
-using FunChess.Core.Auth.Repositories;
+using FunChess.Core.Auth.Services;
 using FunChess.Core.Auth.Settings;
 using FunChess.Core.Loader;
 using Microsoft.Extensions.Options;
@@ -11,15 +11,15 @@ public sealed class AccountLoader : LoaderBase
 {
     private const string FilePath = "LoaderFiles/accounts.dat";
     
-    public AccountLoader(IAccountManager accountManager, IOptions<PasswordSettings> passwordSettings, ILogger<AccountLoader> logger)
+    public AccountLoader(IAccountService accountService, IOptions<PasswordSettings> passwordSettings, ILogger<AccountLoader> logger)
     {
-        _accountManager = accountManager;
+        _accountService = accountService;
         _passwordSettings = passwordSettings.Value;
         _logger = logger;
     }
 
     private readonly ILogger<AccountLoader> _logger;
-    private readonly IAccountManager _accountManager;
+    private readonly IAccountService _accountService;
     private readonly PasswordSettings _passwordSettings;
     
     public override async Task ExecuteAsync()
@@ -54,12 +54,12 @@ public sealed class AccountLoader : LoaderBase
         };
         Account account = new Account(accountForm, _passwordSettings.Pepper);
             
-        if (await _accountManager.FindAccount(account.Email) is not null)
+        if (await _accountService.FindAccount(account.Email) is not null)
         {
             _logger.LogError("Unable to add the account with email {0}, because it already exists.", account.Email);
             return;
         }
-        await _accountManager.Add(account);
+        await _accountService.Add(account);
         _logger.LogInformation("The account with e-mail {0} was created successfully.", account.Email);
     }
 }

@@ -1,6 +1,6 @@
-namespace FunChess.Core.Auth.Repositories;
+namespace FunChess.Core.Auth.Services;
 
-public interface IFriendshipRepository
+public interface IFriendshipService
 {
     public Task Invite(Account sender, Account receiver);
 

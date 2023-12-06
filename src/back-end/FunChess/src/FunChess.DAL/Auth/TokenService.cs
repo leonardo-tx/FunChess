@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using FunChess.Core.Auth;
-using FunChess.Core.Auth.Repositories;
+using FunChess.Core.Auth.Services;
 using FunChess.Core.Auth.Settings;
 using FunChess.DAL.Context;
 using FunChess.DAL.Generic;
@@ -11,9 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FunChess.DAL.Auth;
 
-public sealed class TokenManager : GenericDatabaseRepository, ITokenManager
+public sealed class TokenService : GenericDbService, ITokenService
 {
-    public TokenManager(DatabaseContext context, IOptions<TokenSettings> tokenSettings) : base(context)
+    public TokenService(DatabaseContext context, IOptions<TokenSettings> tokenSettings) : base(context)
     {
         _tokenSettings = tokenSettings.Value;
         

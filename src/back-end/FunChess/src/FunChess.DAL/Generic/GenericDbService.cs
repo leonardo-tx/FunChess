@@ -2,9 +2,9 @@ using FunChess.DAL.Context;
 
 namespace FunChess.DAL.Generic;
 
-public class GenericDatabaseRepository
+public class GenericDbService
 {
-    protected GenericDatabaseRepository(DatabaseContext context)
+    protected GenericDbService(DatabaseContext context)
     {
         Context = context;
     }

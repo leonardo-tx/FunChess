@@ -1,12 +1,12 @@
-using FunChess.Core.Hub.Repositories;
+using FunChess.Core.Hub.Services;
 
-namespace FunChess.Core.Chess.Repositories;
+namespace FunChess.Core.Chess.Services;
 
-public interface IQueueRepository
+public interface IQueueService
 {
     public int QueueCount { get; }
 
-    public IConnectionRepository Connections { get; }
+    public IConnectionService Connections { get; }
     
     public bool Enqueue(ulong accountId, string connectionId);
     

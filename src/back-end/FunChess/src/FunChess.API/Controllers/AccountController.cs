@@ -1,7 +1,7 @@
 using FunChess.Core.Auth;
 using FunChess.Core.Auth.Attributes;
 using FunChess.Core.Auth.Extensions;
-using FunChess.Core.Auth.Repositories;
+using FunChess.Core.Auth.Services;
 using FunChess.Core.Responses;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,17 +10,17 @@ namespace FunChess.API.Controllers;
 [ApiController, Route("Api/[controller]")]
 public class AccountController : ControllerBase
 {
-    public AccountController(IAccountManager accountManager, IFriendshipRepository friendshipRepository)
+    public AccountController(IAccountService accountService, IFriendshipService friendshipService)
     {
-        _accountManager = accountManager;
+        _accountService = accountService;
     }
     
-    private readonly IAccountManager _accountManager;
+    private readonly IAccountService _accountService;
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetSimpleAccount(ulong id)
     {
-        Account? account = await _accountManager.FindAccount(id);
+        Account? account = await _accountService.FindAccount(id);
         if (account is null) return NotFound();
         
         return Ok(new ApiResponse(SimpleAccount.Parse(account)));
@@ -30,7 +30,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> GetCurrentAccount()
     {
         ulong id = User.GetAccountId();
-        Account account = (await _accountManager.FindAccount(id))!;
+        Account account = (await _accountService.FindAccount(id))!;
 
         return Ok(new ApiResponse(CurrentAccount.Parse(account)));
     }

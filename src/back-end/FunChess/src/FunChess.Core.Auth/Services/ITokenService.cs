@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 
-namespace FunChess.Core.Auth.Repositories;
+namespace FunChess.Core.Auth.Services;
 
-public interface ITokenManager
+public interface ITokenService
 {
     public string GenerateAccessToken(Account account);
 

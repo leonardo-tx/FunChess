@@ -1,21 +1,21 @@
 using FunChess.API.Hubs;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Enums;
-using FunChess.Core.Chess.Repositories;
+using FunChess.Core.Chess.Services;
 using Microsoft.AspNetCore.SignalR;
 
-namespace FunChess.API.Services;
+namespace FunChess.API.Workers;
 
-public sealed class QueueBackgroundService : BackgroundService
+public sealed class QueueWorker : BackgroundService
 {
-    public QueueBackgroundService(IHubContext<MatchHub> matchHub, IQueueRepository queueRepository)
+    public QueueWorker(IHubContext<MatchHub> matchHub, IQueueService queueService)
     {
         _matchHub = matchHub;
-        _queueRepository = queueRepository;
+        _queueService = queueService;
     }
 
     private readonly IHubContext<MatchHub> _matchHub;
-    private readonly IQueueRepository _queueRepository;
+    private readonly IQueueService _queueService;
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -33,7 +33,7 @@ public sealed class QueueBackgroundService : BackgroundService
             new Player(await GetQueueAccount(stoppingToken), Team.White), 
             new Player(await GetQueueAccount(stoppingToken), Team.Black)
         );
-        _queueRepository.RegisterMatchToAccounts(match);
+        _queueService.RegisterMatchToAccounts(match);
 
         SimpleMatch matchInfo = new(match);
         
@@ -46,12 +46,12 @@ public sealed class QueueBackgroundService : BackgroundService
         QueueAccount? result = null;
         do
         {
-            while (_queueRepository.QueueCount == 0) await Task.Delay(500, stoppingToken);
+            while (_queueService.QueueCount == 0) await Task.Delay(500, stoppingToken);
             
-            QueueAccount queueAccount = _queueRepository.Dequeue();
-            if (!_queueRepository.Connections.Exists(queueAccount.ConnectionId))
+            QueueAccount queueAccount = _queueService.Dequeue();
+            if (!_queueService.Connections.Exists(queueAccount.ConnectionId))
             {
-                _queueRepository.RemoveAccountWithoutMatch(queueAccount.AccountId);
+                _queueService.RemoveAccountWithoutMatch(queueAccount.AccountId);
                 continue;
             }
             result = queueAccount;

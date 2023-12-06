@@ -1,21 +1,21 @@
 using FunChess.API.Hubs;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Enums;
-using FunChess.Core.Chess.Repositories;
+using FunChess.Core.Chess.Services;
 using Microsoft.AspNetCore.SignalR;
 
-namespace FunChess.API.Services;
+namespace FunChess.API.Workers;
 
-public sealed class MatchBackgroundService : BackgroundService
+public sealed class MatchWorker : BackgroundService
 {
-    public MatchBackgroundService(IHubContext<MatchHub> matchHub, IQueueRepository queueRepository)
+    public MatchWorker(IHubContext<MatchHub> matchHub, IQueueService queueService)
     {
         _matchHub = matchHub;
-        _queueRepository = queueRepository;
+        _queueService = queueService;
     }
     
     private readonly IHubContext<MatchHub> _matchHub;
-    private readonly IQueueRepository _queueRepository;
+    private readonly IQueueService _queueService;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -28,11 +28,11 @@ public sealed class MatchBackgroundService : BackgroundService
 
     private async Task FindFinishedMatches(CancellationToken stoppingToken)
     {
-        IEnumerable<Match?> matches = _queueRepository.GetAllMatches();
+        IEnumerable<Match?> matches = _queueService.GetAllMatches();
         foreach (Match? match in matches)
         {
             if (match is null || match.MatchState == MatchState.Running) continue;
-            _queueRepository.FinishMatch(match);
+            _queueService.FinishMatch(match);
 
             await _matchHub.Clients.Clients
             (
