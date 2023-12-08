@@ -7,7 +7,8 @@ const basePath = "Account";
 
 export async function getSimpleAccount(id: number): Promise<ApiResponse<Account>> {
     return await fetcher(`${basePath}/${id}`, {
-        method: "GET"
+        method: "GET",
+        credentials: "include"
     });
 }
 

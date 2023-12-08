@@ -7,19 +7,28 @@ import Image from "next/image";
 import defaultIcon from "@/lib/assets/user/default.jpg";
 import { useSearchParams } from "next/navigation";
 import { JSX, useEffect, useState } from "react";
-import { Text } from "@chakra-ui/react";
+import { Button, HStack, Text } from "@chakra-ui/react";
+import useAuth from "@/data/auth/hooks/useAuth";
 
 
 export default function Profile(): JSX.Element {
     const searchParams = useSearchParams()
+    const { currentAccount } = useAuth();
     const [account, setAccount] = useState<Account | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const id = searchParams?.get("id") ?? null;
         if (id === null) { setIsLoading(false); return; }
+        
+        const idNumber = parseInt(id);
+        if (currentAccount !== null && idNumber === currentAccount.id) {
+            setAccount(currentAccount);
+            setIsLoading(false);
+            return;
+        }
 
-        getSimpleAccount(parseInt(id))
+        getSimpleAccount(idNumber)
             .then((response) => {
                 setAccount(response.result ?? null);
             })
@@ -36,6 +45,8 @@ export default function Profile(): JSX.Element {
         );
     }
 
+    const showAddButton = currentAccount !== account &&  !account.isFriend;
+
     return (
         <Container>
             <ProfileInfo>
@@ -45,6 +56,9 @@ export default function Profile(): JSX.Element {
                     <Text fontSize="sm">
                         Conta criada: {new Date(account.creation).toLocaleDateString(document.documentElement.lang)}
                     </Text>
+                    <HStack justifySelf="flex-end">
+                        {showAddButton && <Button>Adicionar amigo</Button>}
+                    </HStack>
                 </TextInfo>
             </ProfileInfo>
         </Container>
