@@ -2,19 +2,21 @@ namespace FunChess.Core.Auth.Services;
 
 public interface IFriendshipService
 {
-    public Task Invite(Account sender, Account receiver);
+    public Task InviteAsync(ulong senderId, ulong receiverId);
 
-    public Task<bool> AcceptInvite(ulong senderId, ulong receiverId);
+    public Task<bool> AcceptInviteAsync(ulong senderId, ulong receiverId);
 
-    public Task Remove(Account account1, Account account2);
+    public Task<bool> DeclineInviteAsync(ulong senderId, ulong receiverId);
 
-    public Task<Friendship?> Find(Account account1, Account account2);
+    public Task RemoveAsync(Account account1, Account account2);
 
-    public Task<FriendshipRequest?> FindRequest(Account account1, Account account2);
+    public Task<Friendship?> FindAsync(ulong accountId1, ulong accountId2);
+
+    public Task<FriendshipRequest?> FindRequestAsync(ulong accountId1, ulong accountId2);
 
     public IAsyncEnumerable<FriendshipRequest> GetAllRequests(Account account);
 
     public IAsyncEnumerable<Friendship> GetAllFriendships(Account account);
 
-    public Task<IEnumerable<Message>> GetAllMessages(Account account1, Account account2);
+    public Task<IEnumerable<Message>> GetAllMessagesAsync(Account account1, Account account2);
 }

@@ -10,15 +10,15 @@ public sealed class FriendshipRequest
 
     }
 
-    private FriendshipRequest(Account account, Account friend, FriendRequestType requestType)
+    private FriendshipRequest(ulong accountId, ulong friendId, FriendRequestType requestType)
     {
-        if (account.Id == friend.Id)
+        if (accountId == friendId)
         {
             throw new ArgumentException("It is not possible to create a friend request for the same account.");
         }
-        
-        AccountId = account.Id;
-        FriendId = friend.Id;
+
+        AccountId = accountId;
+        FriendId = friendId;
         RequestType = requestType;
     }
     
@@ -34,12 +34,12 @@ public sealed class FriendshipRequest
     
     public FriendRequestType RequestType { get; set; }
 
-    public static (FriendshipRequest, FriendshipRequest) GetFriendshipRequests(Account sender, Account receiver)
+    public static (FriendshipRequest, FriendshipRequest) GetFriendshipRequests(ulong senderId, ulong receiverId)
     {
         return
         (
-            new FriendshipRequest(sender, receiver, FriendRequestType.Delivered),
-            new FriendshipRequest(receiver, sender, FriendRequestType.Received)
+            new FriendshipRequest(senderId, receiverId, FriendRequestType.Delivered),
+            new FriendshipRequest(receiverId, senderId, FriendRequestType.Received)
         );
     }
 }

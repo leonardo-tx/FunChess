@@ -12,29 +12,26 @@ namespace FunChess.DAL.Auth;
 
 public sealed class AccountService : GenericDbService, IAccountService
 {
-    public AccountService(DatabaseContext context, ITokenService tokenService, IOptions<PasswordSettings> passwordSettings): base(context)
+    public AccountService(DatabaseContext context, IOptions<PasswordSettings> passwordSettings): base(context)
     {
-        _tokenService = tokenService;
         _passwordSettings = passwordSettings.Value;
     }
-
-    private readonly ITokenService _tokenService;
     
     private readonly PasswordSettings _passwordSettings;
     
-    public async Task Add(Account account)
+    public async Task AddAsync(Account account)
     {
         await Context.Accounts.AddAsync(account);
         await Context.SaveChangesAsync();
     }
 
-    public async Task Delete(Account account)
+    public async Task DeleteAsync(Account account)
     {
         Context.Accounts.Remove(account);
         await Context.SaveChangesAsync();
     }
 
-    public async Task<HttpStatusCode> Update(Account account, AccountForm form)
+    public async Task<HttpStatusCode> UpdateAsync(Account account, AccountForm form)
     {
         bool hasChanges;
         try
@@ -81,22 +78,22 @@ public sealed class AccountService : GenericDbService, IAccountService
         return true;
     }
 
-    public async Task<Account?> FindAccount(ulong id)
+    public async Task<Account?> FindAsync(ulong id)
     {
         return await Context.Accounts.FindAsync(id);
     }
     
-    public async Task<Account?> FindAccount(string email)
+    public async Task<Account?> FindAsync(string email)
     {
         return await Context.Accounts.FirstOrDefaultAsync(account => account.Email == email);
     }
 
-    public async Task<bool> Exists(ulong id)
+    public async Task<bool> ExistsAsync(ulong id)
     {
         return await Context.Accounts.AnyAsync(account => account.Id == id);
     }
     
-    public async Task<bool> Exists(string email)
+    public async Task<bool> ExistsAsync(string email)
     {
         return await Context.Accounts.AnyAsync(account => account.Email == email);
     }

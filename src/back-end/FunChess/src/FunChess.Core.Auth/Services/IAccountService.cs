@@ -5,17 +5,17 @@ namespace FunChess.Core.Auth.Services;
 
 public interface IAccountService
 {
-    public Task Add(Account account);
+    public Task AddAsync(Account account);
 
-    public Task Delete(Account account);
+    public Task DeleteAsync(Account account);
 
-    public Task<HttpStatusCode> Update(Account account, AccountForm form);
+    public Task<HttpStatusCode> UpdateAsync(Account account, AccountForm form);
     
-    public Task<Account?> FindAccount(ulong id);
+    public Task<Account?> FindAsync(ulong id);
 
-    public Task<Account?> FindAccount(string email);
+    public Task<Account?> FindAsync(string email);
 
-    public Task<bool> Exists(ulong id);
+    public Task<bool> ExistsAsync(ulong id);
     
-    public Task<bool> Exists(string email);
+    public Task<bool> ExistsAsync(string email);
 }

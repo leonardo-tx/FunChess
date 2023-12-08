@@ -12,18 +12,18 @@ public sealed class FriendshipService : GenericDbService, IFriendshipService
     {
     }
 
-    public async Task Invite(Account sender, Account receiver)
+    public async Task InviteAsync(ulong senderId, ulong receiverId)
     { 
         (
             FriendshipRequest senderRequest, 
             FriendshipRequest receiverRequest
-        ) = FriendshipRequest.GetFriendshipRequests(sender, receiver);
+        ) = FriendshipRequest.GetFriendshipRequests(senderId, receiverId);
         
         await Context.FriendshipRequests.AddRangeAsync(senderRequest, receiverRequest);
         await Context.SaveChangesAsync();
     }
 
-    public async Task<bool> AcceptInvite(ulong senderId, ulong receiverId)
+    public async Task<bool> AcceptInviteAsync(ulong senderId, ulong receiverId)
     {
         FriendshipRequest? senderRequest = await Context.FriendshipRequests.FindAsync(senderId, receiverId);
         if (senderRequest is null) return false;
@@ -40,7 +40,21 @@ public sealed class FriendshipService : GenericDbService, IFriendshipService
         return true;
     }
 
-    public async Task Remove(Account account1, Account account2)
+    public async Task<bool> DeclineInviteAsync(ulong senderId, ulong receiverId)
+    {
+        FriendshipRequest? senderRequest = await Context.FriendshipRequests.FindAsync(senderId, receiverId);
+        if (senderRequest is null) return false;
+
+        FriendshipRequest? receiverRequest = await Context.FriendshipRequests.FindAsync(receiverId, senderId);
+        if (receiverRequest is null) return false;
+        
+        Context.FriendshipRequests.RemoveRange(senderRequest, receiverRequest);
+        await Context.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task RemoveAsync(Account account1, Account account2)
     {
         Friendship? friendshipRelation1 = await Context.Friendships.FindAsync(account1.Id, account2.Id);
         if (friendshipRelation1 is not null)
@@ -56,14 +70,14 @@ public sealed class FriendshipService : GenericDbService, IFriendshipService
         await Context.SaveChangesAsync();
     }
 
-    public async Task<Friendship?> Find(Account account1, Account account2)
+    public async Task<Friendship?> FindAsync(ulong accountId1, ulong accountId2)
     {
-        return await Context.Friendships.FindAsync(account1.Id, account2.Id);
+        return await Context.Friendships.FindAsync(accountId1, accountId2);
     }
 
-    public async Task<FriendshipRequest?> FindRequest(Account account1, Account account2)
+    public async Task<FriendshipRequest?> FindRequestAsync(ulong accountId1, ulong accountId2)
     {
-        return await Context.FriendshipRequests.FindAsync(account1.Id, account2.Id);
+        return await Context.FriendshipRequests.FindAsync(accountId1, accountId2);
     }
 
     public IAsyncEnumerable<FriendshipRequest> GetAllRequests(Account account)
@@ -80,7 +94,7 @@ public sealed class FriendshipService : GenericDbService, IFriendshipService
             .AsAsyncEnumerable();
     }
 
-    public async Task<IEnumerable<Message>> GetAllMessages(Account account1, Account account2)
+    public async Task<IEnumerable<Message>> GetAllMessagesAsync(Account account1, Account account2)
     {
         Friendship? friendship1 = await Context.Friendships
             .Include(friendship => friendship.Messages)

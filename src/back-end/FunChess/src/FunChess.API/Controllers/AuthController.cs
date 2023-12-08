@@ -36,10 +36,10 @@ public sealed class AuthController : ControllerBase
         {
             return BadRequest(new ApiResponse(message: ex.Message));
         }
-        if (await _accountService.Exists(account.Email)) return Conflict(new ApiResponse(message: "The email is already registered."));
-        await _accountService.Add(account);
+        if (await _accountService.ExistsAsync(account.Email)) return Conflict(new ApiResponse(message: "The email is already registered."));
+        await _accountService.AddAsync(account);
         
-        return Created("/Api/Account/" + account.Id, SimpleAccount.Parse(account));
+        return Created("/Api/Account/" + account.Id, SimpleAccount.Parse(account, false));
     }
 
     [HttpPost]
@@ -53,7 +53,7 @@ public sealed class AuthController : ControllerBase
         {
             return BadRequest(new ApiResponse(message: ex.Message));
         }
-        Account? account = await _accountService.FindAccount(form.Email!);
+        Account? account = await _accountService.FindAsync(form.Email!);
         
         if (account is null) 
             return NotFound(new ApiResponse(message: "The email was not found."));
@@ -70,7 +70,7 @@ public sealed class AuthController : ControllerBase
     public async Task<IActionResult> Logout()
     {
         ulong id = User.GetAccountId();
-        Account account = (await _accountService.FindAccount(id))!;
+        Account account = (await _accountService.FindAsync(id))!;
         
         Response.Cookies.Delete("access_token");
         return Ok();
@@ -80,9 +80,9 @@ public sealed class AuthController : ControllerBase
     public async Task<IActionResult> Delete()
     {
         ulong id = User.GetAccountId();
-        Account account = (await _accountService.FindAccount(id))!;
+        Account account = (await _accountService.FindAsync(id))!;
         
-        await _accountService.Delete(account);
+        await _accountService.DeleteAsync(account);
         
         Response.Cookies.Delete("access_token");
         return Ok();

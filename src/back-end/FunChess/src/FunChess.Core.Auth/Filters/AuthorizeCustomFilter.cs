@@ -15,7 +15,6 @@ public sealed class AuthorizeCustomFilter : IAsyncAuthorizationFilter
     }
     
     private readonly IAccountService _accountService;
-
     private readonly ITokenService _tokenService;
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
@@ -34,7 +33,7 @@ public sealed class AuthorizeCustomFilter : IAsyncAuthorizationFilter
             return;
         }
         string? id = jwtToken.Claims.FirstOrDefault(x => x.Type == "nameid")?.Value;
-        if (id == null || !ulong.TryParse(id, out ulong ulongId) || !await _accountService.Exists(ulongId))
+        if (id == null || !ulong.TryParse(id, out ulong ulongId) || !await _accountService.ExistsAsync(ulongId))
         {
             context.Result = new UnauthorizedObjectResult(new ApiResponse(message: "The name identifier from 'access_token' is invalid."));
         }

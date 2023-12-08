@@ -54,12 +54,12 @@ public sealed class AccountLoader : LoaderBase
         };
         Account account = new Account(accountForm, _passwordSettings.Pepper);
             
-        if (await _accountService.FindAccount(account.Email) is not null)
+        if (await _accountService.FindAsync(account.Email) is not null)
         {
             _logger.LogError("Unable to add the account with email {0}, because it already exists.", account.Email);
             return;
         }
-        await _accountService.Add(account);
+        await _accountService.AddAsync(account);
         _logger.LogInformation("The account with e-mail {0} was created successfully.", account.Email);
     }
 }
