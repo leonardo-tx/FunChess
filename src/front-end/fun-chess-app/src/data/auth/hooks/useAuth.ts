@@ -20,7 +20,7 @@ export default function useAuth(): {
     const logout = (): void => {
         if (!authenticated) return;
         logoutAccount().then((data) => {
-            if (data.status === 200) setCurrentAccount(null);
+            if (data.status === StatusCodes.OK) setCurrentAccount(null);
         });
     }
 
@@ -31,7 +31,7 @@ export default function useAuth(): {
         if (loginResponse.status !== StatusCodes.OK) return loginResponse.status;
         
         const currentAccountResponse = await getCurrentAccount();
-        if (currentAccountResponse.status === 200) {
+        if (currentAccountResponse.status === StatusCodes.OK) {
             setCurrentAccount(currentAccountResponse.result!);
         }
         return currentAccountResponse.status;

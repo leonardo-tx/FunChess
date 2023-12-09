@@ -6,9 +6,10 @@ import Link from "next/link";
 interface Props {
     icon: JSX.Element;
     href: string;
+    text?: string;
 }
 
-export default function MenuLinkItem({ icon, href }: Props): JSX.Element {
+export default function MenuLinkItem({ icon, href, text }: Props): JSX.Element {
     const pathname = usePathname();
     
     let itemStyles = styles["sidebar-menu-item"];
@@ -18,6 +19,7 @@ export default function MenuLinkItem({ icon, href }: Props): JSX.Element {
         <li className={itemStyles}>
             <Link href={href}>
                 {icon}
+                {text && <p>{text}</p>}
             </Link>
         </li>
     );

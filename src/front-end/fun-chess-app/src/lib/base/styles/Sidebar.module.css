@@ -36,7 +36,7 @@
 .sidebar-menu-item {
     border-radius: 8px;
     transition: background-color 0.1s ease-in;
-    background-color: #23242b;
+    background-color: transparent;
 }
 
 .sidebar-menu-item:hover:not(.active) {
@@ -47,13 +47,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 12px;
     padding: 12px;
+}
+
+.sidebar-menu-item a p {
+    @media only screen and (max-width: 768px) {
+        display: none;
+    }
 }
 
 .sidebar-menu-item button {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 12px;
     padding: 12px;
 }
 
@@ -83,6 +91,10 @@
 
 .sidebar-menu-list-box-closed {
     transform: translateX(-68px);
+}
+
+.sidebar-menu-list-box-closed > li {
+    visibility: hidden;
 }
 
 .sidebar-menu-list-box-closed-mobile {
