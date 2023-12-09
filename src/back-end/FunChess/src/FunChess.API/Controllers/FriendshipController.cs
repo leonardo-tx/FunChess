@@ -1,5 +1,6 @@
 using FunChess.Core.Auth;
 using FunChess.Core.Auth.Attributes;
+using FunChess.Core.Auth.Enums;
 using FunChess.Core.Auth.Extensions;
 using FunChess.Core.Auth.Services;
 using FunChess.Core.Responses;
@@ -31,19 +32,28 @@ public sealed class FriendshipsController : ControllerBase
         await foreach (Friendship friendship in friendships)
         {
             Account friendAccount = (await _accountService.FindAsync(friendship.FriendId))!;
-            friends.Add(SimpleAccount.Parse(friendAccount, true));
+            friends.Add(SimpleAccount.Parse(friendAccount, FriendStatus.Friends));
         }
         return Ok(new ApiResponse(friends));
     }
 
     [HttpGet("Invites")]
-    public async Task<IActionResult> GetInvites()
+    public async Task<IActionResult> GetInvitedAccounts()
     {
         ulong id = User.GetAccountId();
         Account account = (await _accountService.FindAsync(id))!;
 
+        List<SimpleAccount> invitedAccounts = new();
         IAsyncEnumerable<FriendshipRequest> requests = _friendshipService.GetAllRequests(account);
-        return Ok(new ApiResponse(requests));
+        await foreach (FriendshipRequest request in requests)
+        {
+            Account invitedAccount = (await _accountService.FindAsync(request.FriendId))!;
+            FriendStatus status = request.RequestType == FriendRequestType.Received
+                ? FriendStatus.Received
+                : FriendStatus.Delivered;
+            invitedAccounts.Add(SimpleAccount.Parse(invitedAccount, status));
+        }
+        return Ok(new ApiResponse(invitedAccounts));
     }
 
     [HttpPost("Invite/{id}")]
@@ -84,19 +94,32 @@ public sealed class FriendshipsController : ControllerBase
         {
             return Ok();
         }
-        return BadRequest(new ApiResponse(message: "The invitation does not exist."));
+        return BadRequest(new ApiResponse(message: "The invitation does not exist or the current account is the friend request sender."));
     }
     
     [HttpPost("Decline/{id}")]
     public async Task<IActionResult> Decline(ulong id)
     {
         ulong currentId = User.GetAccountId();
-        bool result = await _friendshipService.AcceptInviteAsync(id, currentId);
+        bool result = await _friendshipService.DeclineInviteAsync(id, currentId);
 
         if (result)
         {
             return Ok();
         }
         return BadRequest(new ApiResponse(message: "The invitation does not exist."));
+    }
+
+    [HttpPost("Unfriend/{id}")]
+    public async Task<IActionResult> Unfriend(ulong id)
+    {
+        ulong currentId = User.GetAccountId();
+        bool result = await _friendshipService.RemoveAsync(currentId, id);
+
+        if (result)
+        {
+            return Ok();
+        }
+        return BadRequest(new ApiResponse(message: "The two accounts are not friends."));
     }
 }

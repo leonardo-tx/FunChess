@@ -26,10 +26,9 @@ public sealed class FriendshipService : GenericDbService, IFriendshipService
     public async Task<bool> AcceptInviteAsync(ulong senderId, ulong receiverId)
     {
         FriendshipRequest? senderRequest = await Context.FriendshipRequests.FindAsync(senderId, receiverId);
-        if (senderRequest is null) return false;
+        if (senderRequest is null || senderRequest.RequestType == FriendRequestType.Received) return false;
 
-        FriendshipRequest? receiverRequest = await Context.FriendshipRequests.FindAsync(receiverId, senderId);
-        if (receiverRequest is null) return false;
+        FriendshipRequest receiverRequest = (await Context.FriendshipRequests.FindAsync(receiverId, senderId))!;
 
         (Friendship sender, Friendship receiver) = Friendship.GetFriendships(senderRequest, receiverRequest);
         Context.FriendshipRequests.RemoveRange(senderRequest, receiverRequest);
@@ -54,20 +53,25 @@ public sealed class FriendshipService : GenericDbService, IFriendshipService
         return true;
     }
 
-    public async Task RemoveAsync(Account account1, Account account2)
+    public async Task<bool> RemoveAsync(ulong accountId1, ulong accountId2)
     {
-        Friendship? friendshipRelation1 = await Context.Friendships.FindAsync(account1.Id, account2.Id);
+        bool removed = false;
+        Friendship? friendshipRelation1 = await Context.Friendships.FindAsync(accountId1, accountId2);
         if (friendshipRelation1 is not null)
         {
             Context.Friendships.Remove(friendshipRelation1);
+            removed = true;
         }
         
-        Friendship? friendshipRelation2 = await Context.Friendships.FindAsync(account2.Id, account1.Id);
+        Friendship? friendshipRelation2 = await Context.Friendships.FindAsync(accountId2, accountId1);
         if (friendshipRelation2 is not null)
         {
             Context.Friendships.Remove(friendshipRelation2);
+            removed = true;
         }
-        await Context.SaveChangesAsync();
+        
+        if (removed) await Context.SaveChangesAsync();
+        return removed;
     }
 
     public async Task<Friendship?> FindAsync(ulong accountId1, ulong accountId2)

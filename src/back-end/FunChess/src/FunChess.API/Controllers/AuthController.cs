@@ -1,5 +1,6 @@
 using FunChess.Core.Auth;
 using FunChess.Core.Auth.Attributes;
+using FunChess.Core.Auth.Enums;
 using FunChess.Core.Auth.Extensions;
 using FunChess.Core.Auth.Forms;
 using FunChess.Core.Auth.Services;
@@ -39,7 +40,7 @@ public sealed class AuthController : ControllerBase
         if (await _accountService.ExistsAsync(account.Email)) return Conflict(new ApiResponse(message: "The email is already registered."));
         await _accountService.AddAsync(account);
         
-        return Created("/Api/Account/" + account.Id, SimpleAccount.Parse(account, false));
+        return Created("/Api/Account/" + account.Id, SimpleAccount.Parse(account, FriendStatus.None));
     }
 
     [HttpPost]

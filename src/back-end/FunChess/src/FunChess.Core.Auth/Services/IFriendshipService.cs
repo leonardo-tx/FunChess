@@ -8,7 +8,7 @@ public interface IFriendshipService
 
     public Task<bool> DeclineInviteAsync(ulong senderId, ulong receiverId);
 
-    public Task RemoveAsync(Account account1, Account account2);
+    public Task<bool> RemoveAsync(ulong accountId1, ulong accountId2);
 
     public Task<Friendship?> FindAsync(ulong accountId1, ulong accountId2);
 
