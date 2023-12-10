@@ -13,7 +13,7 @@
 
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\FunChess.Core.Auth\FunChess.Core.Auth.csproj" />
+      <ProjectReference Include="..\..\src\FunChess.Core.Client\FunChess.Core.Client.csproj" />
       <ProjectReference Include="..\..\src\FunChess.Core.Chess\FunChess.Core.Chess.csproj" />
     </ItemGroup>
 

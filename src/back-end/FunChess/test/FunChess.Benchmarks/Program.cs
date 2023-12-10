@@ -1,10 +1,10 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
-using FunChess.Core.Auth;
-using FunChess.Core.Auth.Forms;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Enums;
 using FunChess.Core.Chess.Structs;
+using FunChess.Core.Client;
+using FunChess.Core.Client.Forms;
 
 namespace FunChess.Benchmarks;
 

@@ -1,8 +1,9 @@
 using System.Security.Claims;
-using FunChess.Core.Auth.Attributes;
+using FunChess.Core.Client.Attributes;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Services;
 using FunChess.Core.Chess.Structs;
+using FunChess.DAL.Hub;
 using Microsoft.AspNetCore.SignalR;
 
 namespace FunChess.API.Hubs;
@@ -16,6 +17,7 @@ public sealed class MatchHub : Hub
     }
 
     private readonly IQueueService _queueService;
+    private readonly ConnectionService _connectionService = ConnectionService.GetInstance<MatchHub>();
 
     public override async Task OnConnectedAsync()
     {
@@ -25,13 +27,13 @@ public sealed class MatchHub : Hub
             Context.Abort();
             return;
         }
-        _queueService.Connections.Add(Context.ConnectionId);
+        _connectionService.Add(Context.ConnectionId);
         Match? match = _queueService.FindAccountMatch(id);
 
         if (match is null) return;
         Player player = match.GetPlayerById(id);
         
-        if (_queueService.Connections.Exists(player.ConnectionId))
+        if (_connectionService.Exists(player.ConnectionId))
         {
             Context.Abort();
             return;
@@ -43,7 +45,7 @@ public sealed class MatchHub : Hub
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        _queueService.Connections.Remove(Context.ConnectionId);
+        _connectionService.Remove(Context.ConnectionId);
         return Task.CompletedTask;
     }
 

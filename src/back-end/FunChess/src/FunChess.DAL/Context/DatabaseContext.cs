@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using FunChess.Core.Auth;
+using FunChess.Core.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
@@ -13,10 +13,9 @@ public class DatabaseContext : DbContext
     }
 
     internal DbSet<Account> Accounts { get; set; } = null!;
-
     internal DbSet<FriendshipRequest> FriendshipRequests { get; set; } = null!;
-
     internal DbSet<Friendship> Friendships { get; set; } = null!;
+    internal DbSet<Message> Messages { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder builder)
     {

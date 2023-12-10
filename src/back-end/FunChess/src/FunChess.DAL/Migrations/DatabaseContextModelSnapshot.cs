@@ -22,7 +22,7 @@ namespace FunChess.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FunChess.Core.Auth.Account", b =>
+            modelBuilder.Entity("FunChess.Core.Client.Account", b =>
                 {
                     b.Property<decimal>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,7 +54,7 @@ namespace FunChess.DAL.Migrations
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("FunChess.Core.Auth.Friendship", b =>
+            modelBuilder.Entity("FunChess.Core.Client.Friendship", b =>
                 {
                     b.Property<decimal>("AccountId")
                         .HasColumnType("decimal(20,0)");
@@ -69,7 +69,7 @@ namespace FunChess.DAL.Migrations
                     b.ToTable("Friendships");
                 });
 
-            modelBuilder.Entity("FunChess.Core.Auth.FriendshipRequest", b =>
+            modelBuilder.Entity("FunChess.Core.Client.FriendshipRequest", b =>
                 {
                     b.Property<decimal>("AccountId")
                         .HasColumnType("decimal(20,0)");
@@ -87,7 +87,7 @@ namespace FunChess.DAL.Migrations
                     b.ToTable("FriendshipRequests");
                 });
 
-            modelBuilder.Entity("FunChess.Core.Auth.Message", b =>
+            modelBuilder.Entity("FunChess.Core.Client.Message", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,18 +111,18 @@ namespace FunChess.DAL.Migrations
 
                     b.HasIndex("FriendshipAccountId", "FriendshipFriendId");
 
-                    b.ToTable("Message");
+                    b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("FunChess.Core.Auth.Friendship", b =>
+            modelBuilder.Entity("FunChess.Core.Client.Friendship", b =>
                 {
-                    b.HasOne("FunChess.Core.Auth.Account", "Account")
+                    b.HasOne("FunChess.Core.Client.Account", "Account")
                         .WithMany("Friendships")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FunChess.Core.Auth.Account", "Friend")
+                    b.HasOne("FunChess.Core.Client.Account", "Friend")
                         .WithMany()
                         .HasForeignKey("FriendId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -133,15 +133,15 @@ namespace FunChess.DAL.Migrations
                     b.Navigation("Friend");
                 });
 
-            modelBuilder.Entity("FunChess.Core.Auth.FriendshipRequest", b =>
+            modelBuilder.Entity("FunChess.Core.Client.FriendshipRequest", b =>
                 {
-                    b.HasOne("FunChess.Core.Auth.Account", "Account")
+                    b.HasOne("FunChess.Core.Client.Account", "Account")
                         .WithMany("FriendshipRequests")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FunChess.Core.Auth.Account", "Friend")
+                    b.HasOne("FunChess.Core.Client.Account", "Friend")
                         .WithMany()
                         .HasForeignKey("FriendId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -152,9 +152,9 @@ namespace FunChess.DAL.Migrations
                     b.Navigation("Friend");
                 });
 
-            modelBuilder.Entity("FunChess.Core.Auth.Message", b =>
+            modelBuilder.Entity("FunChess.Core.Client.Message", b =>
                 {
-                    b.HasOne("FunChess.Core.Auth.Friendship", "Friendship")
+                    b.HasOne("FunChess.Core.Client.Friendship", "Friendship")
                         .WithMany("Messages")
                         .HasForeignKey("FriendshipAccountId", "FriendshipFriendId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -163,14 +163,14 @@ namespace FunChess.DAL.Migrations
                     b.Navigation("Friendship");
                 });
 
-            modelBuilder.Entity("FunChess.Core.Auth.Account", b =>
+            modelBuilder.Entity("FunChess.Core.Client.Account", b =>
                 {
                     b.Navigation("FriendshipRequests");
 
                     b.Navigation("Friendships");
                 });
 
-            modelBuilder.Entity("FunChess.Core.Auth.Friendship", b =>
+            modelBuilder.Entity("FunChess.Core.Client.Friendship", b =>
                 {
                     b.Navigation("Messages");
                 });

@@ -1,10 +1,10 @@
-using FunChess.Core.Auth;
-using FunChess.Core.Auth.Attributes;
-using FunChess.Core.Auth.Enums;
-using FunChess.Core.Auth.Extensions;
-using FunChess.Core.Auth.Forms;
-using FunChess.Core.Auth.Services;
-using FunChess.Core.Auth.Settings;
+using FunChess.Core.Client;
+using FunChess.Core.Client.Attributes;
+using FunChess.Core.Client.Enums;
+using FunChess.Core.Client.Extensions;
+using FunChess.Core.Client.Forms;
+using FunChess.Core.Client.Services;
+using FunChess.Core.Client.Settings;
 using FunChess.Core.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;

@@ -22,7 +22,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\FunChess.Core.Auth\FunChess.Core.Auth.csproj" />
+    <ProjectReference Include="..\FunChess.Core.Client\FunChess.Core.Client.csproj" />
     <ProjectReference Include="..\FunChess.Core.Chess\FunChess.Core.Chess.csproj" />
   </ItemGroup>
 

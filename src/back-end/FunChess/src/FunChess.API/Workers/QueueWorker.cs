@@ -2,6 +2,7 @@ using FunChess.API.Hubs;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Enums;
 using FunChess.Core.Chess.Services;
+using FunChess.DAL.Hub;
 using Microsoft.AspNetCore.SignalR;
 
 namespace FunChess.API.Workers;
@@ -16,6 +17,7 @@ public sealed class QueueWorker : BackgroundService
 
     private readonly IHubContext<MatchHub> _matchHub;
     private readonly IQueueService _queueService;
+    private readonly ConnectionService _connectionService = ConnectionService.GetInstance<MatchHub>();
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -49,7 +51,7 @@ public sealed class QueueWorker : BackgroundService
             while (_queueService.QueueCount == 0) await Task.Delay(500, stoppingToken);
             
             QueueAccount queueAccount = _queueService.Dequeue();
-            if (!_queueService.Connections.Exists(queueAccount.ConnectionId))
+            if (!_connectionService.Exists(queueAccount.ConnectionId))
             {
                 _queueService.RemoveAccountWithoutMatch(queueAccount.AccountId);
                 continue;

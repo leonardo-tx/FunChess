@@ -1,7 +1,7 @@
-using FunChess.Core.Auth.Attributes;
-using FunChess.Core.Auth.Extensions;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Services;
+using FunChess.Core.Client.Attributes;
+using FunChess.Core.Client.Extensions;
 using FunChess.Core.Responses;
 using Microsoft.AspNetCore.Mvc;
 

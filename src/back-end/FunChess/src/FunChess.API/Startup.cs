@@ -1,13 +1,14 @@
 using System.Text;
 using FunChess.API.Hubs;
 using FunChess.API.Workers;
-using FunChess.Core.Auth.Services;
-using FunChess.Core.Auth.Settings;
+using FunChess.Core.Client.Services;
+using FunChess.Core.Client.Settings;
 using FunChess.Core.Chess.Services;
-using FunChess.Core.Loader.Extensions;
-using FunChess.DAL.Auth;
+using FunChess.API.Extensions;
 using FunChess.DAL.Chess;
+using FunChess.DAL.Client;
 using FunChess.DAL.Context;
+using FunChess.DAL.Hub;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -66,11 +67,13 @@ internal sealed class Startup
                 }
             };
         });
-
+        
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IFriendshipService, FriendshipService>();
+        services.AddScoped<IMessageService, MessageService>();
         services.AddSingleton<IQueueService, QueueService>();
+        services.AddSingletonMappers();
         services.AddHostedService<QueueWorker>();
         services.AddHostedService<MatchWorker>();
     }
@@ -111,6 +114,7 @@ internal sealed class Startup
         });
         app.MapControllers();
         app.MapHub<MatchHub>("Hub/Queue");
+        app.MapHub<FriendChatHub>("Hub/FriendChat");
         
         app.RunLoaders();
         app.Run();

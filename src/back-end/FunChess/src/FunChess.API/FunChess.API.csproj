@@ -10,16 +10,19 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.11" />
+    <PackageReference Include="Riok.Mapperly" Version="3.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FunChess.Core.Auth\FunChess.Core.Auth.csproj" />
+    <ProjectReference Include="..\FunChess.Core.Client\FunChess.Core.Client.csproj" />
     <ProjectReference Include="..\FunChess.Core.Chess\FunChess.Core.Chess.csproj" />
-    <ProjectReference Include="..\FunChess.Core.Loader\FunChess.Core.Loader.csproj" />
     <ProjectReference Include="..\FunChess.Core.Responses\FunChess.Core.Responses.csproj" />
     <ProjectReference Include="..\FunChess.DAL\FunChess.DAL.csproj" />
+
+
   </ItemGroup>
+
 
 
 

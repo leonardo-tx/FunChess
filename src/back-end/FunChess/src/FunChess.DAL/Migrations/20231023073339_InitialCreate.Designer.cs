@@ -25,7 +25,7 @@ namespace FunChess.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FunChess.Core.Auth.Account", b =>
+            modelBuilder.Entity("FunChess.Core.Client.Account", b =>
                 {
                     b.Property<decimal>("Id")
                         .ValueGeneratedOnAdd()

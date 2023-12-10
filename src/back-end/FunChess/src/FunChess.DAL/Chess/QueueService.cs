@@ -1,8 +1,7 @@
 using System.Collections.Concurrent;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Services;
-using FunChess.Core.Hub.Services;
-using FunChess.DAL.Hub;
+using FunChess.DAL.Generic;
 
 namespace FunChess.DAL.Chess;
 
@@ -12,8 +11,6 @@ public sealed class QueueService : IQueueService
     private readonly ConcurrentDictionary<ulong, Match?> _accountsOnMatch = new();
 
     public int QueueCount => _queue.Count;
-
-    public IConnectionService Connections { get; } = new ConnectionService();
 
     public bool Enqueue(ulong accountId, string connectionId)
     {

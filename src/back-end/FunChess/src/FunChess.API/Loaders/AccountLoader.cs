@@ -1,8 +1,7 @@
-using FunChess.Core.Auth;
-using FunChess.Core.Auth.Forms;
-using FunChess.Core.Auth.Services;
-using FunChess.Core.Auth.Settings;
-using FunChess.Core.Loader;
+using FunChess.Core.Client;
+using FunChess.Core.Client.Forms;
+using FunChess.Core.Client.Services;
+using FunChess.Core.Client.Settings;
 using Microsoft.Extensions.Options;
 
 namespace FunChess.API.Loaders;
