@@ -10,7 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { Dispatch, JSX, SetStateAction, useEffect, useState } from "react";
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, HStack, Text, VStack } from "@chakra-ui/react";
 import useAuth from "@/data/auth/hooks/useAuth";
-import FriendStatus from "@/core/friends/FriendStatus";
+import FriendStatus from "@/core/friends/models/FriendStatus";
 import { StatusCodes } from "http-status-codes";
 import { IoIosMore } from "react-icons/io";
 import { FaUser } from "react-icons/fa6";

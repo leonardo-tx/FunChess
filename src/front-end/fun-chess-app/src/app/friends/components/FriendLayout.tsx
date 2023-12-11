@@ -1,7 +1,7 @@
 import MenuLinkItem from "@/lib/base/components/MenuLinkItem";
 import styled from "@emotion/styled";
 import { JSX, ReactNode } from "react";
-import { FaUserGroup } from "react-icons/fa6";
+import { FaMessage, FaUserGroup } from "react-icons/fa6";
 import { IoMail } from "react-icons/io5";
 
 interface Props {
@@ -15,6 +15,7 @@ export default function FriendLayout({ children }: Props): JSX.Element {
                 <ul>
                     <MenuLinkItem icon={<FaUserGroup />} href="/friends" text="Amigos" />
                     <MenuLinkItem icon={<IoMail />} href="/friends/invites" text="Pedidos pendentes" />
+                    <MenuLinkItem icon={<FaMessage />} href="/friends/chat" text="Chat" />
                 </ul>       
             </FriendNav>
             <Content>
@@ -29,6 +30,7 @@ const Container = styled.div`
     grid-template-columns: 280px 1fr;
     gap: 30px;
     padding: 10px;
+    height: 100%;
 
     @media only screen and (max-width: 768px) {
         grid-template-columns: auto;

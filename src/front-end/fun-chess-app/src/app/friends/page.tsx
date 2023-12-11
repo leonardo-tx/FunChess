@@ -25,7 +25,7 @@ export default function Friends(): JSX.Element {
             <Text>Amigos ({friends.length})</Text>
             <FriendsList>
                 {friends.map(((friend, i) => (
-                    <FriendBox href={`/profile?id=${friend.id}`} key={i}>
+                    <FriendBox href={`/profile?id=${friend.id}`} key={friend.id}>
                         <Image src={defaultIcon} alt="Ícone de perfil" />
                         <Text>{friend.username}</Text>
                     </FriendBox>

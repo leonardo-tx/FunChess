@@ -9,7 +9,7 @@ import defaultIcon from "@/lib/assets/user/default.jpg";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
-import FriendStatus from "@/core/friends/FriendStatus";
+import FriendStatus from "@/core/friends/models/FriendStatus";
 import { StatusCodes } from "http-status-codes";
 
 export default function FriendsInvites(): JSX.Element {
@@ -35,7 +35,7 @@ export default function FriendsInvites(): JSX.Element {
                 <Text>Convites recebidos ({receivedInvites.length})</Text>
                 <VStack alignItems="stretch">
                     {receivedInvites.map(((invite, i) => (
-                        <InviteBox key={i}>
+                        <InviteBox key={invite.id}>
                             <ProfileLink href={`/profile?id=${invite.id}`}>
                                 <Image src={defaultIcon} alt="Ícone de perfil" />
                                 <Text>{invite.username}</Text>
@@ -68,7 +68,7 @@ export default function FriendsInvites(): JSX.Element {
                 <Text>Convites enviados ({deliveredInvites.length})</Text>
                 <VStack alignItems="stretch">
                     {deliveredInvites.map(((invite, i) => (
-                        <InviteBox key={i}>
+                        <InviteBox key={invite.id}>
                             <ProfileLink href={`/profile?id=${invite.id}`}>
                                 <Image src={defaultIcon} alt="Ícone de perfil" />
                                 <Text>{invite.username}</Text>

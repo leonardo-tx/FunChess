@@ -9,7 +9,7 @@ interface Props {
     text?: string;
 }
 
-export default function MenuLinkItem({ icon, href, text }: Props): JSX.Element {
+export default function MenuLinkItem({ icon, href, text, ...attributes }: Props): JSX.Element {
     const pathname = usePathname();
     
     let itemStyles = styles["sidebar-menu-item"];
@@ -17,7 +17,7 @@ export default function MenuLinkItem({ icon, href, text }: Props): JSX.Element {
 
     return (
         <li className={itemStyles}>
-            <Link href={href}>
+            <Link href={href} {...attributes}>
                 {icon}
                 {text && <p>{text}</p>}
             </Link>

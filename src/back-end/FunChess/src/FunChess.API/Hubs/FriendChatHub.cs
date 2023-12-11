@@ -54,30 +54,31 @@ public sealed class FriendChatHub : Hub
     }
 
     [HubMethodName("SendMessage")]
-    public async Task<bool> SendMessage(MessageDtoInput messageInput)
+    public async Task<MessageDtoOutput?> SendMessageMethod(MessageDtoInput messageInput)
     {
+        Console.WriteLine("Teste");
         ulong id = Context.User!.GetAccountId();
         if (_friendChatService.FindConnectionId(id) != Context.ConnectionId)
         {
             Context.Abort();
-            return false;
+            return null;
         }
         
         try
         {
             MessageDtoOutput? generatedMessage = await _messageService.SendAsync(id, messageInput);
-            if (generatedMessage is null) return false;
+            if (generatedMessage is null) return null;
 
             string? connectionId = _friendChatService.FindConnectionId(messageInput.FriendId);
             if (connectionId is not null)
             {
                 await Clients.Client(connectionId).SendAsync("MessageReceived", generatedMessage);
             }
-            return true;
+            return generatedMessage;
         }
         catch (ArgumentException)
         {
-            return false;
+            return null;
         }
     }
 }
