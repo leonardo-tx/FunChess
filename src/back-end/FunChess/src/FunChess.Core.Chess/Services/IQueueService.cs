@@ -1,3 +1,5 @@
+using FunChess.Core.Hub;
+
 namespace FunChess.Core.Chess.Services;
 
 public interface IQueueService
@@ -6,7 +8,7 @@ public interface IQueueService
     
     public bool Enqueue(ulong accountId, string connectionId);
     
-    public QueueAccount Dequeue();
+    public AccountConnection Dequeue();
 
     public void RegisterMatchToAccounts(Match match);
 

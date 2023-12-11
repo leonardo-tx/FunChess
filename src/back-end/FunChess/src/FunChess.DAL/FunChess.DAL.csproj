@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FunChess.Core.Client\FunChess.Core.Client.csproj" />
     <ProjectReference Include="..\FunChess.Core.Chess\FunChess.Core.Chess.csproj" />
+    <ProjectReference Include="..\FunChess.Core.Hub\FunChess.Core.Hub.csproj" />
   </ItemGroup>
 
 

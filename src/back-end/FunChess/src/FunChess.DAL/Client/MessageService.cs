@@ -16,17 +16,17 @@ public sealed class MessageService : GenericDbService, IMessageService
 
     private readonly MessageMapper _messageMapper;
 
-    public async Task<bool> SendAsync(ulong senderId, MessageDtoInput input)
+    public async Task<MessageDtoOutput?> SendAsync(ulong senderId, MessageDtoInput input)
     {
         Friendship? friendship = await Context.Friendships.FindAsync(senderId, input.FriendId);
-        if (friendship is null) return false;
+        if (friendship is null) return null;
         
         Message generatedMessage = new(friendship, input.Text);
         
         await Context.Messages.AddAsync(generatedMessage);
         await Context.SaveChangesAsync();
 
-        return true;
+        return _messageMapper.ToOutput(generatedMessage);
     }
 
     public async Task<IEnumerable<MessageDtoOutput>> GetAllAsync(ulong accountId, ulong friendId)

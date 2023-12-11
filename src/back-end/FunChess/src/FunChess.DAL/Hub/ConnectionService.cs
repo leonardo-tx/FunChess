@@ -1,8 +1,9 @@
 using System.Collections.Concurrent;
+using FunChess.Core.Hub.Services;
 
 namespace FunChess.DAL.Hub;
 
-public sealed class ConnectionService
+public sealed class ConnectionService : IConnectionService
 {
     private static readonly ConcurrentDictionary<Type, ConnectionService> Instances = new(); 
     private readonly HashSet<string> _connectedIds = new();
@@ -31,7 +32,7 @@ public sealed class ConnectionService
         }
     }
 
-    public static ConnectionService GetInstance<T>() where T : Microsoft.AspNetCore.SignalR.Hub
+    public static IConnectionService GetInstance<T>() where T : Microsoft.AspNetCore.SignalR.Hub
     {
         Type type = typeof(T);
         if (Instances.TryGetValue(type, out ConnectionService? instance)) return instance;

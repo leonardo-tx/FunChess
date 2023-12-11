@@ -3,6 +3,8 @@ using FunChess.Core.Client.Attributes;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Services;
 using FunChess.Core.Chess.Structs;
+using FunChess.Core.Client.Extensions;
+using FunChess.Core.Hub.Services;
 using FunChess.DAL.Hub;
 using Microsoft.AspNetCore.SignalR;
 
@@ -17,7 +19,7 @@ public sealed class MatchHub : Hub
     }
 
     private readonly IQueueService _queueService;
-    private readonly ConnectionService _connectionService = ConnectionService.GetInstance<MatchHub>();
+    private readonly IConnectionService _connectionService = ConnectionService.GetInstance<MatchHub>();
 
     public override async Task OnConnectedAsync()
     {
@@ -52,24 +54,14 @@ public sealed class MatchHub : Hub
     [HubMethodName("Enqueue")]
     public Task<bool> EnqueueMethod()
     {
-        string? textId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (textId is null || !ulong.TryParse(textId, out ulong id))
-        {
-            Context.Abort();
-            return Task.FromResult(false);
-        }
+        ulong id = Context.User!.GetAccountId();
         return Task.FromResult(_queueService.Enqueue(id, Context.ConnectionId));
     }
 
     [HubMethodName("Move")]
     public async Task<bool> MoveMethod(string moveText)
     {
-        string? textId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (textId is null || !ulong.TryParse(textId, out ulong id))
-        {
-            Context.Abort();
-            return false;
-        }
+        ulong id = Context.User!.GetAccountId();
         if (!Move.TryParse(moveText, out Move? move)) return false;
         
         Match? match = _queueService.FindAccountMatch(id);

@@ -73,6 +73,7 @@ internal sealed class Startup
         services.AddScoped<IFriendshipService, FriendshipService>();
         services.AddScoped<IMessageService, MessageService>();
         services.AddSingleton<IQueueService, QueueService>();
+        services.AddSingleton<IFriendChatService, FriendChatService>();
         services.AddSingletonMappers();
         services.AddHostedService<QueueWorker>();
         services.AddHostedService<MatchWorker>();

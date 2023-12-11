@@ -1,8 +1,8 @@
-namespace FunChess.Core.Chess;
+namespace FunChess.Core.Hub;
 
-public sealed class QueueAccount
+public sealed class AccountConnection
 {
-    public QueueAccount(ulong accountId, string connectionId)
+    public AccountConnection(ulong accountId, string connectionId)
     {
         AccountId = accountId;
         ConnectionId = connectionId;

@@ -1,13 +1,13 @@
 using System.Collections.Concurrent;
 using FunChess.Core.Chess;
 using FunChess.Core.Chess.Services;
-using FunChess.DAL.Generic;
+using FunChess.Core.Hub;
 
 namespace FunChess.DAL.Chess;
 
 public sealed class QueueService : IQueueService
 {
-    private readonly ConcurrentQueue<QueueAccount> _queue = new();
+    private readonly ConcurrentQueue<AccountConnection> _queue = new();
     private readonly ConcurrentDictionary<ulong, Match?> _accountsOnMatch = new();
 
     public int QueueCount => _queue.Count;
@@ -16,16 +16,16 @@ public sealed class QueueService : IQueueService
     {
         if (!_accountsOnMatch.TryAdd(accountId, null)) return false;
         
-        _queue.Enqueue(new QueueAccount(accountId, connectionId));
+        _queue.Enqueue(new AccountConnection(accountId, connectionId));
         return true;
     }
 
-    public QueueAccount Dequeue()
+    public AccountConnection Dequeue()
     {
         if (_queue.IsEmpty) throw new Exception("Cannot dequeue, queue is empty.");
-        _ = _queue.TryDequeue(out QueueAccount? queueUser);
+        _ = _queue.TryDequeue(out AccountConnection? queueAccount);
 
-        return queueUser!;
+        return queueAccount!;
     }
 
     public void RegisterMatchToAccounts(Match match)

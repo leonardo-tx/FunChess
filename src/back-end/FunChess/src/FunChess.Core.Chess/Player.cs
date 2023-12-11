@@ -1,10 +1,11 @@
 using FunChess.Core.Chess.Enums;
+using FunChess.Core.Hub;
 
 namespace FunChess.Core.Chess;
 
 public sealed class Player
 {
-    public Player(QueueAccount queueAccount, Team team)
+    public Player(AccountConnection queueAccount, Team team)
     {
         AccountId = queueAccount.AccountId;
         ConnectionId = queueAccount.ConnectionId;
