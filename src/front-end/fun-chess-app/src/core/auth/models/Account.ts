@@ -1,4 +1,4 @@
-import FriendStatus from "@/core/friends/FriendStatus";
+import FriendStatus from "@/core/friends/models/FriendStatus";
 
 export default interface Account {
     id: number;

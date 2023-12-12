@@ -9,6 +9,7 @@ import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
 import LoginForm from "@/core/auth/forms/LoginForm";
 import useAuth from "@/data/auth/hooks/useAuth";
 import { StatusCodes } from "http-status-codes";
+import useTitle from "@/lib/shared/hooks/useTitle";
 
 export default function Login(): JSX.Element {
     const { login } = useAuth();
@@ -16,7 +17,8 @@ export default function Login(): JSX.Element {
     const { register, formState: { errors }, handleSubmit } = useForm<LoginForm>();
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-
+    
+    useTitle("Login - FunChess");
     const messageErrors = getFrontMessageErrors(errors);
 
     const onSubmit: SubmitHandler<LoginForm> = async (data: LoginForm): Promise<void> => {

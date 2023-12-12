@@ -6,8 +6,11 @@ import { SiReact, SiCsharp } from "react-icons/si";
 import { BiLogoTypescript } from "react-icons/bi";
 import styles from "./styles/About.module.css";
 import { Heading, Text } from "@chakra-ui/react";
+import useTitle from "@/lib/shared/hooks/useTitle";
 
 export default function About(): JSX.Element {
+    useTitle("Sobre - FunChess");
+
     return (
         <section className={styles["about-main"]}>
             <section className={styles["about-section"]}>

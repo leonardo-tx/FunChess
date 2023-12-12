@@ -56,7 +56,6 @@ public sealed class FriendChatHub : Hub
     [HubMethodName("SendMessage")]
     public async Task<MessageDtoOutput?> SendMessageMethod(MessageDtoInput messageInput)
     {
-        Console.WriteLine("Teste");
         ulong id = Context.User!.GetAccountId();
         if (_friendChatService.FindConnectionId(id) != Context.ConnectionId)
         {

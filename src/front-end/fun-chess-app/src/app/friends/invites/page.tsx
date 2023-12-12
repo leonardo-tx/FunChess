@@ -11,11 +11,14 @@ import Image from "next/image";
 import Link from "next/link";
 import FriendStatus from "@/core/friends/models/FriendStatus";
 import { StatusCodes } from "http-status-codes";
+import useTitle from "@/lib/shared/hooks/useTitle";
 
 export default function FriendsInvites(): JSX.Element {
     const [invites, setInvites] = useState<Account[]>([]);
     const [receivedInvites, setReceivedInvites] = useState<Account[]>([]);
     const [deliveredInvites, setDeliveredInvites] = useState<Account[]>([]);
+
+    useTitle("Lista de convites - FunChess");
 
     useEffect(() => {
         const getInvites = async () => {

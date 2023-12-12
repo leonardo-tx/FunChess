@@ -14,6 +14,7 @@ import FriendStatus from "@/core/friends/models/FriendStatus";
 import { StatusCodes } from "http-status-codes";
 import { IoIosMore } from "react-icons/io";
 import { FaUser } from "react-icons/fa6";
+import useTitle from "@/lib/shared/hooks/useTitle";
 
 
 export default function Profile(): JSX.Element {
@@ -22,6 +23,8 @@ export default function Profile(): JSX.Element {
     const [account, setAccount] = useState<Account | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    const [title, setTitle] = useTitle("Perfil - FunChess");
+
     useEffect(() => {
         const id = searchParams?.get("id") ?? null;
         if (id === null) { setIsLoading(false); return; }
@@ -29,6 +32,7 @@ export default function Profile(): JSX.Element {
         const idNumber = parseInt(id);
         if (currentAccount !== null && idNumber === currentAccount.id) {
             setAccount(currentAccount);
+            setTitle("Meu perfil - FunChess")
             setIsLoading(false);
             return;
         }
@@ -39,6 +43,11 @@ export default function Profile(): JSX.Element {
             })
             .finally(() => setIsLoading(false));
     }, [searchParams])
+
+    useEffect(() => {
+        if (account === null) { setTitle("Perfil - FunChess"); return; }
+        setTitle(`Perfil de ${account?.username} - FunChess`);
+    }, [account])
 
     if (isLoading) return <></>
 

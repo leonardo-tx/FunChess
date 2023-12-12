@@ -6,10 +6,13 @@ import { JSX, useEffect, useState } from "react";
 import LocalChessBoard from "../components/LocalChessBoard";
 import useAuth from "@/data/auth/hooks/useAuth";
 import { redirect } from "next/navigation";
+import useTitle from "@/lib/shared/hooks/useTitle";
 
 export default function LocalPlay(): JSX.Element {
     const { authenticated } = useAuth();
     const [board, setBoard] = useState(new Board());
+
+    useTitle("Modo local - FunChess");
 
     useEffect(() => {
         if (!authenticated) redirect("/login");

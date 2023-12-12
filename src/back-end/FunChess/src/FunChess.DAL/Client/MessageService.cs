@@ -4,6 +4,7 @@ using FunChess.Core.Client.Mappers;
 using FunChess.Core.Client.Services;
 using FunChess.DAL.Context;
 using FunChess.DAL.Generic;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FunChess.DAL.Client;
 
@@ -23,10 +24,10 @@ public sealed class MessageService : GenericDbService, IMessageService
         
         Message generatedMessage = new(friendship, input.Text);
         
-        await Context.Messages.AddAsync(generatedMessage);
+        EntityEntry<Message> entityEntry = await Context.Messages.AddAsync(generatedMessage);
         await Context.SaveChangesAsync();
 
-        return _messageMapper.ToOutput(generatedMessage);
+        return _messageMapper.ToOutput(entityEntry.Entity);
     }
 
     public async Task<IEnumerable<MessageDtoOutput>> GetAllAsync(ulong accountId, ulong friendId)

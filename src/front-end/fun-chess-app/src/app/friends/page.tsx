@@ -9,9 +9,12 @@ import defaultIcon from "@/lib/assets/user/default.jpg";
 import { JSX, useEffect, useState } from "react";
 import Link from "next/link";
 import FriendLayout from "./components/FriendLayout";
+import useTitle from "@/lib/shared/hooks/useTitle";
 
 export default function Friends(): JSX.Element {
     const [friends, setFriends] = useState<Account[]>([]);
+
+    useTitle("Lista de amigos - FunChess");
 
     useEffect(() => {
         const getFriends = async () => {

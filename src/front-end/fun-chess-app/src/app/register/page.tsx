@@ -11,6 +11,7 @@ import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
 import RegisterInitialForm from "@/core/auth/forms/RegisterInitialForm";
 import LoginForm from "@/core/auth/forms/LoginForm";
 import { StatusCodes } from "http-status-codes";
+import useTitle from "@/lib/shared/hooks/useTitle";
 
 export default function Register(): JSX.Element {
     const auth = useAuth();
@@ -19,6 +20,7 @@ export default function Register(): JSX.Element {
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    useTitle("Cadastro - FunChess");
     const messageErrors = getFrontMessageErrors(errors);
 
     const onSubmit: SubmitHandler<RegisterInitialForm> = async (data: RegisterInitialForm): Promise<void> => {

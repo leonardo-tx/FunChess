@@ -1,6 +1,8 @@
+import useAuth from "@/data/auth/hooks/useAuth";
 import MenuLinkItem from "@/lib/base/components/MenuLinkItem";
 import styled from "@emotion/styled";
-import { JSX, ReactNode } from "react";
+import { redirect } from "next/navigation";
+import { JSX, ReactNode, useEffect } from "react";
 import { FaMessage, FaUserGroup } from "react-icons/fa6";
 import { IoMail } from "react-icons/io5";
 
@@ -9,6 +11,13 @@ interface Props {
 }
 
 export default function FriendLayout({ children }: Props): JSX.Element {
+    const { authenticated } = useAuth();
+
+    useEffect(() => {
+        if (!authenticated) redirect("/login");
+    }, [authenticated]);
+
+
     return (
         <Container>
             <FriendNav>
@@ -27,10 +36,11 @@ export default function FriendLayout({ children }: Props): JSX.Element {
 
 const Container = styled.div`
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-rows: calc(100vh - 32px - 20px);
+    grid-template-columns: auto 1fr;
     gap: 30px;
     padding: 10px;
-    height: 100%;
+    max-height: calc(100vh - 32px);
 
     @media only screen and (max-width: 768px) {
         grid-template-columns: auto;
@@ -42,6 +52,7 @@ const FriendNav = styled.nav`
     display: flex;
     flex-direction: column;
     padding: 0 20px;
+    max-height: 100%;
 
     & ul {
         display: flex;

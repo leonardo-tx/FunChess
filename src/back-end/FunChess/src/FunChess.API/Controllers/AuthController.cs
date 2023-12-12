@@ -80,6 +80,7 @@ public sealed class AuthController : ControllerBase
     [HttpDelete, AuthorizeCustom]
     public async Task<IActionResult> Delete()
     {
+        return BadRequest("The method was not implemented completely.");
         ulong id = User.GetAccountId();
         Account account = (await _accountService.FindAsync(id))!;
         
