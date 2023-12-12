@@ -6,10 +6,10 @@ An online chess project developed for the college back-end discipline :video_gam
 
 FunChess is developed with C# for the API and Typescript + React + NextJs for the web server.
 
-`Play Page`
+**Play page**
 ![An image of a page with a chess board and match options](images/play-page.png?raw=true)
 
-`Online Chat`
+**Online Chat page**
 ![An image of an online chat](images/online-chat.png?raw=true)
 
 ## Getting Started
