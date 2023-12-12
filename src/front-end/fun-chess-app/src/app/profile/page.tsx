@@ -15,6 +15,7 @@ import { StatusCodes } from "http-status-codes";
 import { IoIosMore } from "react-icons/io";
 import { FaUser } from "react-icons/fa6";
 import useTitle from "@/lib/shared/hooks/useTitle";
+import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
 
 
 export default function Profile(): JSX.Element {
@@ -60,22 +61,24 @@ export default function Profile(): JSX.Element {
     }
 
     return (
-        <Container>
-            <ProfileInfo>
-                <Image src={defaultIcon} alt="Ícone de perfil" />
-                <TextInfo>
-                    <VStack alignItems="stretch">
-                        <Text fontSize="x-large">{account.username}</Text>
-                        <Text fontSize="sm">
-                            Conta criada: {new Date(account.creation).toLocaleDateString(document.documentElement.lang)}
-                        </Text>
-                    </VStack>
-                    <HStack alignItems="flex-start">
-                        {getProfileComplement(account, setAccount)}
-                    </HStack>
-                </TextInfo>
-            </ProfileInfo>
-        </Container>
+        <AuthorizeProvider>
+            <Container>
+                <ProfileInfo>
+                    <Image src={defaultIcon} alt="Ícone de perfil" />
+                    <TextInfo>
+                        <VStack alignItems="stretch">
+                            <Text fontSize="x-large">{account.username}</Text>
+                            <Text fontSize="sm">
+                                Conta criada: {new Date(account.creation).toLocaleDateString(document.documentElement.lang)}
+                            </Text>
+                        </VStack>
+                        <HStack alignItems="flex-start">
+                            {getProfileComplement(account, setAccount)}
+                        </HStack>
+                    </TextInfo>
+                </ProfileInfo>
+            </Container>
+        </AuthorizeProvider>
     );
 }
 

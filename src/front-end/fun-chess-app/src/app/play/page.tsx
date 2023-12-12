@@ -2,25 +2,22 @@
 
 import useAuth from "@/data/auth/hooks/useAuth";
 import styled from "@emotion/styled";
-import { redirect } from "next/navigation";
-import { JSX, useEffect } from "react";
+import { JSX } from "react";
 import DummyChessBoard from "./components/DummyChessBoard";
 import GameSelection from "./components/GameSelection";
 import useTitle from "@/lib/shared/hooks/useTitle";
+import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
 
 export default function Play(): JSX.Element {
-    const { authenticated } = useAuth();
     useTitle("Jogue Xadrez - FunChess");
 
-    useEffect(() => {
-        if (!authenticated) redirect("/login");
-    }, [authenticated]);
-
     return (
-        <Container>
-            <DummyChessBoard />
-            <GameSelection />
-        </Container>
+        <AuthorizeProvider>
+            <Container>
+                <DummyChessBoard />
+                <GameSelection />
+            </Container>
+        </AuthorizeProvider>
     );
 }
 

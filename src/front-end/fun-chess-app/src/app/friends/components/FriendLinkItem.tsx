@@ -1,6 +1,8 @@
+"use client";
+
 import { JSX } from "react";
+import styles from "../styles/Friends.module.css";
 import { usePathname } from "next/navigation";
-import styles from "../styles/Sidebar.module.css";
 import Link from "next/link";
 
 interface Props {
@@ -9,11 +11,11 @@ interface Props {
     text?: string;
 }
 
-export default function MenuLinkItem({ icon, href, text }: Props): JSX.Element {
+export default function FriendLinkItem({ icon, href, text }: Props): JSX.Element {
     const pathname = usePathname();
     
-    let itemStyles = styles["sidebar-menu-item"];
-    if (pathname === href) itemStyles += ` ${styles["active"]}`;
+    let itemStyles = styles["link-item"];
+    if (pathname === href) itemStyles += ` ${styles["link-item-active"]}`;
 
     return (
         <li className={itemStyles}>

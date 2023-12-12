@@ -33,7 +33,7 @@ export default function FriendsInvites(): JSX.Element {
     }, [invites])
     
     return (
-        <FriendLayout>
+        <>
             {receivedInvites.length > 0 && <>
                 <Text>Convites recebidos ({receivedInvites.length})</Text>
                 <VStack alignItems="stretch">
@@ -91,7 +91,7 @@ export default function FriendsInvites(): JSX.Element {
                     )))}
                 </VStack>
             </>}
-        </FriendLayout>
+        </>
     );
 }
 

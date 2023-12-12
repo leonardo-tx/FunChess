@@ -24,7 +24,7 @@ export default function Friends(): JSX.Element {
     }, [])
 
     return (
-        <FriendLayout>
+        <>
             <Text>Amigos ({friends.length})</Text>
             <FriendsList>
                 {friends.map(((friend, i) => (
@@ -34,7 +34,7 @@ export default function Friends(): JSX.Element {
                     </FriendBox>
                 )))}
             </FriendsList>    
-        </FriendLayout>
+        </>
     );
 }
 

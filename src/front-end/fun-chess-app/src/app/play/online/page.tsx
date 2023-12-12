@@ -14,9 +14,9 @@ import OnlineChessBoard from "./components/OnlineChessBoard";
 import OnlineMatchSelection from "./components/OnlineMatchSelection";
 import useTitle from "@/lib/shared/hooks/useTitle";
 import MatchState from "@/core/chess/enums/MatchState";
+import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
 
 export default function PlayOnline(): JSX.Element {
-    const { authenticated } = useAuth();
     const [board, setBoard] = useState(new Board());
     const [matchInfo, setMatchInfo] = useState<Match | null>(null);
     const [connection, setConnection] = useState<HubConnection | null>(null);
@@ -26,12 +26,6 @@ export default function PlayOnline(): JSX.Element {
     const [matchFinished, setMatchFinised] = useState(false);
 
     useTitle("Modo Online - FunChess");
-
-    useEffect(() => {
-        if (!authenticated) redirect("/login");
-
-        return () => { connection !== null && connection.stop(); }
-    }, [authenticated, connection]);
 
     useEffect(() => {
         const connection = getHubConnection();
@@ -67,6 +61,7 @@ export default function PlayOnline(): JSX.Element {
             });
             setPageLoaded(true);
         });
+        return () => { connection.stop(); }
     }, []);
 
     if (!pageLoaded) return <></>;
@@ -85,29 +80,31 @@ export default function PlayOnline(): JSX.Element {
     };
 
     return (
-        <Container $onMatch={matchInfo !== null}>
-            <MatchBoardContainer>
-                <PlayerBanner 
-                    matchInfo={matchInfo}
-                    updateTime={!matchFinished && (team === Team.White ? board.turn === Team.Black : board.turn === Team.White)}
-                    team={team === Team.White ? Team.Black : Team.White} 
-                />
-                <OnlineChessBoard 
-                    onMatch={matchInfo !== null} 
-                    updateMatchInfo={setMatchInfo} 
-                    team={team} 
-                    connection={connection} 
-                    board={board} 
-                /> 
-                <PlayerBanner 
-                    matchInfo={matchInfo}
-                    updateTime={!matchFinished && (team === Team.White ? board.turn === Team.White : board.turn === Team.Black)}
-                    team={team}
-                    isCurrentAccount={true}
-                />
-            </MatchBoardContainer>
-            {matchInfo !== null || <OnlineMatchSelection onQueue={onQueue} connectToQueue={connectToQueue} />}
-        </Container>
+        <AuthorizeProvider>
+            <Container $onMatch={matchInfo !== null}>
+                <MatchBoardContainer>
+                    <PlayerBanner 
+                        matchInfo={matchInfo}
+                        updateTime={!matchFinished && (team === Team.White ? board.turn === Team.Black : board.turn === Team.White)}
+                        team={team === Team.White ? Team.Black : Team.White} 
+                    />
+                    <OnlineChessBoard 
+                        onMatch={matchInfo !== null} 
+                        updateMatchInfo={setMatchInfo} 
+                        team={team} 
+                        connection={connection} 
+                        board={board} 
+                    /> 
+                    <PlayerBanner 
+                        matchInfo={matchInfo}
+                        updateTime={!matchFinished && (team === Team.White ? board.turn === Team.White : board.turn === Team.Black)}
+                        team={team}
+                        isCurrentAccount={true}
+                    />
+                </MatchBoardContainer>
+                {matchInfo !== null || <OnlineMatchSelection onQueue={onQueue} connectToQueue={connectToQueue} />}
+            </Container>
+        </AuthorizeProvider>
     );
 }
 

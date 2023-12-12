@@ -2,26 +2,22 @@
 
 import Board from "@/core/chess/Board";
 import styled from "@emotion/styled";
-import { JSX, useEffect, useState } from "react";
+import { JSX, useState } from "react";
 import LocalChessBoard from "../components/LocalChessBoard";
-import useAuth from "@/data/auth/hooks/useAuth";
-import { redirect } from "next/navigation";
 import useTitle from "@/lib/shared/hooks/useTitle";
+import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
 
 export default function LocalPlay(): JSX.Element {
-    const { authenticated } = useAuth();
     const [board, setBoard] = useState(new Board());
 
     useTitle("Modo local - FunChess");
-
-    useEffect(() => {
-        if (!authenticated) redirect("/login");
-    }, [authenticated]);
     
     return (
-        <Container>
-            <LocalChessBoard board={board} />
-        </Container>
+        <AuthorizeProvider>
+            <Container>
+                <LocalChessBoard board={board} />
+            </Container>
+        </AuthorizeProvider>
     )
 }
 
