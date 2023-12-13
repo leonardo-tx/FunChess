@@ -1,0 +1,14 @@
+{
+    "title": "Login",
+    "email-name": "Email",
+    "email-not-found": "Unable to find an account associated with the email.",
+    "email-required": "Email is required.",
+    "email-invalid": "The email entered is not valid.",
+    "password-name": "Password",
+    "password-incorrect": "Incorrect password.",
+    "password-required": "Password is required.",
+    "password-min-length": "The password must be at least 6 characters long.",
+    "login-button": "Sign in",
+    "no-account-button": "Don't have an account? Sign up",
+    "login-unknown-error": "Unable to log in, please try again."
+}

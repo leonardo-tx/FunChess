@@ -1,5 +1,6 @@
 import { JSX, ReactNode } from "react";
 import FriendLayout from "./components/FriendLayout";
+import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
 
 interface Props {
     children: ReactNode;
@@ -7,8 +8,10 @@ interface Props {
 
 export default function FriendsLayout({ children }: Props): JSX.Element {
     return (
-        <FriendLayout>
-            {children}
-        </FriendLayout>
+        <AuthorizeProvider>
+            <FriendLayout>
+                {children}
+            </FriendLayout>
+        </AuthorizeProvider>
     );
 }

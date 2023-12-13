@@ -1,0 +1,11 @@
+{
+    "profile-title": "Perfil de {0}",
+    "not-found-title": "Perfil não encontrado",
+    "not-found-text": "Não foi possível encontrar o perfil.",
+    "account-created": "Conta criada em: {0}",
+    "send-message-button": "Enviar mensagem",
+    "add-friend-button": "Adicionar aos amigos",
+    "remove-friend-button": "Desfazer amizade",
+    "accept-friend-button": "Aceitar pedido de amizade",
+    "sent-request-text": "Pedido de amizade enviado"
+}

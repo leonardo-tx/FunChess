@@ -6,24 +6,20 @@ import { SiReact, SiCsharp } from "react-icons/si";
 import { BiLogoTypescript } from "react-icons/bi";
 import styles from "./styles/About.module.css";
 import { Heading, Text } from "@chakra-ui/react";
-import useTitle from "@/lib/shared/hooks/useTitle";
+import useLang from "@/data/langs/hooks/useLang";
 
 export default function About(): JSX.Element {
-    useTitle("Sobre - FunChess");
+    const { file } = useLang("about");
 
     return (
         <section className={styles["about-main"]}>
             <section className={styles["about-section"]}>
-                <Heading as="h2" size='lg'>Sobre o projeto</Heading>
-                <Text>
-                    O FunChess é um projeto de xadrez no qual permite que
-                    os usuários possam jogar entre si e aprenderem mais sobre
-                    o jogo de maneira divertida.
-                </Text>
-                <Text>Desenvolvido por Leonardo Teixeira. &copy; 2023 Copyright.</Text>
+                <Heading as="h2" size='lg'>{file["project-heading"]}</Heading>
+                <Text>{file["project-text"]}</Text>
+                <Text>{file["developed-by"]}</Text>
             </section>
             <section className={styles["about-section"]}>
-                <Heading as="h2" size='lg'>Tecnologias usadas</Heading>
+                <Heading as="h2" size='lg'>{file["used-tecnology-heading"]}</Heading>
                 <div className={styles["icon-row"]}>
                     <SiReact size={55} color="#43ced8" />
                     <Text>React</Text>
@@ -38,7 +34,7 @@ export default function About(): JSX.Element {
                 </div>
             </section>
             <section className={styles["about-section"]}>
-                <Heading as="h2" size='lg'>Contatos</Heading>
+                <Heading as="h2" size='lg'>{file["contacts-heading"]}</Heading>
                 <div className={styles["button-group"]}>
                     <a href="https://github.com/leonardo-tx" target="_blank">
                         <IoLogoGithub size={32} />
@@ -46,7 +42,7 @@ export default function About(): JSX.Element {
                     </a>
                     <a href="mailto:leonardoregoteixeira@gmail.com">
                         <IoMail size={32} />
-                        E-mail
+                        {file["email-anchor"]}
                     </a>
                 </div>
             </section>

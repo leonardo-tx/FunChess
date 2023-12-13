@@ -3,16 +3,13 @@
 import Board from "@/core/chess/Board";
 import Match from "@/core/chess/Match";
 import Team from "@/core/chess/enums/Team";
-import useAuth from "@/data/auth/hooks/useAuth";
 import { atMatch } from "@/data/chess/fetchers/match-fetchers";
 import styled from "@emotion/styled";
 import { HttpTransportType, HubConnection, HubConnectionBuilder, HubConnectionState } from "@microsoft/signalr";
-import { redirect } from "next/navigation";
 import { JSX, useEffect, useState } from "react";
 import PlayerBanner from "../components/PlayerBanner";
 import OnlineChessBoard from "./components/OnlineChessBoard";
 import OnlineMatchSelection from "./components/OnlineMatchSelection";
-import useTitle from "@/lib/shared/hooks/useTitle";
 import MatchState from "@/core/chess/enums/MatchState";
 import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
 
@@ -24,8 +21,6 @@ export default function PlayOnline(): JSX.Element {
     const [team, setTeam] = useState(Team.White);
     const [pageLoaded, setPageLoaded] = useState(false);
     const [matchFinished, setMatchFinised] = useState(false);
-
-    useTitle("Modo Online - FunChess");
 
     useEffect(() => {
         const connection = getHubConnection();

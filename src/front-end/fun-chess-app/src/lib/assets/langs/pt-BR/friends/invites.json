@@ -1,0 +1,9 @@
+{
+    "title": "Lista de convites",
+    "received-quantity": "Convites recebidos ({0})",
+    "sent-quantity": "Convites enviados ({0})",
+    "icon-profile-alt": "Ícone de perfil de {0}",
+    "cancel-button": "Cancelar",
+    "ignore-button": "Ignorar",
+    "accept-button": "Aceitar"
+}

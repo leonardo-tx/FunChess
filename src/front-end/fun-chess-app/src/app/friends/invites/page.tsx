@@ -2,7 +2,6 @@
 
 import { JSX, useEffect, useState } from "react";
 import * as friendshipFetcher from "@/data/friends/fetchers/friend-fetcher";
-import FriendLayout from "../components/FriendLayout";
 import Account from "@/core/auth/models/Account";
 import { Button, HStack, Text, VStack } from "@chakra-ui/react";
 import defaultIcon from "@/lib/assets/user/default.jpg";
@@ -12,13 +11,15 @@ import Link from "next/link";
 import FriendStatus from "@/core/friends/models/FriendStatus";
 import { StatusCodes } from "http-status-codes";
 import useTitle from "@/lib/shared/hooks/useTitle";
+import formatString from "@/lib/shared/utils/formatString";
+import useLang from "@/data/langs/hooks/useLang";
 
 export default function FriendsInvites(): JSX.Element {
     const [invites, setInvites] = useState<Account[]>([]);
     const [receivedInvites, setReceivedInvites] = useState<Account[]>([]);
     const [deliveredInvites, setDeliveredInvites] = useState<Account[]>([]);
 
-    useTitle("Lista de convites - FunChess");
+    const { file } = useLang("friends/invites")
 
     useEffect(() => {
         const getInvites = async () => {
@@ -35,12 +36,12 @@ export default function FriendsInvites(): JSX.Element {
     return (
         <>
             {receivedInvites.length > 0 && <>
-                <Text>Convites recebidos ({receivedInvites.length})</Text>
+                <Text>{formatString(file["received-quantity"], receivedInvites.length)}</Text>
                 <VStack alignItems="stretch">
                     {receivedInvites.map(((invite, i) => (
                         <InviteBox key={invite.id}>
                             <ProfileLink href={`/profile?id=${invite.id}`}>
-                                <Image src={defaultIcon} alt="Ícone de perfil" />
+                                <Image src={defaultIcon} alt={formatString(file["icon-profile-alt"], invite.username)} />
                                 <Text>{invite.username}</Text>
                             </ProfileLink>
                             <HStack spacing={4} justifyContent="flex-end">
@@ -51,7 +52,7 @@ export default function FriendsInvites(): JSX.Element {
                                     newInvites.splice(i, 1);
                                     setReceivedInvites(newInvites);
                                 })}>
-                                    Aceitar
+                                    {file["accept-button"]}
                                 </Button>
                                 <Button onClick={() => friendshipFetcher.declineInvite(invite.id).then((response) => {
                                     if (response.status !== StatusCodes.OK) return;
@@ -60,7 +61,7 @@ export default function FriendsInvites(): JSX.Element {
                                     newInvites.splice(i, 1);
                                     setReceivedInvites(newInvites);
                                 })}>
-                                    Ignorar
+                                    {file["ignore-button"]}
                                 </Button>
                             </HStack>
                         </InviteBox>
@@ -68,12 +69,12 @@ export default function FriendsInvites(): JSX.Element {
                 </VStack>
             </>}
             {deliveredInvites.length > 0 && <>
-                <Text>Convites enviados ({deliveredInvites.length})</Text>
+                <Text>{formatString(file["sent-quantity"], deliveredInvites.length)}</Text>
                 <VStack alignItems="stretch">
                     {deliveredInvites.map(((invite, i) => (
                         <InviteBox key={invite.id}>
                             <ProfileLink href={`/profile?id=${invite.id}`}>
-                                <Image src={defaultIcon} alt="Ícone de perfil" />
+                                <Image src={defaultIcon} alt={formatString(file["icon-profile-alt"], invite.username)} />
                                 <Text>{invite.username}</Text>
                             </ProfileLink>
                             <HStack justifyContent="flex-end">
@@ -84,7 +85,7 @@ export default function FriendsInvites(): JSX.Element {
                                     newInvites.splice(i, 1);
                                     setDeliveredInvites(newInvites);
                                 })}>
-                                    Cancelar
+                                    {file["cancel-button"]}
                                 </Button>
                             </HStack>
                         </InviteBox>

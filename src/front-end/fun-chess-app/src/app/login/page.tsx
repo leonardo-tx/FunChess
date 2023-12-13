@@ -9,17 +9,17 @@ import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
 import LoginForm from "@/core/auth/forms/LoginForm";
 import useAuth from "@/data/auth/hooks/useAuth";
 import { StatusCodes } from "http-status-codes";
-import useTitle from "@/lib/shared/hooks/useTitle";
+import useLang from "@/data/langs/hooks/useLang";
 
 export default function Login(): JSX.Element {
     const { login } = useAuth();
+    const { file } = useLang("login");
     const router = useRouter();
     const { register, formState: { errors }, handleSubmit } = useForm<LoginForm>();
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     
-    useTitle("Login - FunChess");
-    const messageErrors = getFrontMessageErrors(errors);
+    const messageErrors = getFrontMessageErrors(file, errors);
 
     const onSubmit: SubmitHandler<LoginForm> = async (data: LoginForm): Promise<void> => {
         setIsLoading(true);
@@ -30,19 +30,19 @@ export default function Login(): JSX.Element {
         }
         setIsLoading(false);
         if (loginResponse === StatusCodes.UNAUTHORIZED) {
-            setError("Senha incorreta.");
+            setError(file["password-incorrect"]);
             return;
         }
         if (loginResponse === StatusCodes.NOT_FOUND) {
-            setError("Não foi possível encontrar uma conta associada ao e-mail.")
+            setError(file["email-not-found"])
             return;
         }
-        setError("Não foi possível fazer o login, tente novamente.");
+        setError(file["login-unknown-error"]);
     }
     
     return (
         <VStack onSubmit={handleSubmit(onSubmit)} as="form" h="70%" justifyContent="center" spacing={12}>
-            <Heading size="lg" as="h1">Login</Heading>
+            <Heading size="lg" as="h1">{file["title"]}</Heading>
                 <FormControl isInvalid={Object.keys(messageErrors).length > 0} display="flex" flexDir="column" gap={8} maxW="lg">
                     {error !== null && <Alert status='error'>
                         <AlertIcon />
@@ -54,7 +54,7 @@ export default function Login(): JSX.Element {
                             <Input 
                                 isInvalid={messageErrors.email !== undefined} 
                                 variant="filled" 
-                                placeholder="E-mail" 
+                                placeholder={file["email-name"]} 
                                 {...register("email", { required: true, pattern: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i })} 
                             />
                             <FormErrorMessage alignSelf="flex-start">{messageErrors.email}</FormErrorMessage>
@@ -65,7 +65,7 @@ export default function Login(): JSX.Element {
                                 isInvalid={messageErrors.password !== undefined} 
                                 type="password" 
                                 variant="filled"
-                                placeholder="Senha" 
+                                placeholder={file["password-name"]} 
                                 {...register("password", { required: true, minLength: 6 })} 
                             />
                             <FormErrorMessage alignSelf="flex-start">{messageErrors.password}</FormErrorMessage>
@@ -73,23 +73,23 @@ export default function Login(): JSX.Element {
                     </VStack>
                 </FormControl>
             <VStack spacing={4}>
-                <Button isLoading={isLoading} w="200px" type="submit" colorScheme="cyan">Login</Button>
-                <Button type="button" onClick={() => router.push("/register")} colorScheme="cyan" variant="link">Não possui uma conta? Registre-se</Button>
+                <Button isLoading={isLoading} w="200px" type="submit" colorScheme="cyan">{file["login-button"]}</Button>
+                <Button type="button" onClick={() => router.push("/register")} colorScheme="cyan" variant="link">{file["no-account-button"]}</Button>
             </VStack>
         </VStack>
     );
 }
 
-function getFrontMessageErrors(errors: FieldErrors<LoginForm>): { email?: string, password?: string } {
+function getFrontMessageErrors(file: any, errors: FieldErrors<LoginForm>): { email?: string, password?: string } {
     const messageErrors: { email?: string, password?: string } = {};
 
     if (errors.email !== undefined) {
-        if (errors.email.type === "required") messageErrors.email = "E-mail é obrigatório.";
-        else if (errors.email.type === "pattern") messageErrors.email = "O e-mail inserido não é válido.";
+        if (errors.email.type === "required") messageErrors.email = file["email-required"];
+        else if (errors.email.type === "pattern") messageErrors.email = file["email-invalid"];
     }
     if (errors.password !== undefined) {
-        if (errors.password.type === "required") messageErrors.password = "Senha é obrigatório.";
-        else if (errors.password.type === "minLength") messageErrors.password = "A senha precisa ter no mínimo 6 caracteres."
+        if (errors.password.type === "required") messageErrors.password = file["password-required"];
+        else if (errors.password.type === "minLength") messageErrors.password = file["password-min-length"]
     }
     return messageErrors;
 }

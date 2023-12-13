@@ -1,9 +1,9 @@
-import { JSX, RefObject, useEffect, useRef } from "react";
+import { JSX, useEffect, useRef } from "react";
 import pawn from "../../assets/pieces/pawn.png";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../styles/Sidebar.module.css";
-import { IoExitOutline, IoGameController, IoHome, IoInformationCircle } from "react-icons/io5";
+import { IoExitOutline, IoGameController, IoHome, IoInformationCircle, IoSettings } from "react-icons/io5";
 import { FaUser, FaUserGroup } from "react-icons/fa6";
 import { BsThreeDots } from "react-icons/bs";
 import MenuLinkItem from "./MenuLinkItem";
@@ -20,7 +20,19 @@ export default function Sidebar({ closed, onClose }: Props): JSX.Element {
     const { authenticated, currentAccount, logout } = useAuth();
 
     const ref = useRef<HTMLElement>(null);
-    useHandleMouseDownEvent(ref, closed, onClose);
+
+    useEffect(() => {
+        if (closed) return;
+
+        const mouseHandler = (e: MouseEvent): void => {
+            const menuElement = ref.current;
+            if (innerWidth <= 768 && menuElement != null && !menuElement.contains(e.target as Node)) onClose();
+        };
+        document.addEventListener('mousedown', mouseHandler);
+        return () => {
+            document.removeEventListener('mousedown', mouseHandler);
+        };
+    }, [closed, onClose])
 
     let sidebarStyles = styles["sidebar"];
     if (closed) sidebarStyles += ` ${styles["sidebar-closed"]}`;
@@ -51,25 +63,9 @@ export default function Sidebar({ closed, onClose }: Props): JSX.Element {
                     </>
                 }
             </ul>
+            <ul className={styles["sidebar-menu"]}>
+                <MenuLinkItem icon={<IoSettings />} href="/settings" />
+            </ul>
         </nav>
     );
-}
-
-function useHandleMouseDownEvent(
-    ref: RefObject<HTMLElement>,
-    closed: boolean,
-    onClose: () => void
-): void {
-    useEffect(() => {
-        if (closed) return;
-
-        const mouseHandler = (e: MouseEvent): void => {
-            const menuElement = ref.current;
-            if (innerWidth <= 768 && menuElement != null && !menuElement.contains(e.target as Node)) onClose();
-        };
-        document.addEventListener('mousedown', mouseHandler);
-        return () => {
-            document.removeEventListener('mousedown', mouseHandler);
-        };
-    }, [closed])
 }

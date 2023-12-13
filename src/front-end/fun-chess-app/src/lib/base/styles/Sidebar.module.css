@@ -1,6 +1,6 @@
 .sidebar {
     display: grid;
-    grid-template-rows: 80px 1fr;
+    grid-template-rows: 80px 1fr auto;
     padding: 4px;
     grid-area: sidebar;
     position: fixed;
@@ -51,10 +51,9 @@
     padding: 12px;
 }
 
-.sidebar-menu-item a p {
-    @media only screen and (max-width: 768px) {
-        display: none;
-    }
+.sidebar-menu-item p {
+    font-size: 16px;
+    white-space: nowrap;
 }
 
 .sidebar-menu-item button {
@@ -93,8 +92,12 @@
     transform: translateX(-68px);
 }
 
-.sidebar-menu-list-box-closed > li {
+.sidebar-menu-list-box-closed li {
     visibility: hidden;
+}
+
+.sidebar-menu-list-box-closed p {
+    font-size: 0px;
 }
 
 .sidebar-menu-list-box-closed-mobile {

@@ -17,7 +17,7 @@ interface Props {
 
 export default function RootLayout({ children }: Props): JSX.Element {
     return (
-        <html lang="pt-br">
+        <html lang="en">
             <body className={inter.className}>
                 <Providers>
                     <Layout>{children}</Layout>

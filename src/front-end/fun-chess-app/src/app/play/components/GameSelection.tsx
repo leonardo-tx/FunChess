@@ -1,3 +1,4 @@
+import useLang from "@/data/langs/hooks/useLang";
 import { Heading, VStack, Text } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import Link from "next/link";
@@ -6,30 +7,32 @@ import { FaComputer, FaGamepad, FaUserGroup } from "react-icons/fa6";
 import { IoEarth } from "react-icons/io5";
 
 export default function GameSelection(): JSX.Element {
+    const { file } = useLang("play");
+
     return (
         <Container>
-                <Heading fontWeight={700} size="lg" as="h2">Jogar Xadrez</Heading>
+                <Heading fontWeight={700} size="lg" as="h2">{file["title"]}</Heading>
                 <FaGamepad size={50} />
                 <ButtonsContainer>
                     <MatchButton href="/play/online">
                         <IoEarth size={30} />
                         <VStack alignItems="flex-start">
-                            <Text>Modo online</Text>
-                            <Text fontWeight={300} fontSize="smaller">Jogue uma partida contra outra pessoa</Text>
+                            <Text>{file["online-mode-title"]}</Text>
+                            <Text fontWeight={300} fontSize="smaller">{file["online-mode-text"]}</Text>
                         </VStack>
                     </MatchButton>
                     <MatchButton href="/play/friend">
                         <FaUserGroup size={30} />
                         <VStack alignItems="flex-start">
-                            <Text>Jogar com um amigo</Text>
-                            <Text fontWeight={300} fontSize="smaller">Convide um amigo de sua lista para jogar uma partida</Text>
+                            <Text>{file["friend-mode-title"]}</Text>
+                            <Text fontWeight={300} fontSize="smaller">{file["friend-mode-text"]}</Text>
                         </VStack>
                     </MatchButton>
                     <MatchButton href="/play/local">
                         <FaComputer size={30} />
                         <VStack alignItems="flex-start">
-                            <Text>Modo local</Text>
-                            <Text fontWeight={300} fontSize="smaller">Jogue uma partida offline</Text>
+                            <Text>{file["local-mode-title"]}</Text>
+                            <Text fontWeight={300} fontSize="smaller">{file["local-mode-text"]}</Text>
                         </VStack>
                     </MatchButton>
                 </ButtonsContainer>

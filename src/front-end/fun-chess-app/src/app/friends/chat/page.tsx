@@ -12,9 +12,10 @@ import Message from "@/core/friends/models/Message";
 import { HubConnection, HubConnectionBuilder, HttpTransportType } from "@microsoft/signalr";
 import MessageForm from "@/core/friends/forms/MessageForm";
 import { SubmitHandler, useForm } from "react-hook-form";
-import useTitle from "@/lib/shared/hooks/useTitle";
 import DisconnectedModal from "@/lib/shared/components/DisconnectedModal";
 import MessageItem from "./components/MessageItem";
+import useLang from "@/data/langs/hooks/useLang";
+import formatString from "@/lib/shared/utils/formatString";
 
 export default function FriendsChat(): JSX.Element {
     const [selectedId, setSelectedId] = useState<number>(-1);
@@ -23,7 +24,7 @@ export default function FriendsChat(): JSX.Element {
     const [connection, setConnection] = useState<HubConnection | null>(null);
 
     const { register, handleSubmit, reset } = useForm<MessageForm>();
-    useTitle("Chat online - FunChess");
+    const { file } = useLang("friends/chat");
 
     const setMessageReceivedFromHub = useCallback((message: Message | null | undefined): boolean => {
         if (!message) return false;
@@ -85,7 +86,7 @@ export default function FriendsChat(): JSX.Element {
                 <FriendsSelector>
                     {friends.map((account) => (
                         <FriendSelection $selected={account.id === selectedId} onClick={() => setSelectedId(account.id)} key={account.id}>
-                            <Image src={defaultIcon} alt="Ícone de perfil" />
+                            <Image src={defaultIcon} alt={formatString(file["icon-profile-alt"], account.username)} />
                             <FriendSelectionText>
                                 <Text>{account.username}</Text>
                             </FriendSelectionText>
@@ -103,7 +104,7 @@ export default function FriendsChat(): JSX.Element {
                 </MessagesContent>
                 <Box onSubmit={handleSubmit(onSubmit)} as="form" p="10px" backgroundColor="#333341" gridArea="chat-form">
                     <input type="submit" hidden />
-                    <Input type="text" placeholder="Digite uma mensagem" autoComplete="off" {...register("text")} />
+                    <Input type="text" placeholder={file["send-message"]} autoComplete="off" {...register("text")} />
                 </Box>
             </ChatLayout>
         </>

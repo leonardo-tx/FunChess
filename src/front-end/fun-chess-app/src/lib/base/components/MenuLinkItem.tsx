@@ -4,7 +4,7 @@ import styles from "../styles/Sidebar.module.css";
 import Link from "next/link";
 
 interface Props {
-    icon: JSX.Element;
+    icon?: JSX.Element;
     href: string;
     text?: string;
 }

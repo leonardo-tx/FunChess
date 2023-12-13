@@ -11,21 +11,21 @@ import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
 import RegisterInitialForm from "@/core/auth/forms/RegisterInitialForm";
 import LoginForm from "@/core/auth/forms/LoginForm";
 import { StatusCodes } from "http-status-codes";
-import useTitle from "@/lib/shared/hooks/useTitle";
+import useLang from "@/data/langs/hooks/useLang";
 
 export default function Register(): JSX.Element {
     const auth = useAuth();
+    const { file } = useLang("register");
     const router = useRouter();
     const { register, formState: { errors }, handleSubmit } = useForm<RegisterInitialForm>();
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    useTitle("Cadastro - FunChess");
-    const messageErrors = getFrontMessageErrors(errors);
+    const messageErrors = getFrontMessageErrors(file, errors);
 
     const onSubmit: SubmitHandler<RegisterInitialForm> = async (data: RegisterInitialForm): Promise<void> => {
         if (data.password !== data.checkPassword) {
-            setError("O campo senha e confirmar senha precisam ser iguais.");
+            setError(file["password-conflict"]);
             return;
         }
         setIsLoading(true);
@@ -40,15 +40,15 @@ export default function Register(): JSX.Element {
         }
         setIsLoading(false);
         if (registerResponse === StatusCodes.CONFLICT) {
-            setError("Já existe uma conta associada ao e-mail inserido.")
+            setError(file["email-conflict"])
             return;
         }
-        setError("Não foi possível se cadastrar, tente novamente.");
+        setError(file["register-unknown-error"]);
     }
     
     return (
         <VStack onSubmit={handleSubmit(onSubmit)} as="form" h="70%" justifyContent="center" spacing={12}>
-            <Heading size="lg" as="h1">Cadastro</Heading>
+            <Heading size="lg" as="h1">{file["title"]}</Heading>
             <FormControl isInvalid={Object.keys(messageErrors).length > 0} display="flex" flexDir="column" gap={4} maxW="lg">
                 {error !== null && <Alert status='error'>
                     <AlertIcon />
@@ -59,7 +59,7 @@ export default function Register(): JSX.Element {
                     <Input
                         isInvalid={messageErrors.email !== undefined} 
                         variant="filled"
-                        placeholder="E-mail"
+                        placeholder={file["email-name"]}
                         {...register("email", { required: true, pattern: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i })}
                     />
                     <FormErrorMessage alignSelf="flex-start">{messageErrors.email}</FormErrorMessage>
@@ -69,7 +69,7 @@ export default function Register(): JSX.Element {
                     <Input
                         isInvalid={messageErrors.username !== undefined}
                         variant="filled"
-                        placeholder="Nome de usuário"
+                        placeholder={file["username-name"]}
                         {...register("username", { required: true, minLength: 3, maxLength: 20 })}
                     />
                     <FormErrorMessage alignSelf="flex-start">{messageErrors.username}</FormErrorMessage>
@@ -80,7 +80,7 @@ export default function Register(): JSX.Element {
                         isInvalid={messageErrors.password !== undefined}
                         type="password" 
                         variant="filled"
-                        placeholder="Senha"
+                        placeholder={file["password-name"]}
                         {...register("password", { required: true, minLength: 6, maxLength: 128 })}
                     />
                     <FormErrorMessage alignSelf="flex-start">{messageErrors.password}</FormErrorMessage>
@@ -91,38 +91,38 @@ export default function Register(): JSX.Element {
                         isInvalid={messageErrors.checkPassword !== undefined}
                         type="password" 
                         variant="filled" 
-                        placeholder="Confirmar senha"
+                        placeholder={file["confirm-password-name"]}
                         {...register("checkPassword", { required: true })}
                     />
                     <FormErrorMessage alignSelf="flex-start">{messageErrors.checkPassword}</FormErrorMessage>
                 </InputGroup>
             </FormControl>
             <VStack spacing={4}>
-                <Button isLoading={isLoading} w="200px" type="submit" colorScheme="cyan">Cadastrar-se</Button>
-                <Button onClick={() => router.push("/login")} colorScheme="cyan" variant="link">Já possui uma conta? Entre aqui</Button>
+                <Button isLoading={isLoading} w="200px" type="submit" colorScheme="cyan">{file["register-button"]}</Button>
+                <Button onClick={() => router.push("/login")} colorScheme="cyan" variant="link">{file["with-account-button"]}</Button>
             </VStack>
         </VStack>
     );
 }
 
-function getFrontMessageErrors(errors: FieldErrors<RegisterInitialForm>): { email?: string, password?: string, username?: string, checkPassword?: string } {
+function getFrontMessageErrors(file: any, errors: FieldErrors<RegisterInitialForm>): { email?: string, password?: string, username?: string, checkPassword?: string } {
     const messageErrors: { email?: string, password?: string, username?: string, checkPassword?: string } = {};
 
     if (errors.email !== undefined) {
-        if (errors.email.type === "required") messageErrors.email = "E-mail é obrigatório.";
-        else if (errors.email.type === "pattern") messageErrors.email = "O e-mail inserido não é válido.";
+        if (errors.email.type === "required") messageErrors.email = file["email-required"];
+        else if (errors.email.type === "pattern") messageErrors.email = file["email-invalid"];
     }
     if (errors.password !== undefined) {
-        if (errors.password.type === "required") messageErrors.password = "Senha é obrigatório.";
-        else if (errors.password.type === "minLength") messageErrors.password = "A senha precisa ter no mínimo 6 caracteres."
+        if (errors.password.type === "required") messageErrors.password = file["password-required"];
+        else if (errors.password.type === "minLength") messageErrors.password = file["password-min-length"];
     }
     if (errors.username !== undefined) {
-        if (errors.username.type === "required") messageErrors.username = "Nome de usuário é obrigatório.";
-        else if (errors.username.type === "minLength") messageErrors.username = "O nome de usuário precisa ter no mínimo 3 caracteres."
-        else if (errors.username.type === "maxLength") messageErrors.username = "O nome de usuário não pode ultrapassar 20 caracteres.";
+        if (errors.username.type === "required") messageErrors.username = file["username-required"];
+        else if (errors.username.type === "minLength") messageErrors.username = file["username-min-length"]
+        else if (errors.username.type === "maxLength") messageErrors.username = file["username-max-length"];
     }
     if (errors.checkPassword !== undefined) {
-        if (errors.checkPassword.type === "required") messageErrors.checkPassword = "É necessário confirmar a senha."
+        if (errors.checkPassword.type === "required") messageErrors.checkPassword = file["confirm-password-required"];
     }
     return messageErrors;
 }

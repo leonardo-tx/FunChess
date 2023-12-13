@@ -1,0 +1,20 @@
+{
+    "title": "Cadastro",
+    "email-name": "E-mail",
+    "email-conflict": "Já existe uma conta associada ao e-mail inserido.",
+    "email-required": "E-mail é obrigatório.",
+    "email-invalid": "O e-mail inserido não é válido.",
+    "username-name": "Nome de usuário",
+    "username-required": "Nome de usuário é obrigatório",
+    "username-min-length": "O nome de usuário precisa ter no mínimo 3 caracteres.",
+    "username-max-length": "O nome de usuário não pode ultrapassar 20 caracteres.",
+    "password-name": "Senha",
+    "password-conflict": "Os campos senha e confirmar senha precisam ser iguais.",
+    "password-required": "Senha é obrigatória.",
+    "password-min-length": "A senha precisa ter no mínimo 6 caracteres.",
+    "confirm-password-name": "Confirmar senha",
+    "confirm-password-required": "É necessário confirmar a senha.",
+    "register-button": "Cadastrar-se",
+    "with-account-button": "Já possui uma conta? Entre aqui",
+    "register-unknown-error": "Não foi possível fazer o login, tente novamente."
+}

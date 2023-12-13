@@ -5,12 +5,9 @@ import styled from "@emotion/styled";
 import { JSX } from "react";
 import DummyChessBoard from "./components/DummyChessBoard";
 import GameSelection from "./components/GameSelection";
-import useTitle from "@/lib/shared/hooks/useTitle";
 import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
 
 export default function Play(): JSX.Element {
-    useTitle("Jogue Xadrez - FunChess");
-
     return (
         <AuthorizeProvider>
             <Container>

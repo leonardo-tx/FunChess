@@ -4,13 +4,13 @@ import Board from "@/core/chess/Board";
 import styled from "@emotion/styled";
 import { JSX, useState } from "react";
 import LocalChessBoard from "../components/LocalChessBoard";
-import useTitle from "@/lib/shared/hooks/useTitle";
 import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
+import useLang from "@/data/langs/hooks/useLang";
 
 export default function LocalPlay(): JSX.Element {
     const [board, setBoard] = useState(new Board());
 
-    useTitle("Modo local - FunChess");
+    useLang("play/local")
     
     return (
         <AuthorizeProvider>

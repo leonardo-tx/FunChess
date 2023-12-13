@@ -8,7 +8,7 @@ import Image from "next/image";
 import defaultIcon from "@/lib/assets/user/default.jpg";
 import { useSearchParams } from "next/navigation";
 import { Dispatch, JSX, SetStateAction, useEffect, useState } from "react";
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Button, HStack, Text, VStack } from "@chakra-ui/react";
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Button, HStack, Text, VStack } from "@chakra-ui/react";
 import useAuth from "@/data/auth/hooks/useAuth";
 import FriendStatus from "@/core/friends/models/FriendStatus";
 import { StatusCodes } from "http-status-codes";
@@ -16,6 +16,8 @@ import { IoIosMore } from "react-icons/io";
 import { FaUser } from "react-icons/fa6";
 import useTitle from "@/lib/shared/hooks/useTitle";
 import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
+import useLang from "@/data/langs/hooks/useLang";
+import formatString from "@/lib/shared/utils/formatString";
 
 
 export default function Profile(): JSX.Element {
@@ -23,8 +25,8 @@ export default function Profile(): JSX.Element {
     const { currentAccount } = useAuth();
     const [account, setAccount] = useState<Account | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-
-    const [title, setTitle] = useTitle("Perfil - FunChess");
+    const { file } = useLang("profile");
+    const [title, setTitle] = useTitle("FunChess");
 
     useEffect(() => {
         const id = searchParams?.get("id") ?? null;
@@ -33,7 +35,6 @@ export default function Profile(): JSX.Element {
         const idNumber = parseInt(id);
         if (currentAccount !== null && idNumber === currentAccount.id) {
             setAccount(currentAccount);
-            setTitle("Meu perfil - FunChess")
             setIsLoading(false);
             return;
         }
@@ -46,8 +47,8 @@ export default function Profile(): JSX.Element {
     }, [searchParams])
 
     useEffect(() => {
-        if (account === null) { setTitle("Perfil - FunChess"); return; }
-        setTitle(`Perfil de ${account?.username} - FunChess`);
+        if (account === null) { setTitle(`${file["not-found-title"]} - FunChess`); return; }
+        setTitle(`${formatString(file["profile-title"], account.username)} - FunChess`);
     }, [account])
 
     if (isLoading) return <></>
@@ -55,7 +56,7 @@ export default function Profile(): JSX.Element {
     if (account === null) {
         return (
             <div>
-                <Text>Não foi possível encontrar o perfil.</Text>
+                <Text>{file["not-found-text"]}</Text>
             </div>
         );
     }
@@ -69,11 +70,11 @@ export default function Profile(): JSX.Element {
                         <VStack alignItems="stretch">
                             <Text fontSize="x-large">{account.username}</Text>
                             <Text fontSize="sm">
-                                Conta criada: {new Date(account.creation).toLocaleDateString(document.documentElement.lang)}
+                                {formatString(file["account-created"], new Date(account.creation).toLocaleDateString(document.documentElement.lang))}
                             </Text>
                         </VStack>
                         <HStack alignItems="flex-start">
-                            {getProfileComplement(account, setAccount)}
+                            {getProfileComplement(file, account, setAccount)}
                         </HStack>
                     </TextInfo>
                 </ProfileInfo>
@@ -82,7 +83,7 @@ export default function Profile(): JSX.Element {
     );
 }
 
-const getProfileComplement = (account: Account, setAccount: Dispatch<SetStateAction<Account | null>>): JSX.Element | JSX.Element[] => {
+const getProfileComplement = (file: any, account: Account, setAccount: Dispatch<SetStateAction<Account | null>>): JSX.Element | JSX.Element[] => {
     switch (account.friendStatus) {
         case FriendStatus.None:
             return (
@@ -90,24 +91,24 @@ const getProfileComplement = (account: Account, setAccount: Dispatch<SetStateAct
                     onClick={() => friendshipFetcher.invite(account.id).then((response) => {
                         if (response.status === StatusCodes.OK) setAccount({...account, friendStatus: FriendStatus.Delivered});
                     })}>
-                    Adicionar aos amigos
+                    {file["add-friend-button"]}
                 </Button>
             );
         case FriendStatus.Delivered:
-            return <Text fontSize="sm">Pedido de amizade enviado</Text>
+            return <Text fontSize="sm">{file["sent-request-text"]}</Text>
         case FriendStatus.Received:
             return (
                 <Button
                     onClick={() => friendshipFetcher.acceptInvite(account.id).then((response) => {
                         if (response.status === StatusCodes.OK) setAccount({...account, friendStatus: FriendStatus.Friends});
                     })}>
-                    Aceitar pedido de amizade
+                    {file["accept-friend-button"]}
                 </Button>
             );
         case FriendStatus.Friends:
             return (
                 <>
-                    <Button>Enviar mensagem</Button>
+                    <Button>{file["send-message-button"]}</Button>
                     <Accordion alignSelf="stretch" borderRadius="0.375rem" backgroundColor="#3d3c46" allowToggle>
                         <AccordionItem border="none">
                             <AccordionButton>
@@ -119,7 +120,7 @@ const getProfileComplement = (account: Account, setAccount: Dispatch<SetStateAct
                                     if (response.status === StatusCodes.OK) setAccount({...account, friendStatus: FriendStatus.None});
                                 })}>
                                     <FaUser />
-                                    <Text fontSize="sm">Desfazer amizade</Text>
+                                    <Text fontSize="sm">{file["remove-friend-button"]}</Text>
                                 </ButtonInsideAccordion>
                             </AccordionPanel>
                         </AccordionItem>

@@ -1,9 +1,8 @@
-import { Button, Heading, VStack } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { JSX, useEffect, useState } from "react";
-import { FaGamepad, FaUserGroup } from "react-icons/fa6";
-import { IoEarth } from "react-icons/io5";
 import { Text } from "@chakra-ui/react";
+import useLang from "@/data/langs/hooks/useLang";
 
 interface Props {
     connectToQueue: () => void;
@@ -12,6 +11,7 @@ interface Props {
 
 export default function OnlineMatchSelection({ connectToQueue, onQueue }: Props): JSX.Element {
     const [time, setTime] = useState<number | null>(null);
+    const { file } = useLang("play/online");
 
     useEffect(() => {
         if (!onQueue) { setTime(null); return; }
@@ -24,7 +24,16 @@ export default function OnlineMatchSelection({ connectToQueue, onQueue }: Props)
 
     return (
         <Container>
-            <Button minW="250px" size="lg" isLoading={onQueue} loadingText="Procurando partida" onClick={connectToQueue} colorScheme="green">Jogar</Button>
+            <Button 
+                minW="250px" 
+                size="lg" 
+                isLoading={onQueue} 
+                loadingText={file["play-button-loading"]} 
+                onClick={connectToQueue} 
+                colorScheme="green"
+            >
+                {file["play-button"]}
+            </Button>
             {time !== null && <Text>{Math.floor(time / 1000 / 60 % 60).toLocaleString('pt-BR')} : {Math.floor(time / 1000 % 60).toLocaleString('pt-BR', { minimumIntegerDigits: 2 })}</Text>}
         </Container>
     );
