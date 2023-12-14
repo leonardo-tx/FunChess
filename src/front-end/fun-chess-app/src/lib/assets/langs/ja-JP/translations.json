@@ -1,0 +1,90 @@
+{
+    "auth": {
+        "email-required": "電子メールは必須です。",
+        "email-invalid": "入力された電子メールは無効です。",
+        "email-not-found": "電子メールに関連付けられたアカウントはありません。",
+        "email-conflict": "入力された電子メールに関連付けられたアカウントがすでに存在します。",
+        "username-required": "ユーザー名は必須です。",
+        "username-min-length": "ユーザー名は少なくとも 3 文字の長さである必要があります。",
+        "username-max-length": "ユーザー名は 20 文字を超えることはできません。",
+        "password-incorrect": "パスワードが正しくありません。",
+        "password-required": "パスワードは必須です。",
+        "password-min-length": "パスワードは少なくとも 6 文字の長さである必要があります。",
+        "password-conflict": "パスワードフィールドとパスワード確認フィールドは同じである必要があります。",
+        "confirm-password-required": "パスワードの確認が必要です。",
+        "login-unknown-error": "サインインできません。もう一度お試しください。",
+        "register-unknown-error": "サインアップできません。もう一度お試しください。"
+    },
+    "home": {
+        "unauthorized-heading": "単純で簡単な方法でチェスをプレイしましょう！"
+    },
+    "about": {
+        "project-heading": "企画について",
+        "project-text": "FunChess は、ユーザーがお互いにプレイし、楽しい方法でゲームについて学ぶことができるチェス 企画です。",
+        "project-developed-by": "レオナルド・テイシェイラによって開発されました。 © 2023 著作権。",
+        "used-tecnology-heading": "使用されている技術",
+        "contacts-heading": "お問い合わせ先"
+    },
+    "settings": {
+        "language-heading": "言語を変更"
+    },
+    "profile": {
+        "not-found-title": "見つかりません",
+        "found-title": "{0}",
+        "not-found-text": "プロフィールが見つかりません。",
+        "account-created": "作成日: {0}",
+        "sent-request-text": "フレンド申請送信済み"
+    },
+    "friends": {
+        "friends-quantity": "フレンド ({0})",
+        "received-quantity": "受信した招待状 ({0})",
+        "sent-quantity": "送信された招待状 ({0})",
+        "friends-link": "フレンド",
+        "invites-link": "保留中の要求",
+        "chat-link": "チャット"
+    },
+    "play": {
+        "online-mode-title": "オンラインモード",
+        "online-mode-text": "他の人と対戦する",
+        "friend-mode-title": "友達と遊ぶ",
+        "friend-mode-text": "リストにある友達をプレイに招待する",
+        "local-mode-title": "ローカルモード",
+        "local-mode-text": "オフラインマッチをプレイする"
+    },
+    "buttons": {
+        "login": "サインイン",
+        "register": "サインアップ",
+        "remove-friend": "フレンド解除",
+        "add-friend-button": "フレンドに追加",
+        "accept-friend": "フレンドリクエストを承認",
+        "cancel": "中止",
+        "ignore": "無視",
+        "accept": "受諾",
+        "send-message": "メッセージ",
+        "no-account": "アカウントをお持ちではありませんか? サインアップ",
+        "with-account": "アカウントをお持ちですか? サインイン",
+        "play": "プレイ",
+        "play-loading": "マッチを探しています"
+    },
+    "inputs": {
+        "email-placeholder": "電子メール",
+        "username-placeholder": "ユーザー名",
+        "password-placeholder": "パスワード",
+        "confirm-password-placeholder": "パスワードを確認",
+        "message-placeholder": "メッセージを入力"
+    },
+    "titles": {
+        "home": "ホーム",
+        "about": "ついて",
+        "settings": "設定",
+        "profile": "ユーザープロフィール",
+        "register": "サインアップ",
+        "login": "サインイン",
+        "friends": "友達リスト",
+        "friends-invites": "招待リスト",
+        "friends-chat": "オンラインチャット",
+        "play": "チェスをする",
+        "play-local": "ローカルモード",
+        "play-online": "オンラインモード"
+    }
+}

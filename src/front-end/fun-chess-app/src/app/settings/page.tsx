@@ -6,7 +6,7 @@ import { FaLanguage } from "react-icons/fa6";
 import useLang from "@/data/langs/hooks/useLang";
 
 export default function Settings(): JSX.Element {
-    const { file, setLangCode, langCode } = useLang("settings");
+    const { t, setLangCode, langCode } = useLang();
 
     const onLanguageChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
         setLangCode(e.target.value);
@@ -15,7 +15,7 @@ export default function Settings(): JSX.Element {
     return (
         <VStack alignItems="stretch" spacing={4} p={8}>
             <VStack as="section">
-                <Heading size="lg">{file["language-heading"]}</Heading>
+                <Heading size="lg">{t("settings.language-heading")}</Heading>
                 <Select onChange={onLanguageChange} defaultValue={langCode} icon={<FaLanguage />} maxW="500px">
                     <option value="en">English</option>
                     <option value="pt-BR">Português (BR)</option>

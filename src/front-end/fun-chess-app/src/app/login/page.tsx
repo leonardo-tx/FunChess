@@ -13,13 +13,13 @@ import useLang from "@/data/langs/hooks/useLang";
 
 export default function Login(): JSX.Element {
     const { login } = useAuth();
-    const { file } = useLang("login");
+    const { t } = useLang();
     const router = useRouter();
     const { register, formState: { errors }, handleSubmit } = useForm<LoginForm>();
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     
-    const messageErrors = getFrontMessageErrors(file, errors);
+    const messageErrors = getFrontMessageErrors(t, errors);
 
     const onSubmit: SubmitHandler<LoginForm> = async (data: LoginForm): Promise<void> => {
         setIsLoading(true);
@@ -30,19 +30,19 @@ export default function Login(): JSX.Element {
         }
         setIsLoading(false);
         if (loginResponse === StatusCodes.UNAUTHORIZED) {
-            setError(file["password-incorrect"]);
+            setError(t("auth.password-incorrect"));
             return;
         }
         if (loginResponse === StatusCodes.NOT_FOUND) {
-            setError(file["email-not-found"])
+            setError(t("auth.email-not-found"))
             return;
         }
-        setError(file["login-unknown-error"]);
+        setError(t("auth.login-unknown-error"));
     }
     
     return (
         <VStack onSubmit={handleSubmit(onSubmit)} as="form" h="70%" justifyContent="center" spacing={12}>
-            <Heading size="lg" as="h1">{file["title"]}</Heading>
+            <Heading size="lg" as="h1">{t("titles.login")}</Heading>
                 <FormControl isInvalid={Object.keys(messageErrors).length > 0} display="flex" flexDir="column" gap={8} maxW="lg">
                     {error !== null && <Alert status='error'>
                         <AlertIcon />
@@ -54,7 +54,7 @@ export default function Login(): JSX.Element {
                             <Input 
                                 isInvalid={messageErrors.email !== undefined} 
                                 variant="filled" 
-                                placeholder={file["email-name"]} 
+                                placeholder={t("inputs.email-placeholder")} 
                                 {...register("email", { required: true, pattern: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i })} 
                             />
                             <FormErrorMessage alignSelf="flex-start">{messageErrors.email}</FormErrorMessage>
@@ -65,7 +65,7 @@ export default function Login(): JSX.Element {
                                 isInvalid={messageErrors.password !== undefined} 
                                 type="password" 
                                 variant="filled"
-                                placeholder={file["password-name"]} 
+                                placeholder={t("inputs.password-placeholder")} 
                                 {...register("password", { required: true, minLength: 6 })} 
                             />
                             <FormErrorMessage alignSelf="flex-start">{messageErrors.password}</FormErrorMessage>
@@ -73,23 +73,23 @@ export default function Login(): JSX.Element {
                     </VStack>
                 </FormControl>
             <VStack spacing={4}>
-                <Button isLoading={isLoading} w="200px" type="submit" colorScheme="cyan">{file["login-button"]}</Button>
-                <Button type="button" onClick={() => router.push("/register")} colorScheme="cyan" variant="link">{file["no-account-button"]}</Button>
+                <Button isLoading={isLoading} w="200px" type="submit" colorScheme="cyan">{t("buttons.login")}</Button>
+                <Button type="button" onClick={() => router.push("/register")} colorScheme="cyan" variant="link">{t("buttons.no-account")}</Button>
             </VStack>
         </VStack>
     );
 }
 
-function getFrontMessageErrors(file: any, errors: FieldErrors<LoginForm>): { email?: string, password?: string } {
+function getFrontMessageErrors(t: (key: string, ...args: any[]) => string, errors: FieldErrors<LoginForm>): { email?: string, password?: string } {
     const messageErrors: { email?: string, password?: string } = {};
 
     if (errors.email !== undefined) {
-        if (errors.email.type === "required") messageErrors.email = file["email-required"];
-        else if (errors.email.type === "pattern") messageErrors.email = file["email-invalid"];
+        if (errors.email.type === "required") messageErrors.email = t("auth.email-required");
+        else if (errors.email.type === "pattern") messageErrors.email = t("auth.email-invalid");
     }
     if (errors.password !== undefined) {
-        if (errors.password.type === "required") messageErrors.password = file["password-required"];
-        else if (errors.password.type === "minLength") messageErrors.password = file["password-min-length"]
+        if (errors.password.type === "required") messageErrors.password = t("auth.password-required");
+        else if (errors.password.type === "minLength") messageErrors.password = t("auth.password-min-length");
     }
     return messageErrors;
 }

@@ -1,0 +1,94 @@
+{
+    "auth": {
+        "email-required": "E-mail é obrigatório.",
+        "email-invalid": "O e-mail inserido não é válido.",
+        "email-not-found": "Não foi possível encontrar uma conta associada ao e-mail.",
+        "email-conflict": "Já existe uma conta associada ao e-mail inserido.",
+        "username-required": "Nome de usuário é obrigatório.",
+        "username-min-length": "O nome de usuário precisa ter no mínimo 3 caracteres.",
+        "username-max-length": "O nome de usuário não pode ultrapassar 20 caracteres.",
+        "password-incorrect": "Senha incorreta.",
+        "password-required": "Senha é obrigatória.",
+        "password-min-length": "A senha precisa ter no mínimo 6 caracteres.",
+        "password-conflict": "Os campos senha e confirmar senha precisam ser iguais.",
+        "confirm-password-required": "É necessário confirmar a senha.",
+        "login-unknown-error": "Não foi possível fazer o login, tente novamente.",
+        "register-unknown-error": "Não foi possível se cadastrar, tente novamente."
+    },
+    "home": {
+        "unauthorized-heading": "Jogue xadrez de forma simples e fácil!"
+    },
+    "about": {
+        "project-heading": "Sobre o projeto",
+        "project-text": "O FunChess é um projeto de xadrez no qual permite que os usuários possam jogar entre si e aprenderem mais sobre o jogo de maneira divertida.",
+        "project-developed-by": "Desenvolvido por Leonardo Teixeira. © 2023 Copyright.",
+        "used-tecnology-heading": "Tecnologias usadas",
+        "contacts-heading": "Contatos"
+    },
+    "settings": {
+        "language-heading": "Alterar idioma"
+    },
+    "profile": {
+        "not-found-title": "Perfil não encontrado",
+        "found-title": "{0}",
+        "not-found-text": "Não foi possível encontrar o perfil.",
+        "account-created": "Conta criada em: {0}",
+        "sent-request-text": "Pedido de amizade enviado"
+    },
+    "friends": {
+        "friends-quantity": "Amigos ({0})",
+        "received-quantity": "Convites recebidos ({0})",
+        "sent-quantity": "Convites enviados ({0})",
+        "friends-link": "Amigos",
+        "invites-link": "Pedidos pendentes",
+        "chat-link": "Chat"
+    },
+    "play": {
+        "online-mode-title": "Modo online",
+        "online-mode-text": "Jogue uma partida contra outra pessoa",
+        "friend-mode-title": "Jogue com um amigo",
+        "friend-mode-text": "Convide um amigo de sua lista para jogar uma partida",
+        "local-mode-title": "Modo local",
+        "local-mode-text": "Jogue uma partida offline"
+    },
+    "buttons": {
+        "login": "Login",
+        "register": "Cadastrar-se",
+        "remove-friend": "Desfazer amizade",
+        "add-friend": "Adicionar aos amigos",
+        "accept-friend": "Aceitar pedido de amizade",
+        "cancel": "Cancelar",
+        "ignore": "Ignorar",
+        "accept": "Aceitar",
+        "send-message": "Enviar mensagem",
+        "no-account": "Não possui uma conta? Cadastre-se",
+        "with-account": "Já possui uma conta? Entre aqui",
+        "play": "Jogar",
+        "play-loading": "Procurando partida"
+    },
+    "inputs": {
+        "email-placeholder": "E-mail",
+        "username-placeholder": "Nome de usuário",
+        "password-placeholder": "Senha",
+        "confirm-password-placeholder": "Confirmar senha",
+        "message-placeholder": "Digite uma mensagem"
+    },
+    "alt": {
+        "brand-pawn": "Imagem de um peão sorridente",
+        "icon-profile": "Ícone de perfil de {0}"
+    },
+    "titles": {
+        "home": "Início",
+        "about": "Sobre",
+        "settings": "Configurações",
+        "profile": "Perfil",
+        "register": "Cadastrar-se",
+        "login": "Login",
+        "friends": "Lista de amigos",
+        "friends-invites": "Lista de convites",
+        "friends-chat": "Chat online",
+        "play": "Jogue Xadrez",
+        "play-local": "Modo local",
+        "play-online": "Modo online"
+    }
+}

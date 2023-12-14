@@ -8,14 +8,13 @@ import Image from "next/image";
 import defaultIcon from "@/lib/assets/user/default.jpg";
 import { JSX, useEffect, useState } from "react";
 import Link from "next/link";
-import useTitle from "@/lib/shared/hooks/useTitle";
 import useLang from "@/data/langs/hooks/useLang";
 import formatString from "@/lib/shared/utils/formatString";
 
 export default function Friends(): JSX.Element {
     const [friends, setFriends] = useState<Account[]>([]);
 
-    const { file } = useLang("friends")
+    const { t } = useLang()
 
     useEffect(() => {
         const getFriends = async () => {
@@ -26,11 +25,11 @@ export default function Friends(): JSX.Element {
 
     return (
         <>
-            <Text>{formatString(file["friends-quantity"], friends.length)}</Text>
+            <Text>{formatString(t("friends.friends-quantity"), friends.length)}</Text>
             <FriendsList>
                 {friends.map(((friend) => (
                     <FriendBox href={`/profile?id=${friend.id}`} key={friend.id}>
-                        <Image src={defaultIcon} alt={formatString(file["icon-profile-alt"], friend.username)} />
+                        <Image src={defaultIcon} alt={t("alt.icon-profile", friend.username)} />
                         <Text>{friend.username}</Text>
                     </FriendBox>
                 )))}

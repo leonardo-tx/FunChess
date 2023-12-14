@@ -9,17 +9,17 @@ import { Heading, Text } from "@chakra-ui/react";
 import useLang from "@/data/langs/hooks/useLang";
 
 export default function About(): JSX.Element {
-    const { file } = useLang("about");
+    const { t } = useLang();
 
     return (
         <section className={styles["about-main"]}>
             <section className={styles["about-section"]}>
-                <Heading as="h2" size='lg'>{file["project-heading"]}</Heading>
-                <Text>{file["project-text"]}</Text>
-                <Text>{file["developed-by"]}</Text>
+                <Heading as="h2" size='lg'>{t("about.project-heading")}</Heading>
+                <Text>{t("about.project-text")}</Text>
+                <Text>{t("about.project-developed-by")}</Text>
             </section>
             <section className={styles["about-section"]}>
-                <Heading as="h2" size='lg'>{file["used-tecnology-heading"]}</Heading>
+                <Heading as="h2" size='lg'>{t("about.used-tecnology-heading")}</Heading>
                 <div className={styles["icon-row"]}>
                     <SiReact size={55} color="#43ced8" />
                     <Text>React</Text>
@@ -34,7 +34,7 @@ export default function About(): JSX.Element {
                 </div>
             </section>
             <section className={styles["about-section"]}>
-                <Heading as="h2" size='lg'>{file["contacts-heading"]}</Heading>
+                <Heading as="h2" size='lg'>{t("about.contacts-heading")}</Heading>
                 <div className={styles["button-group"]}>
                     <a href="https://github.com/leonardo-tx" target="_blank">
                         <IoLogoGithub size={32} />
@@ -42,7 +42,7 @@ export default function About(): JSX.Element {
                     </a>
                     <a href="mailto:leonardoregoteixeira@gmail.com">
                         <IoMail size={32} />
-                        {file["email-anchor"]}
+                        {t("inputs.email-placeholder")}
                     </a>
                 </div>
             </section>

@@ -7,32 +7,32 @@ import { FaComputer, FaGamepad, FaUserGroup } from "react-icons/fa6";
 import { IoEarth } from "react-icons/io5";
 
 export default function GameSelection(): JSX.Element {
-    const { file } = useLang("play");
+    const { t } = useLang();
 
     return (
         <Container>
-                <Heading fontWeight={700} size="lg" as="h2">{file["title"]}</Heading>
+                <Heading fontWeight={700} size="lg" as="h2">{t("titles.play")}</Heading>
                 <FaGamepad size={50} />
                 <ButtonsContainer>
                     <MatchButton href="/play/online">
                         <IoEarth size={30} />
                         <VStack alignItems="flex-start">
-                            <Text>{file["online-mode-title"]}</Text>
-                            <Text fontWeight={300} fontSize="smaller">{file["online-mode-text"]}</Text>
+                            <Text>{t("play.online-mode-title")}</Text>
+                            <Text fontWeight={300} fontSize="smaller">{t("play.online-mode-text")}</Text>
                         </VStack>
                     </MatchButton>
                     <MatchButton href="/play/friend">
                         <FaUserGroup size={30} />
                         <VStack alignItems="flex-start">
-                            <Text>{file["friend-mode-title"]}</Text>
-                            <Text fontWeight={300} fontSize="smaller">{file["friend-mode-text"]}</Text>
+                            <Text>{t("play.friend-mode-title")}</Text>
+                            <Text fontWeight={300} fontSize="smaller">{t("play.friend-mode-text")}</Text>
                         </VStack>
                     </MatchButton>
                     <MatchButton href="/play/local">
                         <FaComputer size={30} />
                         <VStack alignItems="flex-start">
-                            <Text>{file["local-mode-title"]}</Text>
-                            <Text fontWeight={300} fontSize="smaller">{file["local-mode-text"]}</Text>
+                            <Text>{t("play.local-mode-title")}</Text>
+                            <Text fontWeight={300} fontSize="smaller">{t("play.local-mode-text")}</Text>
                         </VStack>
                     </MatchButton>
                 </ButtonsContainer>

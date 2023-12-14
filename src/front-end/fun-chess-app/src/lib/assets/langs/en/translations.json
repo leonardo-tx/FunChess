@@ -1,0 +1,94 @@
+{
+    "auth": {
+        "email-required": "Email is required.",
+        "email-invalid": "The email entered is not valid.",
+        "email-not-found": "Unable to find an account associated with the email.",
+        "email-conflict": "There is already an account associated with the email entered.",
+        "username-required": "Username is required",
+        "username-min-length": "The username must be at least 3 characters long.",
+        "username-max-length": "The username cannot exceed 20 characters.",
+        "password-incorrect": "Incorrect password.",
+        "password-required": "Password is required.",
+        "password-min-length": "The password must be at least 6 characters long.",
+        "password-conflict": "The password and confirm password fields must be the same.",
+        "confirm-password-required": "You need to confirm the password.",
+        "login-unknown-error": "Unable to sign in, please try again.",
+        "register-unknown-error": "Unable to sign up, please try again."
+    },
+    "home": {
+        "unauthorized-heading": "Play chess in a simple and easy way!"
+    },
+    "about": {
+        "project-heading": "About the project",
+        "project-text": "FunChess is a chess project that allows users to play with each other and learn more about the game in a fun way.",
+        "project-developed-by": "Developed by Leonardo Teixeira. © 2023 Copyright.",
+        "used-tecnology-heading": "Used technologies",
+        "contacts-heading": "Contacts"
+    },
+    "settings": {
+        "language-heading": "Change language"
+    },
+    "profile": {
+        "not-found-title": "Profile not found",
+        "found-title": "{0}",
+        "not-found-text": "The profile could not be found.",
+        "account-created": "Account created in: {0}",
+        "sent-request-text": "Friend request sent"
+    },
+    "friends": {
+        "friends-quantity": "Friends ({0})",
+        "received-quantity": "Invitations received ({0})",
+        "sent-quantity": "Invitations sent ({0})",
+        "friends-link": "Friends",
+        "invites-link": "Pending requests",
+        "chat-link": "Chat"
+    },
+    "play": {
+        "online-mode-title": "Online mode",
+        "online-mode-text": "Play a match against someone else",
+        "friend-mode-title": "Play with a friend",
+        "friend-mode-text": "Invite a friend from your list to play a game",
+        "local-mode-title": "Local mode",
+        "local-mode-text": "Play an offline match"
+    },
+    "buttons": {
+        "login": "Sign in",
+        "register": "Sign up",
+        "remove-friend": "Unfriend",
+        "add-friend-button": "Add to friends",
+        "accept-friend": "Accept friend request",
+        "cancel": "Cancel",
+        "ignore": "Ignore",
+        "accept": "Accept",
+        "send-message": "Send message",
+        "no-account": "Don't have an account? Sign up",
+        "with-account": "Already have an account? Sign in",
+        "play": "Play",
+        "play-loading": "Searching match"
+    },
+    "inputs": {
+        "email-placeholder": "Email",
+        "username-placeholder": "Username",
+        "password-placeholder": "Password",
+        "confirm-password-placeholder": "Confirm password",
+        "message-placeholder": "Type a message"
+    },
+    "alt": {
+        "brand-pawn": "Image of a smiling pawn",
+        "icon-profile": "{0}'s icon profile"
+    },
+    "titles": {
+        "home": "Home",
+        "about": "About",
+        "settings": "Settings",
+        "profile": "Profile",
+        "register": "Sign up",
+        "login": "Sign in",
+        "friends": "Friends list",
+        "friends-invites": "Invite list",
+        "friends-chat": "Online chat",
+        "play": "Play Chess",
+        "play-local": "Local mode",
+        "play-online": "Online mode"
+    }
+}

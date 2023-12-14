@@ -15,17 +15,17 @@ import useLang from "@/data/langs/hooks/useLang";
 
 export default function Register(): JSX.Element {
     const auth = useAuth();
-    const { file } = useLang("register");
+    const { t } = useLang();
     const router = useRouter();
     const { register, formState: { errors }, handleSubmit } = useForm<RegisterInitialForm>();
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const messageErrors = getFrontMessageErrors(file, errors);
+    const messageErrors = getFrontMessageErrors(t, errors);
 
     const onSubmit: SubmitHandler<RegisterInitialForm> = async (data: RegisterInitialForm): Promise<void> => {
         if (data.password !== data.checkPassword) {
-            setError(file["password-conflict"]);
+            setError(t("auth.password-conflict"));
             return;
         }
         setIsLoading(true);
@@ -40,15 +40,15 @@ export default function Register(): JSX.Element {
         }
         setIsLoading(false);
         if (registerResponse === StatusCodes.CONFLICT) {
-            setError(file["email-conflict"])
+            setError(t("auth.email-conflict"))
             return;
         }
-        setError(file["register-unknown-error"]);
+        setError(t("auth.register-unknown-error"));
     }
     
     return (
         <VStack onSubmit={handleSubmit(onSubmit)} as="form" h="70%" justifyContent="center" spacing={12}>
-            <Heading size="lg" as="h1">{file["title"]}</Heading>
+            <Heading size="lg" as="h1">{t("titles.register")}</Heading>
             <FormControl isInvalid={Object.keys(messageErrors).length > 0} display="flex" flexDir="column" gap={4} maxW="lg">
                 {error !== null && <Alert status='error'>
                     <AlertIcon />
@@ -59,7 +59,7 @@ export default function Register(): JSX.Element {
                     <Input
                         isInvalid={messageErrors.email !== undefined} 
                         variant="filled"
-                        placeholder={file["email-name"]}
+                        placeholder={t("inputs.email-placeholder")}
                         {...register("email", { required: true, pattern: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i })}
                     />
                     <FormErrorMessage alignSelf="flex-start">{messageErrors.email}</FormErrorMessage>
@@ -69,7 +69,7 @@ export default function Register(): JSX.Element {
                     <Input
                         isInvalid={messageErrors.username !== undefined}
                         variant="filled"
-                        placeholder={file["username-name"]}
+                        placeholder={t("inputs.username-placeholder")}
                         {...register("username", { required: true, minLength: 3, maxLength: 20 })}
                     />
                     <FormErrorMessage alignSelf="flex-start">{messageErrors.username}</FormErrorMessage>
@@ -80,7 +80,7 @@ export default function Register(): JSX.Element {
                         isInvalid={messageErrors.password !== undefined}
                         type="password" 
                         variant="filled"
-                        placeholder={file["password-name"]}
+                        placeholder={t("inputs.password-placeholder")}
                         {...register("password", { required: true, minLength: 6, maxLength: 128 })}
                     />
                     <FormErrorMessage alignSelf="flex-start">{messageErrors.password}</FormErrorMessage>
@@ -91,38 +91,38 @@ export default function Register(): JSX.Element {
                         isInvalid={messageErrors.checkPassword !== undefined}
                         type="password" 
                         variant="filled" 
-                        placeholder={file["confirm-password-name"]}
+                        placeholder={t("inputs.confirm-password-placeholder")}
                         {...register("checkPassword", { required: true })}
                     />
                     <FormErrorMessage alignSelf="flex-start">{messageErrors.checkPassword}</FormErrorMessage>
                 </InputGroup>
             </FormControl>
             <VStack spacing={4}>
-                <Button isLoading={isLoading} w="200px" type="submit" colorScheme="cyan">{file["register-button"]}</Button>
-                <Button onClick={() => router.push("/login")} colorScheme="cyan" variant="link">{file["with-account-button"]}</Button>
+                <Button isLoading={isLoading} w="200px" type="submit" colorScheme="cyan">{t("buttons.register")}</Button>
+                <Button onClick={() => router.push("/login")} colorScheme="cyan" variant="link">{t("buttons.with-account")}</Button>
             </VStack>
         </VStack>
     );
 }
 
-function getFrontMessageErrors(file: any, errors: FieldErrors<RegisterInitialForm>): { email?: string, password?: string, username?: string, checkPassword?: string } {
-    const messageErrors: { email?: string, password?: string, username?: string, checkPassword?: string } = {};
-
+function getFrontMessageErrors(t: (key: string, ...args: any[]) => string, errors: FieldErrors<RegisterInitialForm>): { email?: string, password?: string, username?: string, checkPassword?: string } {
+    const messageErrors: { email?: string, password?: string, username?: string, checkPassword?: string; } = { };
+    
     if (errors.email !== undefined) {
-        if (errors.email.type === "required") messageErrors.email = file["email-required"];
-        else if (errors.email.type === "pattern") messageErrors.email = file["email-invalid"];
+        if (errors.email.type === "required") messageErrors.email = t("auth.email-required");
+        else if (errors.email.type === "pattern") messageErrors.email = t("auth.email-invalid");
     }
     if (errors.password !== undefined) {
-        if (errors.password.type === "required") messageErrors.password = file["password-required"];
-        else if (errors.password.type === "minLength") messageErrors.password = file["password-min-length"];
+        if (errors.password.type === "required") messageErrors.password = t("auth.password-required");
+        else if (errors.password.type === "minLength") messageErrors.password = t("auth.password-min-length");
     }
     if (errors.username !== undefined) {
-        if (errors.username.type === "required") messageErrors.username = file["username-required"];
-        else if (errors.username.type === "minLength") messageErrors.username = file["username-min-length"]
-        else if (errors.username.type === "maxLength") messageErrors.username = file["username-max-length"];
+        if (errors.username.type === "required") messageErrors.username = t("auth.username-required");
+        else if (errors.username.type === "minLength") messageErrors.username = t("auth.username-min-length");
+        else if (errors.username.type === "maxLength") messageErrors.username = t("auth.username-max-length");
     }
     if (errors.checkPassword !== undefined) {
-        if (errors.checkPassword.type === "required") messageErrors.checkPassword = file["confirm-password-required"];
+        if (errors.checkPassword.type === "required") messageErrors.checkPassword = t("auth.confirm-password-required");
     }
     return messageErrors;
 }

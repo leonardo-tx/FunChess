@@ -5,12 +5,9 @@ import styled from "@emotion/styled";
 import { JSX, useState } from "react";
 import LocalChessBoard from "../components/LocalChessBoard";
 import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
-import useLang from "@/data/langs/hooks/useLang";
 
 export default function LocalPlay(): JSX.Element {
     const [board, setBoard] = useState(new Board());
-
-    useLang("play/local")
     
     return (
         <AuthorizeProvider>

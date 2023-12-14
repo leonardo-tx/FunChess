@@ -10,7 +10,6 @@ import Image from "next/image";
 import Link from "next/link";
 import FriendStatus from "@/core/friends/models/FriendStatus";
 import { StatusCodes } from "http-status-codes";
-import useTitle from "@/lib/shared/hooks/useTitle";
 import formatString from "@/lib/shared/utils/formatString";
 import useLang from "@/data/langs/hooks/useLang";
 
@@ -19,7 +18,7 @@ export default function FriendsInvites(): JSX.Element {
     const [receivedInvites, setReceivedInvites] = useState<Account[]>([]);
     const [deliveredInvites, setDeliveredInvites] = useState<Account[]>([]);
 
-    const { file } = useLang("friends/invites")
+    const { t } = useLang()
 
     useEffect(() => {
         const getInvites = async () => {
@@ -36,12 +35,12 @@ export default function FriendsInvites(): JSX.Element {
     return (
         <>
             {receivedInvites.length > 0 && <>
-                <Text>{formatString(file["received-quantity"], receivedInvites.length)}</Text>
+                <Text>{t("friends.received-quantity", receivedInvites.length)}</Text>
                 <VStack alignItems="stretch">
                     {receivedInvites.map(((invite, i) => (
                         <InviteBox key={invite.id}>
                             <ProfileLink href={`/profile?id=${invite.id}`}>
-                                <Image src={defaultIcon} alt={formatString(file["icon-profile-alt"], invite.username)} />
+                                <Image src={defaultIcon} alt={t("alt.icon-profile", invite.username)} />
                                 <Text>{invite.username}</Text>
                             </ProfileLink>
                             <HStack spacing={4} justifyContent="flex-end">
@@ -52,7 +51,7 @@ export default function FriendsInvites(): JSX.Element {
                                     newInvites.splice(i, 1);
                                     setReceivedInvites(newInvites);
                                 })}>
-                                    {file["accept-button"]}
+                                    {t("buttons.accept")}
                                 </Button>
                                 <Button onClick={() => friendshipFetcher.declineInvite(invite.id).then((response) => {
                                     if (response.status !== StatusCodes.OK) return;
@@ -61,7 +60,7 @@ export default function FriendsInvites(): JSX.Element {
                                     newInvites.splice(i, 1);
                                     setReceivedInvites(newInvites);
                                 })}>
-                                    {file["ignore-button"]}
+                                    {t("buttons.ignore")}
                                 </Button>
                             </HStack>
                         </InviteBox>
@@ -69,12 +68,12 @@ export default function FriendsInvites(): JSX.Element {
                 </VStack>
             </>}
             {deliveredInvites.length > 0 && <>
-                <Text>{formatString(file["sent-quantity"], deliveredInvites.length)}</Text>
+                <Text>{t("friends.sent-quantity", deliveredInvites.length)}</Text>
                 <VStack alignItems="stretch">
                     {deliveredInvites.map(((invite, i) => (
                         <InviteBox key={invite.id}>
                             <ProfileLink href={`/profile?id=${invite.id}`}>
-                                <Image src={defaultIcon} alt={formatString(file["icon-profile-alt"], invite.username)} />
+                                <Image src={defaultIcon} alt={t("alt.icon-profile", invite.username)} />
                                 <Text>{invite.username}</Text>
                             </ProfileLink>
                             <HStack justifyContent="flex-end">
@@ -85,7 +84,7 @@ export default function FriendsInvites(): JSX.Element {
                                     newInvites.splice(i, 1);
                                     setDeliveredInvites(newInvites);
                                 })}>
-                                    {file["cancel-button"]}
+                                    {t("buttons.cancel")}
                                 </Button>
                             </HStack>
                         </InviteBox>
