@@ -15,7 +15,7 @@ export default function useAuth(): {
     login: (form: LoginForm) => Promise<StatusCodes>
     register: (form: RegisterForm) => Promise<StatusCodes>
     deleteAccount: (form: UpdateForm) => Promise<StatusCodes>,
-    update: (form: UpdateForm) => Promise<StatusCodes>
+    update: (form: UpdateForm) => Promise<StatusCodes>,
 } {
     const [currentAccount, setCurrentAccount] = useAtom(accountAtom);
     const authenticated = currentAccount !== null;
@@ -36,6 +36,8 @@ export default function useAuth(): {
         const currentAccountResponse = await getCurrentAccount();
         if (currentAccountResponse.status === StatusCodes.OK) {
             setCurrentAccount(currentAccountResponse.result!);
+        } else {
+            setCurrentAccount(null);
         }
         return currentAccountResponse.status;
     }
@@ -68,6 +70,8 @@ export default function useAuth(): {
         const currentAccountResponse = await getCurrentAccount();
         if (currentAccountResponse.status === StatusCodes.OK) {
             setCurrentAccount(currentAccountResponse.result!);
+        } else {
+            setCurrentAccount(null);
         }
         return currentAccountResponse.status;
     }
