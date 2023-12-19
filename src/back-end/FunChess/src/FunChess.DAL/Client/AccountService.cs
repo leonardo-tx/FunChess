@@ -26,7 +26,7 @@ public sealed class AccountService : GenericDbService, IAccountService
 
     public async Task<bool> DeleteAsync(Account account, DeleteAccountForm form)
     {
-        if (form.CurrentPassword is null || account.VerifyPassword(form.CurrentPassword, _passwordSettings.Pepper)) return false;
+        if (form.CurrentPassword is null || !account.VerifyPassword(form.CurrentPassword, _passwordSettings.Pepper)) return false;
         
         IEnumerable<Friendship> friendships = Context.Friendships.Where(friendship => friendship.FriendId == account.Id);
         IEnumerable<FriendshipRequest> requests = Context.FriendshipRequests.Where(request => request.FriendId == account.Id);
@@ -46,10 +46,11 @@ public sealed class AccountService : GenericDbService, IAccountService
         if (account is null || form.CurrentPassword is null) return false;
         if (!account.VerifyPassword(form.CurrentPassword, _passwordSettings.Pepper)) return false;
         
+        Task updateEmail = UpdateEmailAsync(account, form.Email);
         UpdateUsername(account, form.Username);
-        UpdateEmail(account, form.Email);
         UpdatePassword(account, form.Password);
-
+        await updateEmail;
+            
         Context.Accounts.Update(account);
         await Context.SaveChangesAsync();
 
@@ -71,10 +72,13 @@ public sealed class AccountService : GenericDbService, IAccountService
         account.Username = username;
     }
 
-    private static void UpdateEmail(Account account, string? email)
+    private async Task UpdateEmailAsync(Account account, string? email)
     {
-        if (email is null) return;
-
+        if (email is null || email == account.Email) return;
+        if (await Context.Accounts.AnyAsync(a => a.Email == email))
+        {
+            throw new ArgumentException("The provided email is already in use.");
+        }
         account.Email = email;
     }
 

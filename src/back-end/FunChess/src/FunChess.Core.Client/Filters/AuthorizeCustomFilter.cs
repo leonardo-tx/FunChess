@@ -27,15 +27,24 @@ public sealed class AuthorizeCustomFilter : IAsyncAuthorizationFilter
         }
 
         JwtSecurityToken? jwtToken = _tokenService.GetTokenValidationResult(accessToken);
-        if (jwtToken == null)
+        if (jwtToken is null)
         {
             context.Result = new UnauthorizedObjectResult(new ApiResponse(message: "The 'access_token' is invalid."));
             return;
         }
+        
         string? id = jwtToken.Claims.FirstOrDefault(x => x.Type == "nameid")?.Value;
-        if (id == null || !ulong.TryParse(id, out ulong ulongId) || !await _accountService.ExistsAsync(ulongId))
+        string? email = jwtToken.Claims.FirstOrDefault(x => x.Type == "email")?.Value;
+        if (id is null || email is null || !ulong.TryParse(id, out ulong ulongId))
         {
-            context.Result = new UnauthorizedObjectResult(new ApiResponse(message: "The name identifier from 'access_token' is invalid."));
+            context.Result = new UnauthorizedObjectResult(new ApiResponse(message: "The 'access_token' is invalid."));
+            return;
+        }
+        
+        Account? account = await _accountService.FindAsync(ulongId);
+        if (account is null || account.Email != email || account.Id != ulongId)
+        {
+            context.Result = new UnauthorizedObjectResult(new ApiResponse(message: "The 'access_token' is invalid."));
         }
     }
 }
