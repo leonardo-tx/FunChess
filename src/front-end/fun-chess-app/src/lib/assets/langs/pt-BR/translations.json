@@ -26,7 +26,13 @@
         "contacts-heading": "Contatos"
     },
     "settings": {
-        "language-heading": "Alterar idioma"
+        "language-heading": "Alterar idioma",
+        "account-heading": "Configurações de conta",
+        "account-update-heading": "Atualizar dados da conta",
+        "account-delete-heading": "Apagar meus dados",
+        "confirmation-heading": "Confirme a ação com sua senha atual",
+        "update-unknown-error": "Não foi possível atualizar a conta.",
+        "delete-unknown-error": "Não foi possível deletar a conta."
     },
     "profile": {
         "not-found-title": "Perfil não encontrado",
@@ -60,22 +66,34 @@
         "cancel": "Cancelar",
         "ignore": "Ignorar",
         "accept": "Aceitar",
+        "update": "Atualizar",
+        "confirm": "Confirmar",
         "send-message": "Enviar mensagem",
         "no-account": "Não possui uma conta? Cadastre-se",
         "with-account": "Já possui uma conta? Entre aqui",
         "play": "Jogar",
-        "play-loading": "Procurando partida"
+        "play-loading": "Procurando partida",
+        "delete-account": "Deletar minha conta"
     },
     "inputs": {
         "email-placeholder": "E-mail",
         "username-placeholder": "Nome de usuário",
         "password-placeholder": "Senha",
         "confirm-password-placeholder": "Confirmar senha",
-        "message-placeholder": "Digite uma mensagem"
+        "message-placeholder": "Digite uma mensagem",
+        "current-password-placeholder": "Senha atual"
     },
     "alt": {
-        "brand-pawn": "Imagem de um peão sorridente",
-        "icon-profile": "Ícone de perfil de {0}"
+        "brand-pawn": "Logo do FunChess, um peão sorridente",
+        "icon-profile": "Ícone de perfil de {0}",
+        "nav-icon-play": "Um ícone de controle de jogo",
+        "nav-icon-home": "Um ícone de casa",
+        "nav-icon-about": "Um ícone de informação",
+        "nav-icon-settings": "Um ícone de configuração",
+        "nav-icon-profile": "Um ícone de usuário",
+        "nav-icon-friends": "Um ícone de grupo de usuários",
+        "nav-icon-more": "Um ícone de \"ver mais\"",
+        "nav-icon-logout": "Um ícone de logout"
     },
     "titles": {
         "home": "Início",

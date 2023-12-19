@@ -16,7 +16,7 @@
         "register-unknown-error": "サインアップできません。もう一度お試しください。"
     },
     "home": {
-        "unauthorized-heading": "単純で簡単な方法でチェスをプレイしましょう！"
+        "unauthorized-heading": "単純で簡単な方法でチェスをプレイして下さい！"
     },
     "about": {
         "project-heading": "企画について",
@@ -26,7 +26,13 @@
         "contacts-heading": "お問い合わせ先"
     },
     "settings": {
-        "language-heading": "言語を変更"
+        "language-heading": "言語を変更",
+        "account-heading": "アカウント設定",
+        "account-update-heading": "アカウントの詳細を更新する",
+        "account-delete-heading": "私のデータを削除する",
+        "confirmation-heading": "現在のパスワードでアクションを確認して下さい",
+        "update-unknown-error": "アカウントを更新できません。",
+        "delete-unknown-error": "アカウントを削除できません。"
     },
     "profile": {
         "not-found-title": "見つかりません",
@@ -60,18 +66,34 @@
         "cancel": "中止",
         "ignore": "無視",
         "accept": "受諾",
+        "update": "更新",
+        "confirm": "確認",
         "send-message": "メッセージ",
         "no-account": "アカウントをお持ちではありませんか? サインアップ",
         "with-account": "アカウントをお持ちですか? サインイン",
         "play": "プレイ",
-        "play-loading": "マッチを探しています"
+        "play-loading": "マッチを探しています",
+        "delete-account": "アカウントを削除します"
     },
     "inputs": {
         "email-placeholder": "電子メール",
         "username-placeholder": "ユーザー名",
         "password-placeholder": "パスワード",
         "confirm-password-placeholder": "パスワードを確認",
-        "message-placeholder": "メッセージを入力"
+        "message-placeholder": "メッセージを入力",
+        "current-password-placeholder": "現在のパスワード"
+    },
+    "alt": {
+        "brand-pawn": "FunChess のロゴ、笑顔のポーン",
+        "icon-profile": "{0}のプロフィールアイコン",
+        "nav-icon-play": "ゲームコントローラーアイコン",
+        "nav-icon-home": "ホームアイコン",
+        "nav-icon-about": "情報アイコン",
+        "nav-icon-settings": "設定アイコン",
+        "nav-icon-profile": "ユーザーアイコン",
+        "nav-icon-friends": "ユーザーのグループアイコン",
+        "nav-icon-more": "「もっと見る」アイコン",
+        "nav-icon-logout": "ログアウトアイコン"
     },
     "titles": {
         "home": "ホーム",

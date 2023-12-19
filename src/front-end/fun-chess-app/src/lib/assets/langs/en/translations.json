@@ -26,7 +26,13 @@
         "contacts-heading": "Contacts"
     },
     "settings": {
-        "language-heading": "Change language"
+        "language-heading": "Change language",
+        "account-heading": "Account settings",
+        "account-update-heading": "Update account information",
+        "account-delete-heading": "Delete my data",
+        "confirmation-heading": "Confirm the action with your current password",
+        "update-unknown-error": "Unable to update the account.",
+        "delete-unknown-error": "Unable to delete the account."
     },
     "profile": {
         "not-found-title": "Profile not found",
@@ -60,22 +66,34 @@
         "cancel": "Cancel",
         "ignore": "Ignore",
         "accept": "Accept",
+        "update": "Update",
+        "confirm": "Confirm",
         "send-message": "Send message",
         "no-account": "Don't have an account? Sign up",
         "with-account": "Already have an account? Sign in",
         "play": "Play",
-        "play-loading": "Searching match"
+        "play-loading": "Searching match",
+        "delete-account": "Delete my account"
     },
     "inputs": {
         "email-placeholder": "Email",
         "username-placeholder": "Username",
         "password-placeholder": "Password",
         "confirm-password-placeholder": "Confirm password",
-        "message-placeholder": "Type a message"
+        "message-placeholder": "Type a message",
+        "current-password-placeholder": "Current password"
     },
     "alt": {
-        "brand-pawn": "Image of a smiling pawn",
-        "icon-profile": "{0}'s icon profile"
+        "brand-pawn": "FunChess logo, a smiling pawn",
+        "icon-profile": "{0}'s icon profile",
+        "nav-icon-play": "A game controller icon",
+        "nav-icon-home": "A home icon",
+        "nav-icon-about": "An info icon",
+        "nav-icon-settings": "A settings icon",
+        "nav-icon-profile": "An user icon",
+        "nav-icon-friends": "A group of users icon",
+        "nav-icon-more": "A \"see more\" icon",
+        "nav-icon-logout": "An logout icon"
     },
     "titles": {
         "home": "Home",
