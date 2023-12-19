@@ -4,8 +4,10 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
+}
 
-    @media only screen and (max-width: 768px) {
+@media only screen and (max-width: 768px) {
+    .main {
         padding: 4px;
     }
 }

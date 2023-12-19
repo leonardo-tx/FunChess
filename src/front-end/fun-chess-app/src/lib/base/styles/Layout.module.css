@@ -6,8 +6,10 @@
     grid-template-rows: 1fr;
     grid-template-columns: 80px 1fr;
     min-height: 100vh;
+}
 
-    @media only screen and (max-width: 768px) {
+@media only screen and (max-width: 768px) {
+    .layout {
         grid-template-rows: 50px 1fr;
         grid-template-columns: 1fr;
         grid-template-areas:

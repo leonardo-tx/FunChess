@@ -17,10 +17,6 @@
     color: inherit;
     border: none;
     cursor: pointer;
-
-    @media only screen and (min-width: 769px) {
-        display: none;
-    }
 }
 
 .sidebar-open-button:hover:not(:active) {
@@ -29,4 +25,10 @@
 
 .sidebar-open-button:active {
     background-color: #3d3e4d;
+}
+
+@media only screen and (min-width: 769px) {
+    .sidebar-open-button {
+        display: none;
+    }
 }
