@@ -1,8 +1,7 @@
 using FunChess.Core.Client;
 using FunChess.Core.Client.Forms;
+using FunChess.Core.Client.Mappers;
 using FunChess.Core.Client.Services;
-using FunChess.Core.Client.Settings;
-using Microsoft.Extensions.Options;
 
 namespace FunChess.API.Loaders;
 
@@ -10,16 +9,16 @@ public sealed class AccountLoader : LoaderBase
 {
     private const string FilePath = "LoaderFiles/accounts.dat";
     
-    public AccountLoader(IAccountService accountService, IOptions<PasswordSettings> passwordSettings, ILogger<AccountLoader> logger)
+    public AccountLoader(IAccountService accountService, AccountMapper accountMapper, ILogger<AccountLoader> logger)
     {
         _accountService = accountService;
-        _passwordSettings = passwordSettings.Value;
+        _accountMapper = accountMapper;
         _logger = logger;
     }
 
     private readonly ILogger<AccountLoader> _logger;
     private readonly IAccountService _accountService;
-    private readonly PasswordSettings _passwordSettings;
+    private readonly AccountMapper _accountMapper;
     
     public override async Task ExecuteAsync()
     {
@@ -51,7 +50,7 @@ public sealed class AccountLoader : LoaderBase
             Username = accountInfo[1], 
             Password = accountInfo[2]
         };
-        Account account = new Account(accountForm, _passwordSettings.Pepper);
+        Account account = _accountMapper.ToAccount(accountForm);
             
         if (await _accountService.FindAsync(account.Email) is not null)
         {

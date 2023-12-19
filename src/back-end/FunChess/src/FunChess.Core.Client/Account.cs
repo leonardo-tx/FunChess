@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using FunChess.Core.Client.Dtos;
 using FunChess.Core.Client.Forms;
 using Microsoft.EntityFrameworkCore;
 

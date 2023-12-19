@@ -3,27 +3,26 @@ using FunChess.Core.Client.Attributes;
 using FunChess.Core.Client.Enums;
 using FunChess.Core.Client.Extensions;
 using FunChess.Core.Client.Forms;
+using FunChess.Core.Client.Mappers;
 using FunChess.Core.Client.Services;
-using FunChess.Core.Client.Settings;
 using FunChess.Core.Responses;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace FunChess.API.Controllers;
 
 [ApiController, Route("Api/[controller]/[action]")]
 public sealed class AuthController : ControllerBase
 {
-    public AuthController(IAccountService accountService, ITokenService tokenService, IOptions<PasswordSettings> passwordSettings)
+    public AuthController(IAccountService accountService, ITokenService tokenService, AccountMapper accountMapper)
     {
         _accountService = accountService;
         _tokenService = tokenService;
-        _passwordSettings = passwordSettings.Value;
+        _accountMapper = accountMapper;
     }
 
     private readonly IAccountService _accountService;
     private readonly ITokenService _tokenService;
-    private readonly PasswordSettings _passwordSettings;
+    private readonly AccountMapper _accountMapper;
     
     [HttpPost]
     public async Task<IActionResult> Register([FromBody] AccountForm form)
@@ -31,7 +30,7 @@ public sealed class AuthController : ControllerBase
         Account account;
         try
         {
-            account = new Account(form, _passwordSettings.Pepper);
+            account = _accountMapper.ToAccount(form);
         }
         catch (ArgumentException ex)
         {
@@ -58,7 +57,7 @@ public sealed class AuthController : ControllerBase
         
         if (account is null) 
             return NotFound(new ApiResponse(message: "The email was not found."));
-        if (!account.VerifyPassword(form.Password!, _passwordSettings.Pepper))
+        if (!_accountService.VerifyPassword(account, form.Password!))
             return Unauthorized(new ApiResponse(message: "Incorrect password."));
             
         string token = _tokenService.GenerateAccessToken(account);
@@ -77,15 +76,31 @@ public sealed class AuthController : ControllerBase
         return Ok();
     }
 
-    [HttpDelete, AuthorizeCustom]
-    public async Task<IActionResult> Delete()
+    [HttpPut, AuthorizeCustom]
+    public async Task<IActionResult> Update([FromBody] UpdateAccountForm form)
     {
-        return BadRequest("The method was not implemented completely.");
+        ulong id = User.GetAccountId();
+        try
+        {
+            if (!await _accountService.UpdateAsync(id, form)) return Unauthorized(new ApiResponse(message: "The account doesn't exist or incorrect password."));
+            return Ok();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new ApiResponse(message: ex.Message));
+        }
+    }
+
+    [HttpDelete, AuthorizeCustom]
+    public async Task<IActionResult> Delete([FromBody] DeleteAccountForm form)
+    {
         ulong id = User.GetAccountId();
         Account account = (await _accountService.FindAsync(id))!;
-        
-        await _accountService.DeleteAsync(account);
-        
+
+        if (!await _accountService.DeleteAsync(account, form))
+        {
+            return Unauthorized(new ApiResponse(message: "Incorrect password."));
+        }
         Response.Cookies.Delete("access_token");
         return Ok();
     }

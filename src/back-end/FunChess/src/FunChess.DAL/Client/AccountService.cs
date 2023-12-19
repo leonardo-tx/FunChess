@@ -1,4 +1,3 @@
-using System.Net;
 using FunChess.Core.Client;
 using FunChess.Core.Client.Forms;
 using FunChess.Core.Client.Services;
@@ -25,57 +24,58 @@ public sealed class AccountService : GenericDbService, IAccountService
         await Context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Account account)
+    public async Task<bool> DeleteAsync(Account account, DeleteAccountForm form)
     {
+        if (form.CurrentPassword is null || account.VerifyPassword(form.CurrentPassword, _passwordSettings.Pepper)) return false;
+        
+        IEnumerable<Friendship> friendships = Context.Friendships.Where(friendship => friendship.FriendId == account.Id);
+        IEnumerable<FriendshipRequest> requests = Context.FriendshipRequests.Where(request => request.FriendId == account.Id);
+        
+        Context.Friendships.RemoveRange(friendships);
+        Context.FriendshipRequests.RemoveRange(requests);
         Context.Accounts.Remove(account);
+        
         await Context.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<HttpStatusCode> UpdateAsync(Account account, AccountForm form)
+    public async Task<bool> UpdateAsync(ulong id, UpdateAccountForm form)
     {
-        bool hasChanges;
-        try
-        {
-            hasChanges = UpdateUsername(account, form.Username) | 
-                         UpdateEmail(account, form.Email) |
-                         UpdatePassword(account, form.Password);
-        }
-        catch (ArgumentException)
-        {
-            return HttpStatusCode.BadRequest;
-        }
-        if (!hasChanges) return HttpStatusCode.NotModified;
+        Account? account = await Context.Accounts.FindAsync(id);
+        
+        if (account is null || form.CurrentPassword is null) return false;
+        if (!account.VerifyPassword(form.CurrentPassword, _passwordSettings.Pepper)) return false;
+        
+        UpdateUsername(account, form.Username);
+        UpdateEmail(account, form.Email);
+        UpdatePassword(account, form.Password);
 
         Context.Accounts.Update(account);
         await Context.SaveChangesAsync();
 
-        return HttpStatusCode.OK;
+        return true;
     }
 
-    private bool UpdatePassword(Account account, string? password)
+    private void UpdatePassword(Account account, string? password)
     {
-        if (password is null) return false;
+        if (password is null) return;
         
         string newPassword = Account.GeneratePasswordHash(password, _passwordSettings.Pepper);
         account.PasswordHash = newPassword;
-
-        return true;
     }
 
-    private static bool UpdateUsername(Account account, string? username)
+    private static void UpdateUsername(Account account, string? username)
     {
-        if (username is null) return false;
+        if (username is null) return;
         
         account.Username = username;
-        return true;
     }
 
-    private static bool UpdateEmail(Account account, string? email)
+    private static void UpdateEmail(Account account, string? email)
     {
-        if (email is null) return false;
+        if (email is null) return;
 
         account.Email = email;
-        return true;
     }
 
     public async Task<Account?> FindAsync(ulong id)
@@ -96,5 +96,10 @@ public sealed class AccountService : GenericDbService, IAccountService
     public async Task<bool> ExistsAsync(string email)
     {
         return await Context.Accounts.AnyAsync(account => account.Email == email);
+    }
+
+    public bool VerifyPassword(Account account, string password)
+    {
+        return account.VerifyPassword(password, _passwordSettings.Pepper);
     }
 }

@@ -1,6 +1,5 @@
 "use client"
 
-import useAuth from "@/data/auth/hooks/useAuth";
 import styled from "@emotion/styled";
 import { JSX } from "react";
 import DummyChessBoard from "./components/DummyChessBoard";
