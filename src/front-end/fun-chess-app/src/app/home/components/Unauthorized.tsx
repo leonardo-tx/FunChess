@@ -13,7 +13,7 @@ export default function Unauthorized(): JSX.Element {
     return (
         <section className={styles["home-main"]}>
             <VStack textAlign="center">
-                <Image alt="Imagem de um peão sorridente" src={pawn} />
+                <Image alt={t("alt.brand-pawn")} src={pawn} />
                 <Heading as="h1" size="xl">{t("home.unauthorized-heading")}</Heading>
             </VStack>
             <div className={styles["button-group"]}>

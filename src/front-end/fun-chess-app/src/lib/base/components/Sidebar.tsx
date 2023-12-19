@@ -10,6 +10,7 @@ import MenuLinkItem from "./MenuLinkItem";
 import useAuth from "@/data/auth/hooks/useAuth";
 import MenuListItem from "./MenuListItem";
 import MenuButtonItem from "./MenuButtonItem";
+import useLang from "@/data/langs/hooks/useLang";
 
 interface Props {
     closed: boolean;
@@ -18,6 +19,7 @@ interface Props {
 
 export default function Sidebar({ closed, onClose }: Props): JSX.Element {
     const { authenticated, currentAccount, logout } = useAuth();
+    const { t } = useLang();
 
     const ref = useRef<HTMLElement>(null);
 
@@ -41,30 +43,30 @@ export default function Sidebar({ closed, onClose }: Props): JSX.Element {
         <nav className={sidebarStyles} ref={ref}>
             <div className={styles["sidebar-header"]}>
                 <Link href="/">
-                    <Image alt="Logo do site" height={45} src={pawn} />
+                    <Image alt={t("alt.brand-pawn")} height={45} src={pawn} />
                 </Link>
             </div>
             <ul className={styles["sidebar-menu"]}>
                 {authenticated ? 
                     <>
-                        <MenuLinkItem icon={<IoGameController />} href="/play" />
-                        <MenuLinkItem icon={<FaUserGroup />} href="/friends" />
-                        <MenuLinkItem icon={<FaUser />} href={`/profile?id=${currentAccount!.id}`} />
-                        <MenuListItem closed={closed} icon={<BsThreeDots />}>
+                        <MenuLinkItem icon={<IoGameController aria-label={t("alt.nav-icon-play")} />} href="/play" />
+                        <MenuLinkItem icon={<FaUserGroup aria-label={t("alt.nav-icon-friends")} />} href="/friends" />
+                        <MenuLinkItem icon={<FaUser aria-label={t("alt.nav-icon-profile")} />} href={`/profile?id=${currentAccount!.id}`} />
+                        <MenuListItem closed={closed} icon={<BsThreeDots aria-label={t("alt.nav-icon-more")} />}>
                             <MenuButtonItem 
-                                icon={<IoExitOutline />} 
+                                icon={<IoExitOutline aria-label={t("alt.nav-icon-logout")} />} 
                                 onClick={logout}
                             />
                         </MenuListItem>
                     </> :
                     <>
-                        <MenuLinkItem icon={<IoHome />} href="/" />
-                        <MenuLinkItem icon={<IoInformationCircle />} href="/about" />
+                        <MenuLinkItem icon={<IoHome aria-label={t("alt.nav-icon-home")} />} href="/" />
+                        <MenuLinkItem icon={<IoInformationCircle aria-label={t("alt.nav-icon-about")} />} href="/about" />
                     </>
                 }
             </ul>
             <ul className={styles["sidebar-menu"]}>
-                <MenuLinkItem icon={<IoSettings />} href="/settings" />
+                <MenuLinkItem icon={<IoSettings aria-label={t("alt.nav-icon-settings")} />} href="/settings" />
             </ul>
         </nav>
     );
