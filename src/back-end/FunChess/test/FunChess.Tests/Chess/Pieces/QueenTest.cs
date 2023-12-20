@@ -15,9 +15,9 @@ public sealed class QueenTest
         Position whiteQueen = new(0, 4);
 
         // White queen
-        for (int y = 0; y < BoardConstants.Length; y++)
+        for (byte y = 0; y < BoardConstants.Length; y++)
         {
-            for (int x = 0; x < BoardConstants.Length; x++)
+            for (byte x = 0; x < BoardConstants.Length; x++)
             {
                 Position nextMove = new(y, x);
                 Assert.False(board.PieceCanMove(new Move(whiteQueen, nextMove)));
@@ -26,9 +26,9 @@ public sealed class QueenTest
         board.MovePiece(new Move(new Position(1, 0), new Position(2, 0)));
 
         // Black queen
-        for (int y = 0; y < BoardConstants.Length; y++)
+        for (byte y = 0; y < BoardConstants.Length; y++)
         {
-            for (int x = 0; x < BoardConstants.Length; x++)
+            for (byte x = 0; x < BoardConstants.Length; x++)
             {
                 Position nextMove = new(y, x);
                 Assert.False(board.PieceCanMove(new Move(blackQueen, nextMove)));

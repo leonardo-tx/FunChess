@@ -22,7 +22,7 @@ public abstract class Piece : IEquatable<Piece>
         Value = key;
         ChessPieces.Add(key, this);
     }
-    
+
     private byte Value { get; }
 
     public abstract bool Move(Board board, Move move);

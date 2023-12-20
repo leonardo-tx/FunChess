@@ -9,10 +9,10 @@ public sealed class MoveTest
     [Fact]
     public void ValidateAllMoves()
     {
-        for (int i = 0; i < BoardConstants.TotalSize; i++)
+        for (byte i = 0; i < BoardConstants.TotalSize; i++)
         {
             Position previousPosition = new(i);
-            for (int j = 0; j < BoardConstants.TotalSize; j++)
+            for (byte j = 0; j < BoardConstants.TotalSize; j++)
             {
                 Position nextPosition = new(j);
                 Move move = new(previousPosition, nextPosition);

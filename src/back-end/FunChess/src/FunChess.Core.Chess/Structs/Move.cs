@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace FunChess.Core.Chess.Structs;
 
@@ -39,8 +38,8 @@ public readonly struct Move
             ++index;
         }
         if (index + 1 == span.Length) return false;
-        if (!int.TryParse(span[..index], out int previous)) return false;
-        if (!int.TryParse(span.Slice(index + 1, span.Length - index - 1), out int next)) return false;
+        if (!byte.TryParse(span[..index], out byte previous)) return false;
+        if (!byte.TryParse(span.Slice(index + 1, span.Length - index - 1), out byte next)) return false;
 
         try
         {

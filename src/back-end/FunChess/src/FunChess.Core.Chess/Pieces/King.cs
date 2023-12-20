@@ -15,6 +15,7 @@ internal sealed class King : Piece
         board.InternalBoard[move.Next.Index] = board.InternalBoard[move.Previous.Index];
         board.InternalBoard[move.Previous.Index] = Cell.Empty;
         board.Teams[board.Turn].CastlingPlays = CastlingPlay.None;
+        board.Teams[board.Turn].KingPosition = move.Next;
         
         switch (specialMove)
         {
@@ -65,16 +66,16 @@ internal sealed class King : Piece
                 if ((possiblePlays & CastlingPlay.RightCastling) == CastlingPlay.None) return false;
                 if (!board.InternalBoard.CheckEast(move)) return false;
 
-                previous = new Position(board.Turn == Team.White ? 7 : 63);
-                next = new Position(board.Turn == Team.White ? 5 : 61);
+                previous = new Position(board.Turn == Team.White ? (byte)7 : (byte)63);
+                next = new Position(board.Turn == Team.White ? (byte)5 : (byte)61);
                 return Rook.MoveIsValid(board, new Move(previous, next), out _);
             case -2:
                 specialMove = SpecialMove.LeftCastling;
                 if ((possiblePlays & CastlingPlay.LeftCastling) == CastlingPlay.None) return false;
                 if (!board.InternalBoard.CheckWest(move)) return false;
 
-                previous = new Position(board.Turn == Team.White ? 0 : 56);
-                next = new Position(board.Turn == Team.White ? 3 : 59);
+                previous = new Position(board.Turn == Team.White ? (byte)0 : (byte)56);
+                next = new Position(board.Turn == Team.White ? (byte)3 : (byte)59);
                 return Rook.MoveIsValid(board, new Move(previous, next), out _);
         }
         return false;

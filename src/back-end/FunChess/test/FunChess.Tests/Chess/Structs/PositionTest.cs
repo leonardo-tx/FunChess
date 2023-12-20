@@ -8,7 +8,7 @@ public sealed class PositionTest
     [Fact]
     public void ValidateIndexConstructor()
     {
-        for (int i = 0; i < BoardConstants.TotalSize; i++)
+        for (byte i = 0; i < BoardConstants.TotalSize; i++)
         {
             Position position = new(i);
 
@@ -24,9 +24,9 @@ public sealed class PositionTest
     [Fact]
     public void ValidateCoordsConstructor()
     {
-        for (int y = 0; y < BoardConstants.Length; y++)
+        for (byte y = 0; y < BoardConstants.Length; y++)
         {
-            for (int x = 0; x < BoardConstants.Length; x++)
+            for (byte x = 0; x < BoardConstants.Length; x++)
             {
                 Position position = new(y, x);
                 int index = y * BoardConstants.Length + x;

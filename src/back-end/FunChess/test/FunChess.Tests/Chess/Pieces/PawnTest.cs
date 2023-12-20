@@ -12,10 +12,10 @@ public sealed class PawnTest
         Board board = new();
 
         // White pawns
-        for (int x = 0; x < BoardConstants.Length; x++)
+        for (byte x = 0; x < BoardConstants.Length; x++)
         {
             Position pawnToMove = new(1, x);
-            for (int y = 2; y < BoardConstants.Length; y++)
+            for (byte y = 2; y < BoardConstants.Length; y++)
             {
                 Position nextMove = new(y, x);
                 if (y <= 3)
@@ -29,12 +29,12 @@ public sealed class PawnTest
         board.MovePiece(new Move(new Position(1, 0), new Position(2, 0)));
 
         // Black pawns
-        for (int x = 0; x < BoardConstants.Length; x++)
+        for (byte x = 0; x < BoardConstants.Length; x++)
         {
             Position pawnToMove = new(6, x);
             for (int y = 5; y >= BoardConstants.MinIndex; y--)
             {
-                Position nextMove = new(y, x);
+                Position nextMove = new((byte)y, x);
                 if (y >= 4)
                 {
                     Assert.True(board.PieceCanMove(new Move(pawnToMove, nextMove)));

@@ -12,9 +12,9 @@ public sealed class KnightTest
         Board board = new();
 
         // White knights
-        for (int y = 0; y < BoardConstants.Length; y++)
+        for (byte y = 0; y < BoardConstants.Length; y++)
         {
-            for (int x = 0; x < BoardConstants.Length; x++)
+            for (byte x = 0; x < BoardConstants.Length; x++)
             {
                 Position nextMove = new(y, x);
                 if (y == 2 && (x == 0 || x == 2))
@@ -36,9 +36,9 @@ public sealed class KnightTest
         board.MovePiece(new Move(new Position(1, 0), new Position(2, 0)));
 
         // Black knights
-        for (int y = 0; y < BoardConstants.Length; y++)
+        for (byte y = 0; y < BoardConstants.Length; y++)
         {
-            for (int x = 0; x < BoardConstants.Length; x++)
+            for (byte x = 0; x < BoardConstants.Length; x++)
             {
                 Position nextMove = new(y, x);
                 if (y == 5 && (x == 0 || x == 2))

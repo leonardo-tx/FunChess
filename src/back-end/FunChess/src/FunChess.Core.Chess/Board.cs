@@ -11,8 +11,8 @@ public sealed class Board
         InternalBoard = BoardConstants.GenerateDefaultBoard();
         Teams = new Dictionary<Team, DetailedTeam>
         {
-            { Team.White, new DetailedTeam() },
-            { Team.Black, new DetailedTeam() }
+            { Team.White, new DetailedTeam(Team.White) },
+            { Team.Black, new DetailedTeam(Team.Black) }
         };
     }
 
@@ -58,7 +58,11 @@ public sealed class Board
         InternalBoard[move.Next.Index] = selectedCell;
         InternalBoard[move.Previous.Index] = Cell.Empty;
 
+        bool isKing = selectedCell.Piece == Piece.King;
+
+        if (isKing) Teams[Turn].KingPosition = move.Next;
         bool kingInCheck = KingInCheck();
+        if (isKing) Teams[Turn].KingPosition = move.Previous;
         
         InternalBoard[move.Next.Index] = targetCell;
         InternalBoard[move.Previous.Index] = selectedCell;
@@ -88,13 +92,13 @@ public sealed class Board
 
     private bool HasAtLeastOneMove()
     {
-        for (int i = 0; i < BoardConstants.TotalSize; i++)
+        for (byte i = 0; i < BoardConstants.TotalSize; i++)
         {
             Cell currentCell = InternalBoard[i];
             if (!currentCell.IsFromTeam(Turn)) continue;
 
             Position previous = new(i);
-            for (int j = 0; j < BoardConstants.TotalSize; j++)
+            for (byte j = 0; j < BoardConstants.TotalSize; j++)
             {
                 Move possibleMove = new(previous, new Position(j));
                 if (PieceCanMove(possibleMove)) return true;
@@ -109,7 +113,7 @@ public sealed class Board
         Position? currentTeamExposedEnPassant = Teams[Turn].ExposedEnPassant;
         Position? targetTeamExposedEnPassant = Teams[NextTurn].ExposedEnPassant;
         CastlingPlay targetCastlingPlays = Teams[NextTurn].CastlingPlays;
-        for (int i = 0; i < BoardConstants.TotalSize; i++)
+        for (byte i = 0; i < BoardConstants.TotalSize; i++)
         {
             Cell currentCell = InternalBoard[i];
             if (currentCell.IsEmpty() || currentCell.IsFromTeam(Turn)) continue;
@@ -131,8 +135,11 @@ public sealed class Board
 
     private Position GetKingPosition()
     {
+        Position? kingPosition = Teams[Turn].KingPosition;
+        if (kingPosition.HasValue) return kingPosition.Value;
+        
         Cell kingCell = Cell.Get(Piece.King, Turn);
-        for (int i = 0; i < BoardConstants.TotalSize; i++)
+        for (byte i = 0; i < BoardConstants.TotalSize; i++)
         {
             if (InternalBoard[i] == kingCell) return new Position(i);
         }
@@ -152,7 +159,7 @@ public sealed class Board
         for (int i = 1; i <= Teams.Count; i++)
         {
             bytes.Add((byte)Teams[(Team)i].CastlingPlays);
-            bytes.Add((byte)(Teams[(Team)i].ExposedEnPassant?.Index ?? byte.MaxValue));
+            bytes.Add(Teams[(Team)i].ExposedEnPassant?.Index ?? byte.MaxValue);
         }
         
         Cell lastCell = InternalBoard[0], currentCell = InternalBoard[0];
