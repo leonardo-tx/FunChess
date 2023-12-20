@@ -27,10 +27,11 @@
     },
     "settings": {
         "language-heading": "言語を変更",
+        "accessibility-heading": "アクセシビリティ",
         "account-heading": "アカウント設定",
         "account-update-heading": "アカウントの詳細を更新する",
         "account-delete-heading": "私のデータを削除する",
-        "confirmation-heading": "現在のパスワードでアクションを確認して下さい",
+        "confirmation-heading": "現在のパスワードでアクションを確認してください",
         "update-unknown-error": "アカウントを更新できません。",
         "delete-unknown-error": "アカウントを削除できません。"
     },
@@ -81,7 +82,8 @@
         "password-placeholder": "パスワード",
         "confirm-password-placeholder": "パスワードを確認",
         "message-placeholder": "メッセージを入力",
-        "current-password-placeholder": "現在のパスワード"
+        "current-password-placeholder": "現在のパスワード",
+        "indicate-piece-movement": "チェスの駒の動きを示します"
     },
     "alt": {
         "brand-pawn": "FunChess のロゴ、笑顔のポーン",

@@ -6,7 +6,7 @@ import { SiReact, SiCsharp } from "react-icons/si";
 import { BiLogoTypescript } from "react-icons/bi";
 import styles from "./styles/About.module.css";
 import { Heading, Text } from "@chakra-ui/react";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 
 export default function About(): JSX.Element {
     const { t } = useLang();

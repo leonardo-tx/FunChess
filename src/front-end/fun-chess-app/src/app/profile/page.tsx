@@ -11,7 +11,7 @@ import { HStack, Text, VStack } from "@chakra-ui/react";
 import useAuth from "@/data/auth/hooks/useAuth";
 import useTitle from "@/lib/shared/hooks/useTitle";
 import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 import formatString from "@/lib/shared/utils/formatString";
 import FriendComplement from "./components/FriendComplement";
 
@@ -22,7 +22,7 @@ export default function Profile(): JSX.Element {
     const [account, setAccount] = useState<Account | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const { t } = useLang();
-    const [title, setTitle] = useTitle();
+    const [, setTitle] = useTitle();
 
     useEffect(() => {
         const id = searchParams?.get("id") ?? null;

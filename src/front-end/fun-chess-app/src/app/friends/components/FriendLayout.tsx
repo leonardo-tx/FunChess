@@ -5,7 +5,7 @@ import { JSX, ReactNode } from "react";
 import { FaMessage, FaUserGroup } from "react-icons/fa6";
 import { IoMail } from "react-icons/io5";
 import FriendLinkItem from "./FriendLinkItem";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 
 interface Props {
     children: ReactNode

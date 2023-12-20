@@ -9,7 +9,7 @@ import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
 import LoginForm from "@/core/auth/forms/LoginForm";
 import useAuth from "@/data/auth/hooks/useAuth";
 import { StatusCodes } from "http-status-codes";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 
 export default function Login(): JSX.Element {
     const { login } = useAuth();

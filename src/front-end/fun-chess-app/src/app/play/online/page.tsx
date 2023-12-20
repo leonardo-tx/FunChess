@@ -20,14 +20,14 @@ export default function PlayOnline(): JSX.Element {
     const [onQueue, setOnQueue] = useState(false);
     const [team, setTeam] = useState(Team.White);
     const [pageLoaded, setPageLoaded] = useState(false);
-    const [matchFinished, setMatchFinised] = useState(false);
+    const [matchState, setMatchState] = useState(MatchState.Running);
 
     useEffect(() => {
         const connection = getHubConnection();
         setConnection(connection);
 
         connection.on("End", (state: MatchState) => {
-            setMatchFinised(true);
+            setMatchState(state);
         });
 
         atMatch().then(apiResponse => {
@@ -51,7 +51,7 @@ export default function PlayOnline(): JSX.Element {
                 setBoard(new Board());
                 setMatchInfo(match);
                 setOnQueue(false);
-                setMatchFinised(false);
+                setMatchState(match.matchState);
                 setTeam(team);
             });
             setPageLoaded(true);
@@ -80,7 +80,7 @@ export default function PlayOnline(): JSX.Element {
                 <MatchBoardContainer>
                     <PlayerBanner 
                         matchInfo={matchInfo}
-                        updateTime={!matchFinished && (team === Team.White ? board.turn === Team.Black : board.turn === Team.White)}
+                        updateTime={matchState === MatchState.Running && (team === Team.White ? board.turn === Team.Black : board.turn === Team.White)}
                         team={team === Team.White ? Team.Black : Team.White} 
                     />
                     <OnlineChessBoard 
@@ -92,7 +92,7 @@ export default function PlayOnline(): JSX.Element {
                     /> 
                     <PlayerBanner 
                         matchInfo={matchInfo}
-                        updateTime={!matchFinished && (team === Team.White ? board.turn === Team.White : board.turn === Team.Black)}
+                        updateTime={matchState === MatchState.Running && (team === Team.White ? board.turn === Team.White : board.turn === Team.Black)}
                         team={team}
                         isCurrentAccount={true}
                     />

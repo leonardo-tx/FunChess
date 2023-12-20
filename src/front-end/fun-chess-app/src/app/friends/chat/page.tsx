@@ -14,8 +14,7 @@ import MessageForm from "@/core/friends/forms/MessageForm";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DisconnectedModal from "@/lib/shared/components/DisconnectedModal";
 import MessageItem from "./components/MessageItem";
-import useLang from "@/data/langs/hooks/useLang";
-import formatString from "@/lib/shared/utils/formatString";
+import useLang from "@/data/settings/hooks/useLang";
 
 export default function FriendsChat(): JSX.Element {
     const [selectedId, setSelectedId] = useState<number>(-1);

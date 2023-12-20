@@ -15,6 +15,8 @@ import Bishop from "@/core/chess/pieces/Bishop";
 import King from "@/core/chess/pieces/King";
 import Knight from "@/core/chess/pieces/Knight";
 import Queen from "@/core/chess/pieces/Queen";
+import { useAtomValue } from "jotai";
+import settingsAtom from "@/data/settings/atoms/settingsAtom";
 
 interface Props {
     index: number;
@@ -22,15 +24,17 @@ interface Props {
     pressed: boolean;
     dragSelected: boolean;
     chessBoard: { inverse: boolean, sizeBoard: number, disable: boolean };
-    cell: Cell
+    cell: Cell;
+    canBeReplaced: boolean;
     onStart: (index: number) => void;
     onDrag: DraggableEventHandler;
     onStop: () => void;
     onClick: (index: number) => void;
 }
 
-export default function ChessCell({ index, active, pressed, dragSelected, chessBoard, cell, onStart, onDrag, onStop, onClick }: Props) {
+export default function ChessCell({ index, active, pressed, dragSelected, chessBoard, cell, canBeReplaced, onStart, onDrag, onStop, onClick }: Props) {
     const ref = useRef<Draggable>(null);
+    const settings = useAtomValue(settingsAtom);
     
     const { inverse, sizeBoard, disable } = chessBoard;
     const PieceIcon = piecesVariants.get(Piece.toByte(cell.piece));
@@ -53,6 +57,7 @@ export default function ChessCell({ index, active, pressed, dragSelected, chessB
     return (
         <Border $dragSelected={dragSelected}>
             <Container $disable={disable} onClick={() => onClick(index)} $active={active} $index={index} $dragSelected={dragSelected}>
+                {settings.indicateMoves && PieceIcon === undefined && canBeReplaced && <PossibleTarget />}
                 {PieceIcon !== undefined && 
                     <Draggable 
                         ref={ref} 
@@ -63,13 +68,13 @@ export default function ChessCell({ index, active, pressed, dragSelected, chessB
                         position={{ y: 0, x: 0 }}
                         bounds={bounds}
                     >
-                        <div>
+                        <DraggableDiv $active={active} $disable={disable} $dragSelected={dragSelected}>
                             <PieceIcon 
                                 strokeWidth="8px" 
-                                stroke="black" 
+                                stroke={settings.indicateMoves && canBeReplaced ? '#b44589' : 'black'} 
                                 color={cell.team === Team.White ? '#d1d1d1' : '#242424'}
                             />
-                        </div>
+                        </DraggableDiv>
                     </Draggable>}
             </Container>
         </Border>
@@ -93,21 +98,37 @@ const Container = styled("div", { shouldForwardProp: (propName) => propName !== 
     background-color: ${props => props.$active ? "#9545b4" : (props.$index + Math.floor(props.$index / 8)) % 2 === 0 ? "#5d45b4" : "#c5bbcc"};
     height: 100%;
     width: 100%;
+    position: relative;
+`;
 
-    & div {
-        height: 100%;
-        width: 100%;
-        cursor: ${(props) => props.$disable ? "default" : "grab"};
-        padding: ${(props) => props.$dragSelected ? 4.8 : 10}%;
-        ${props => props.$active && "z-index: 1;"}
-        position: relative;
-    }
+const DraggableDiv = styled("div", { shouldForwardProp: (propName) => propName !== 'theme' && !propName.startsWith("$")})<{
+    $active: boolean;
+    $dragSelected: boolean;
+    $disable: boolean;
+}>`
+    height: 100%;
+    width: 100%;
+    position: relative;
+    cursor: ${(props) => props.$disable ? "default" : "grab"};
+    padding: ${(props) => props.$dragSelected ? 4.8 : 10}%;
+    ${props => props.$active && "z-index: 1;"}
 
     & svg {
         height: 100%;
         width: 100%;
     }
 `;
+
+const PossibleTarget = styled.div`
+    border-radius: 50%;
+    background-color: #d87fa9;
+    position: absolute;
+    height: 20%;
+    width: 20%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+`
 
 const piecesVariants = new Map<number, IconType>();
 

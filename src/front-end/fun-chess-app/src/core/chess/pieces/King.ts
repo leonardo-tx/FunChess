@@ -23,6 +23,7 @@ class King extends Piece {
         if (!tuple[0]) return tuple;
         
         board.teams.get(board.turn)!.castlingPlays = CastlingPlay.None;
+        board.teams.get(board.turn)!.kingPosition = move.next;
         
         switch (tuple[1]) {
             case SpecialMove.LeftCastling:

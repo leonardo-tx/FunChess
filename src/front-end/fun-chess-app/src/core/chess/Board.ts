@@ -1,6 +1,5 @@
 import Cell from "./Cell";
 import DetailedTeam from "./DetailedTeam";
-import Piece from "./Piece";
 import { BOARD_TOTAL_SIZE, getInitialBoard } from "./constants/board-constants";
 import CastlingPlay from "./enums/CastlingPlay";
 import Team from "./enums/Team";
@@ -13,8 +12,8 @@ export default class Board {
         if (board === undefined || teams === undefined || team === undefined) {
             this.internalBoard = getInitialBoard();
             this.teams = new Map<Team, DetailedTeam>();
-            this.teams.set(Team.White, new DetailedTeam());
-            this.teams.set(Team.Black, new DetailedTeam());
+            this.teams.set(Team.White, new DetailedTeam(undefined, undefined, Team.White));
+            this.teams.set(Team.Black, new DetailedTeam(undefined, undefined, Team.Black));
             
             return;
         }
@@ -58,7 +57,14 @@ export default class Board {
         this.internalBoard[move.next.index] = selectedCell;
         this.internalBoard[move.previous.index] = Cell.Empty;
 
+        const isKing = selectedCell.piece === King.instance;
+        if (isKing) {
+            this.teams.get(this._turn)!.kingPosition = move.next;
+        }
         const kingInDanger = this.kingInDanger();
+        if (isKing) {
+            this.teams.get(this._turn)!.kingPosition = move.previous;
+        }
         
         this.internalBoard[move.next.index] = targetCell;
         this.internalBoard[move.previous.index] = selectedCell;
@@ -91,9 +97,12 @@ export default class Board {
     }
 
     private getKingPosition(): Position {
+        const kingPosition: Position | null = this.teams.get(this._turn)!.kingPosition;
+        if (kingPosition !== null) return kingPosition;
+
+        const kingCell = Cell.get(King.instance, this._turn)
         for (let i = 0; i < BOARD_TOTAL_SIZE; i++) {
-            const currentCell = this.internalBoard[i];
-            if (!currentCell.isEmpty() && currentCell.isFromTeam(this._turn) && currentCell.piece === King.instance) return new Position(i);
+            if (this.internalBoard[i] === kingCell) return new Position(i);
         }
         throw new Error("Invalid board! Missing king.");
     }

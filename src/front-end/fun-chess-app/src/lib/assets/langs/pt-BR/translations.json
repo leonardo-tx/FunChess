@@ -27,6 +27,7 @@
     },
     "settings": {
         "language-heading": "Alterar idioma",
+        "accessibility-heading": "Acessibilidade",
         "account-heading": "Configurações de conta",
         "account-update-heading": "Atualizar dados da conta",
         "account-delete-heading": "Apagar meus dados",
@@ -81,7 +82,8 @@
         "password-placeholder": "Senha",
         "confirm-password-placeholder": "Confirmar senha",
         "message-placeholder": "Digite uma mensagem",
-        "current-password-placeholder": "Senha atual"
+        "current-password-placeholder": "Senha atual",
+        "indicate-piece-movement": "Indicar o movimento das peças de xadrez"
     },
     "alt": {
         "brand-pawn": "Logo do FunChess, um peão sorridente",

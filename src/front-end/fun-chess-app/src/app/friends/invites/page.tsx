@@ -10,8 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import FriendStatus from "@/core/friends/models/FriendStatus";
 import { StatusCodes } from "http-status-codes";
-import formatString from "@/lib/shared/utils/formatString";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 
 export default function FriendsInvites(): JSX.Element {
     const [invites, setInvites] = useState<Account[]>([]);

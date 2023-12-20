@@ -1,6 +1,6 @@
 import Account from "@/core/auth/models/Account";
 import FriendStatus from "@/core/friends/models/FriendStatus";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 import { Button, Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Text } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { StatusCodes } from "http-status-codes";

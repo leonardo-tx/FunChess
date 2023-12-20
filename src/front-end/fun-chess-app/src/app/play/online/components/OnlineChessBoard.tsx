@@ -16,15 +16,12 @@ interface Props {
 }
 
 export default function OnlineChessBoard({ board, connection, team, onMatch, updateMatchInfo }: Props): JSX.Element {
-    const [cells, setCells] = useState(getInitialBoard());
-
     useEffect(() => {
-        setCells([...board.internalBoard]);
         if (connection === null) return;
 
         connection.on("BoardUpdate", (match: Match, moveText: string) => {
             const move = Move.parse(moveText);
-            if (board.movePiece(move)) setCells([...board.internalBoard]);
+            board.movePiece(move)
 
             updateMatchInfo(match);
         })
@@ -43,7 +40,7 @@ export default function OnlineChessBoard({ board, connection, team, onMatch, upd
         <ChessBoard 
             onMove={onMove} 
             disable={!onMatch} 
-            board={cells}
+            board={board}
             inverse={team === Team.Black} 
         />
     )

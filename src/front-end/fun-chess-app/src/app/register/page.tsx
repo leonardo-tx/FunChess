@@ -11,7 +11,7 @@ import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
 import RegisterInitialForm from "@/core/auth/forms/RegisterInitialForm";
 import LoginForm from "@/core/auth/forms/LoginForm";
 import { StatusCodes } from "http-status-codes";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 
 export default function Register(): JSX.Element {
     const auth = useAuth();

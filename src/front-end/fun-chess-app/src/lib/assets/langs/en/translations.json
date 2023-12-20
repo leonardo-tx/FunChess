@@ -27,6 +27,7 @@
     },
     "settings": {
         "language-heading": "Change language",
+        "accessibility-heading": "Accessibility",
         "account-heading": "Account settings",
         "account-update-heading": "Update account information",
         "account-delete-heading": "Delete my data",
@@ -81,7 +82,8 @@
         "password-placeholder": "Password",
         "confirm-password-placeholder": "Confirm password",
         "message-placeholder": "Type a message",
-        "current-password-placeholder": "Current password"
+        "current-password-placeholder": "Current password",
+        "indicate-piece-movement": "Indicate the movement of chess pieces"
     },
     "alt": {
         "brand-pawn": "FunChess logo, a smiling pawn",

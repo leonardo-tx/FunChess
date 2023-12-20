@@ -8,7 +8,7 @@ import Image from "next/image";
 import defaultIcon from "@/lib/assets/user/default.jpg";
 import { JSX, useEffect, useState } from "react";
 import Link from "next/link";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 import formatString from "@/lib/shared/utils/formatString";
 
 export default function Friends(): JSX.Element {

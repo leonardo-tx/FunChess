@@ -10,7 +10,7 @@ import MenuLinkItem from "./MenuLinkItem";
 import useAuth from "@/data/auth/hooks/useAuth";
 import MenuListItem from "./MenuListItem";
 import MenuButtonItem from "./MenuButtonItem";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 
 interface Props {
     closed: boolean;

@@ -2,7 +2,7 @@ import { Button } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { JSX, useEffect, useState } from "react";
 import { Text } from "@chakra-ui/react";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 
 interface Props {
     connectToQueue: () => void;

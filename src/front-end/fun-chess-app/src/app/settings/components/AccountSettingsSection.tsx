@@ -4,7 +4,7 @@ import { BiUser, BiLockAlt } from "react-icons/bi";
 import { IoMailOutline } from "react-icons/io5";
 import ConfirmPasswordModal from "./ConfirmPasswordModal";
 import UpdateForm from "@/core/auth/forms/UpdateForm";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 import { StatusCodes } from "http-status-codes";
 import { FieldErrors, SubmitHandler, useForm } from "react-hook-form";
 import useAuth from "@/data/auth/hooks/useAuth";

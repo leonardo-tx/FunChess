@@ -1,18 +1,18 @@
-import langAtom from "@/data/langs/atoms/langAtom";
-import { useAtom } from "jotai";
+import settingsAtom from "@/data/settings/atoms/settingsAtom";
+import { useSetAtom } from "jotai";
 import { JSX, ReactNode, useEffect, useState } from "react";
-import * as langStorage from "@/data/langs/storage/lang-storage";
+import * as settingsStorage from "@/data/settings/storage/settings-storage";
 import { usePathname } from "next/navigation";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 import useTitle from "@/lib/shared/hooks/useTitle";
 
 interface Props {
     children: ReactNode;
 }
 
-export default function LangProvider({ children }: Props): JSX.Element {
+export default function SettingsProvider({ children }: Props): JSX.Element {
     const [loading, setLoading] = useState(true);
-    const [langCode, setLangCode] = useAtom(langAtom);
+    const setSettings = useSetAtom(settingsAtom);
     const { t } = useLang();
     const [, setTitle] = useTitle("");
     const pathname = usePathname();
@@ -20,14 +20,14 @@ export default function LangProvider({ children }: Props): JSX.Element {
     useEffect(() => {
         const formattedPathName = pathname === '/' ? "home" : pathname.slice(1).replace('/', '-');
         setTitle(t(`titles.${formattedPathName}`));
-    }, [langCode, pathname]);
+    }, [t, pathname, setTitle]);
 
     useEffect(() => {
-        setLangCode(() => {
+        setSettings((defaultSettings) => {
             setLoading(false);
-            return langStorage.getLanguageCode();
+            return {...defaultSettings, ...settingsStorage.getSettings()};
         })
-    }, [setLangCode])
+    }, [setSettings])
     
     return (
         <>{!loading && children}</>

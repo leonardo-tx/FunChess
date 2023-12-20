@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Button, Heading, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import styles from "../styles/Unauthorized.module.css";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 
 export default function Unauthorized(): JSX.Element {
     const router = useRouter();

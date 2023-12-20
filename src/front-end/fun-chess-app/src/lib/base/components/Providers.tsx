@@ -6,7 +6,7 @@ import { AuthProvider } from "./AuthProvider";
 import { CacheProvider } from "@chakra-ui/next-js";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "../settings/theme";
-import LangProvider from "./LangProvider";
+import SettingsProvider from "./SettingsProvider";
 
 interface Props {
     children: ReactNode
@@ -18,9 +18,9 @@ export default function Providers({ children }: Props): JSX.Element {
             <CacheProvider>
                 <ChakraProvider theme={theme}>
                     <AuthProvider>
-                        <LangProvider>
+                        <SettingsProvider>
                             {children}
-                        </LangProvider>
+                        </SettingsProvider>
                     </AuthProvider>
                 </ChakraProvider>
             </CacheProvider>

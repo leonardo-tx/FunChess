@@ -1,5 +1,5 @@
 import UpdateForm from "@/core/auth/forms/UpdateForm";
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Input, Alert, AlertDescription, AlertIcon, VStack } from "@chakra-ui/react";
 import { JSX } from "react";
 import { UseFormRegister } from "react-hook-form";

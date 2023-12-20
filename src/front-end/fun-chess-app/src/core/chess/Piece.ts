@@ -2,9 +2,6 @@ import Move from "./structs/Move";
 import Board from "./Board";
 import Cell from "./Cell";
 import SpecialMove from "./enums/SpecialMove";
-import Pawn from "./pieces/Pawn";
-import Bishop from "./pieces/Bishop";
-import Rook from "./pieces/Rook";
 
 abstract class Piece {
     private static readonly ChessPieces = new Map<number, Piece>();

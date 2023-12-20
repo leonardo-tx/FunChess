@@ -1,4 +1,4 @@
-import useLang from "@/data/langs/hooks/useLang";
+import useLang from "@/data/settings/hooks/useLang";
 import { Heading, VStack, Text } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import Link from "next/link";

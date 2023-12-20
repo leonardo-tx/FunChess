@@ -1,16 +1,17 @@
 "use client";
 
 import { BOARD_LENGTH, MAX_INDEX, MIN_INDEX } from "@/core/chess/constants/board-constants";
-import { JSX, useCallback, useEffect, useRef, useState } from "react";
+import { JSX, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ChessCell from "./ChessCell";
 import styled from "@emotion/styled";
 import Cell from "@/core/chess/Cell";
 import { DraggableEventHandler } from "react-draggable";
 import Move from "@/core/chess/structs/Move";
 import Position from "@/core/chess/structs/Position";
+import Board from "@/core/chess/Board";
 
 interface Props {
-    board: Cell[];
+    board: Board;
     onMove: (move: Move) => boolean;
     inverse?: boolean;
     disable?: boolean;
@@ -98,6 +99,7 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
             const index = y * BOARD_LENGTH + x;
             elements.push(
                 <ChessCell
+                    canBeReplaced={selectedCell !== null && board.pieceCanMove(new Move(new Position(selectedCell), new Position(index)))}
                     onStart={onStart}
                     onStop={onStop}
                     onDrag={onDrag}
@@ -105,7 +107,7 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
                     chessBoard={chessBoard} 
                     index={index} 
                     key={index}
-                    cell={board[index]}
+                    cell={board.internalBoard[index]}
                     active={selectedCell !== null && index === selectedCell}
                     dragSelected={targetCell !== null && index === targetCell}
                     pressed={pressed}
