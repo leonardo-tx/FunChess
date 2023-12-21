@@ -38,7 +38,7 @@ public sealed class MatchWorker : BackgroundService
             (
                 match.WhiteTeamPlayer.ConnectionId,
                 match.BlackTeamPlayer.ConnectionId
-            ).SendAsync("End", match.MatchState, stoppingToken);
+            ).SendAsync("End", new SimpleMatch(match), stoppingToken);
         }
     }
 }

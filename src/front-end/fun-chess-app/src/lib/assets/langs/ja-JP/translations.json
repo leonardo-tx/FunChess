@@ -16,7 +16,7 @@
         "register-unknown-error": "サインアップできません。もう一度お試しください。"
     },
     "home": {
-        "unauthorized-heading": "単純で簡単な方法でチェスをプレイして下さい！"
+        "unauthorized-heading": "単純で簡単な方法でチェスをプレイしてください！"
     },
     "about": {
         "project-heading": "企画について",
@@ -56,7 +56,10 @@
         "friend-mode-title": "友達と遊ぶ",
         "friend-mode-text": "リストにある友達をプレイに招待する",
         "local-mode-title": "ローカルモード",
-        "local-mode-text": "オフラインマッチをプレイする"
+        "local-mode-text": "オフラインマッチをプレイする",
+        "victory-title": "勝利",
+        "defeat-title": "敗北",
+        "tie-title": "引き分け"
     },
     "buttons": {
         "login": "サインイン",
@@ -69,6 +72,7 @@
         "accept": "受諾",
         "update": "更新",
         "confirm": "確認",
+        "surrender": "降伏",
         "send-message": "メッセージ",
         "no-account": "アカウントをお持ちではありませんか? サインアップ",
         "with-account": "アカウントをお持ちですか? サインイン",

@@ -3,7 +3,7 @@
 import Board from "@/core/chess/Board";
 import styled from "@emotion/styled";
 import { JSX, useState } from "react";
-import LocalChessBoard from "../components/LocalChessBoard";
+import LocalChessBoard from "./components/LocalChessBoard";
 import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
 
 export default function LocalPlay(): JSX.Element {
@@ -15,7 +15,7 @@ export default function LocalPlay(): JSX.Element {
                 <LocalChessBoard board={board} />
             </Container>
         </AuthorizeProvider>
-    )
+    );
 }
 
 const Container = styled.div`

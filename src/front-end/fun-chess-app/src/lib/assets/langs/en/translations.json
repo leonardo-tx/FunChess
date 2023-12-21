@@ -56,7 +56,10 @@
         "friend-mode-title": "Play with a friend",
         "friend-mode-text": "Invite a friend from your list to play a game",
         "local-mode-title": "Local mode",
-        "local-mode-text": "Play an offline match"
+        "local-mode-text": "Play an offline match",
+        "victory-title": "Victory",
+        "defeat-title": "Defeat",
+        "tie-title": "A tie"
     },
     "buttons": {
         "login": "Sign in",
@@ -69,6 +72,7 @@
         "accept": "Accept",
         "update": "Update",
         "confirm": "Confirm",
+        "surrender": "Surrender",
         "send-message": "Send message",
         "no-account": "Don't have an account? Sign up",
         "with-account": "Already have an account? Sign in",

@@ -76,4 +76,13 @@ public sealed class MatchHub : Hub
         ).SendAsync("BoardUpdate", new SimpleMatch(match), move.ToString());
         return true;
     }
+
+    [HubMethodName("Surrender")]
+    public async Task Surrender()
+    {
+        ulong id = Context.User!.GetAccountId();
+        Match? match = _queueService.FindAccountMatch(id);
+
+        match?.Surrender(id);
+    }
 }

@@ -56,7 +56,10 @@
         "friend-mode-title": "Jogue com um amigo",
         "friend-mode-text": "Convide um amigo de sua lista para jogar uma partida",
         "local-mode-title": "Modo local",
-        "local-mode-text": "Jogue uma partida offline"
+        "local-mode-text": "Jogue uma partida offline",
+        "victory-title": "Vitória",
+        "defeat-title": "Derrota",
+        "tie-title": "Empate"
     },
     "buttons": {
         "login": "Login",
@@ -69,6 +72,7 @@
         "accept": "Aceitar",
         "update": "Atualizar",
         "confirm": "Confirmar",
+        "surrender": "Desistir",
         "send-message": "Enviar mensagem",
         "no-account": "Não possui uma conta? Cadastre-se",
         "with-account": "Já possui uma conta? Entre aqui",

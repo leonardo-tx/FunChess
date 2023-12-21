@@ -1,10 +1,9 @@
 "use client";
 
 import { BOARD_LENGTH, MAX_INDEX, MIN_INDEX } from "@/core/chess/constants/board-constants";
-import { JSX, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { JSX, useCallback, useEffect, useRef, useState } from "react";
 import ChessCell from "./ChessCell";
 import styled from "@emotion/styled";
-import Cell from "@/core/chess/Cell";
 import { DraggableEventHandler } from "react-draggable";
 import Move from "@/core/chess/structs/Move";
 import Position from "@/core/chess/structs/Position";
@@ -17,24 +16,40 @@ interface Props {
     disable?: boolean;
 }
 
+interface ChessBoardInfo {
+    inverse: boolean;
+    sizeBoard: number;
+    disable: boolean;
+    pressed: boolean;
+    selectedCell: number | null;
+    targetCell: number | null;
+    removeOnMouseUp: boolean;
+    cancelOnClick: boolean
+}
+
 export default function ChessBoard({ board, onMove, inverse = false, disable = false }: Props): JSX.Element {
-    const [chessBoard, setChessBoard] = useState({ inverse: false, sizeBoard: 0, disable: false });
-    const [selectedCell, setSelectedCell] = useState<number | null>(null);
-    const [targetCell, setTargetCell] = useState<number | null>(null);
-    const [pressed, setPressed] = useState(false);
-    const [removeOnMouseUp, setRemoveOnMouseUp] = useState(false);
-    const [sizeBoard, setSizeBoard] = useState(0);
+    const [chessBoard, setChessBoard] = useState<ChessBoardInfo>({ 
+        inverse: false, 
+        sizeBoard: 0, 
+        disable: false, 
+        pressed: false, 
+        selectedCell: null,
+        targetCell: null,
+        removeOnMouseUp: false,
+        cancelOnClick: false
+    });
+    const { sizeBoard, selectedCell, targetCell, cancelOnClick } = chessBoard;
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        setChessBoard({ inverse, sizeBoard, disable });
-    }, [inverse, sizeBoard, disable, setChessBoard])
+        setChessBoard((oldChessBoard) => ({...oldChessBoard, inverse, disable }));
+    }, [inverse, disable])
 
     useEffect(() => {
         if (ref.current === null) return;
         const resizeObserver = new ResizeObserver((entries) => {
             for (let entry of entries) {
-                setSizeBoard(entry.contentRect.height);
+                setChessBoard((oldChessBoard) => ({...oldChessBoard, sizeBoard: entry.contentRect.height}));
             }
         });
         resizeObserver.observe(ref.current);
@@ -42,13 +57,17 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
     }, [])
 
     const onStart = useCallback((index: number): void => {
-        setPressed(true);
-        if (selectedCell === index) {
-            setRemoveOnMouseUp(true);
-            return;
-        }
-        setSelectedCell(index);
-    }, [selectedCell]);
+        setChessBoard((oldChessBoard) => {
+            const { selectedCell } = oldChessBoard;
+            const newInfo = {...oldChessBoard, pressed: true, cancelOnClick: false};
+            if (selectedCell === index) {
+                newInfo.removeOnMouseUp = true;
+                return newInfo;
+            }
+            newInfo.selectedCell = index;
+            return newInfo;
+        });
+    }, []);
 
     const onDrag: DraggableEventHandler = useCallback((_e, data) => {
         if (selectedCell === null) return;
@@ -60,8 +79,8 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
         const targetX = Math.floor((data.lastX + halfSizeCell) / sizePerCell);
 
         const targetIndex = targetY + targetX + selectedCell;
-        setTargetCell(targetIndex);
-    }, [selectedCell, inverse, sizeBoard])
+        setChessBoard((oldChessBoard) => ({...oldChessBoard, targetCell: targetIndex }));
+    }, [inverse, selectedCell, sizeBoard])
 
     const onStop = useCallback((): void => {
         let moveIsValid = false;
@@ -69,28 +88,65 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
             const move = new Move(new Position(selectedCell), new Position(targetCell));
             moveIsValid = onMove(move);
         }
-        if (moveIsValid || (removeOnMouseUp && targetCell === selectedCell)) {
-            setSelectedCell(null);
-            setRemoveOnMouseUp(false);
-        }
         if (moveIsValid) playAudio("move-self");
         
-        setPressed(false);
-        setTargetCell(null);
-    }, [removeOnMouseUp, selectedCell, targetCell, onMove]);
+        setChessBoard((oldChessBoard) => {
+            const { selectedCell, targetCell, removeOnMouseUp } = oldChessBoard;
+            const newInfo = {...oldChessBoard, pressed: false, targetCell: null, cancelOnClick: true }
+            if (moveIsValid || (removeOnMouseUp && targetCell === selectedCell)) {
+                newInfo.selectedCell = null;
+                newInfo.removeOnMouseUp = false;
+            }
+            return newInfo;
+        });
+        new Promise(r => {
+            setTimeout(r, 1);
+        }).then(() => setChessBoard((oldChessBoard) => ({...oldChessBoard, cancelOnClick: false})))
+    }, [targetCell, selectedCell, onMove]);
 
     const onClick = useCallback((index: number): void => {
+        if (cancelOnClick) {
+            setChessBoard((oldChessBoard) => ({...oldChessBoard, cancelOnClick: !oldChessBoard.cancelOnClick}));
+            return;
+        }
+
         let moveIsValid = false;
+        const cellIsEmpty = board.internalBoard[index].isEmpty();
+
         if (selectedCell !== null) {
-            const move = new Move(new Position(selectedCell), new Position(index));
+            const move = new Move(new Position(selectedCell), new Position(targetCell !== null ? targetCell : index));
             moveIsValid = onMove(move);
         }
-        if (moveIsValid || (removeOnMouseUp && index === selectedCell)) {
-            setSelectedCell(null);
-            setRemoveOnMouseUp(false);
-        }
         if (moveIsValid) playAudio("move-self");
-    }, [selectedCell, removeOnMouseUp, onMove])
+
+        setChessBoard((oldChessBoard) => {
+            const { pressed, selectedCell, targetCell, removeOnMouseUp } = oldChessBoard;
+            const newInfo = {...oldChessBoard, pressed: false, targetCell: null };
+            
+            if (selectedCell === null) {
+                if (cellIsEmpty) return newInfo;
+
+                newInfo.selectedCell = index;
+                return newInfo;
+            }
+            if (targetCell !== null) {
+                if (targetCell === selectedCell && removeOnMouseUp) {
+                    newInfo.selectedCell = null;
+                    newInfo.removeOnMouseUp = false;
+
+                    return newInfo;
+                }
+                if (moveIsValid) newInfo.selectedCell = null;
+                return newInfo;
+            }
+            
+            if (moveIsValid || (pressed ? (removeOnMouseUp && index === selectedCell) : index === selectedCell)) {
+                newInfo.selectedCell = null;
+                newInfo.removeOnMouseUp = false;
+            }
+            return newInfo;
+        });
+    }, [onMove, selectedCell, targetCell, board, cancelOnClick])
 
     const elements: JSX.Element[] = [];
 
@@ -108,9 +164,6 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
                     index={index} 
                     key={index}
                     cell={board.internalBoard[index]}
-                    active={selectedCell !== null && index === selectedCell}
-                    dragSelected={targetCell !== null && index === targetCell}
-                    pressed={pressed}
                 />
             );
         }

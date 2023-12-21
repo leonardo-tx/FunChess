@@ -12,6 +12,12 @@ import OnlineChessBoard from "./components/OnlineChessBoard";
 import OnlineMatchSelection from "./components/OnlineMatchSelection";
 import MatchState from "@/core/chess/enums/MatchState";
 import AuthorizeProvider from "@/lib/shared/components/AuthorizeProvider";
+import OnlineOnMatchContainer from "./components/OnlineOnMatchContainer";
+import EndModal from "./components/EndModal";
+import { useDisclosure } from "@chakra-ui/react";
+import Account from "@/core/auth/models/Account";
+import { getSimpleAccount } from "@/data/auth/fetchers/account-fetchers";
+import useAuth from "@/data/auth/hooks/useAuth";
 
 export default function PlayOnline(): JSX.Element {
     const [board, setBoard] = useState(new Board());
@@ -20,14 +26,17 @@ export default function PlayOnline(): JSX.Element {
     const [onQueue, setOnQueue] = useState(false);
     const [team, setTeam] = useState(Team.White);
     const [pageLoaded, setPageLoaded] = useState(false);
-    const [matchState, setMatchState] = useState(MatchState.Running);
+    const [opponentAccount, setOpponentAccount] = useState<Account | null>(null)
+    const { isOpen, onClose, onOpen } = useDisclosure();
+    const { currentAccount } = useAuth();
 
     useEffect(() => {
         const connection = getHubConnection();
         setConnection(connection);
 
-        connection.on("End", (state: MatchState) => {
-            setMatchState(state);
+        connection.on("End", (match: Match) => {
+            setMatchInfo(match);
+            onOpen();
         });
 
         atMatch().then(apiResponse => {
@@ -41,6 +50,7 @@ export default function PlayOnline(): JSX.Element {
                     setBoard(board);
                     setMatchInfo(match);
                     setTeam(team);
+                    getSimpleAccount(match.players[team % 2].accountId).then(response => setOpponentAccount(response.result ?? null))
                     setPageLoaded(true);
 
                     connection.off("Match");
@@ -51,13 +61,13 @@ export default function PlayOnline(): JSX.Element {
                 setBoard(new Board());
                 setMatchInfo(match);
                 setOnQueue(false);
-                setMatchState(match.matchState);
                 setTeam(team);
+                getSimpleAccount(match.players[team % 2].accountId).then(response => setOpponentAccount(response.result ?? null))
             });
             setPageLoaded(true);
         });
         return () => { connection.stop(); }
-    }, []);
+    }, [onOpen]);
 
     if (!pageLoaded) return <></>;
 
@@ -79,8 +89,9 @@ export default function PlayOnline(): JSX.Element {
             <Container $onMatch={matchInfo !== null}>
                 <MatchBoardContainer>
                     <PlayerBanner 
+                        account={opponentAccount}
                         matchInfo={matchInfo}
-                        updateTime={matchState === MatchState.Running && (team === Team.White ? board.turn === Team.Black : board.turn === Team.White)}
+                        updateTime={matchInfo?.matchState === MatchState.Running && (team === Team.White ? board.turn === Team.Black : board.turn === Team.White)}
                         team={team === Team.White ? Team.Black : Team.White} 
                     />
                     <OnlineChessBoard 
@@ -92,13 +103,14 @@ export default function PlayOnline(): JSX.Element {
                     /> 
                     <PlayerBanner 
                         matchInfo={matchInfo}
-                        updateTime={matchState === MatchState.Running && (team === Team.White ? board.turn === Team.White : board.turn === Team.Black)}
+                        updateTime={matchInfo?.matchState === MatchState.Running && (team === Team.White ? board.turn === Team.White : board.turn === Team.Black)}
                         team={team}
-                        isCurrentAccount={true}
+                        account={currentAccount}
                     />
                 </MatchBoardContainer>
-                {matchInfo !== null || <OnlineMatchSelection onQueue={onQueue} connectToQueue={connectToQueue} />}
+                {matchInfo !== null ? <OnlineOnMatchContainer onSurrender={() => connection?.invoke("Surrender")} /> : <OnlineMatchSelection onQueue={onQueue} connectToQueue={connectToQueue} />}
             </Container>
+            {matchInfo !== null && opponentAccount !== null && <EndModal onClose={onClose} isOpen={isOpen} matchInfo={matchInfo} team={team} opponentAccount={opponentAccount} />}
         </AuthorizeProvider>
     );
 }

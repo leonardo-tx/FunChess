@@ -18,12 +18,19 @@ import Queen from "@/core/chess/pieces/Queen";
 import { useAtomValue } from "jotai";
 import settingsAtom from "@/data/settings/atoms/settingsAtom";
 
+interface ChessBoardInfo {
+    inverse: boolean;
+    sizeBoard: number;
+    disable: boolean;
+    pressed: boolean;
+    selectedCell: number | null;
+    targetCell: number | null;
+    removeOnMouseUp: boolean;
+}
+
 interface Props {
     index: number;
-    active: boolean;
-    pressed: boolean;
-    dragSelected: boolean;
-    chessBoard: { inverse: boolean, sizeBoard: number, disable: boolean };
+    chessBoard: ChessBoardInfo
     cell: Cell;
     canBeReplaced: boolean;
     onStart: (index: number) => void;
@@ -32,11 +39,13 @@ interface Props {
     onClick: (index: number) => void;
 }
 
-export default function ChessCell({ index, active, pressed, dragSelected, chessBoard, cell, canBeReplaced, onStart, onDrag, onStop, onClick }: Props) {
+export default function ChessCell({ index, chessBoard, cell, canBeReplaced, onStart, onDrag, onStop, onClick }: Props) {
     const ref = useRef<Draggable>(null);
     const settings = useAtomValue(settingsAtom);
     
-    const { inverse, sizeBoard, disable } = chessBoard;
+    const { inverse, sizeBoard, disable, selectedCell, targetCell, pressed } = chessBoard;
+    const active = selectedCell !== null && index === selectedCell;
+    const dragSelected = targetCell !== null && index === targetCell;
     const PieceIcon = piecesVariants.get(Piece.toByte(cell.piece));
 
     const bounds: DraggableBounds = useMemo(() => {
@@ -56,26 +65,25 @@ export default function ChessCell({ index, active, pressed, dragSelected, chessB
 
     return (
         <Border $dragSelected={dragSelected}>
-            <Container $disable={disable} onClick={() => onClick(index)} $active={active} $index={index} $dragSelected={dragSelected}>
+            <Container $disable={disable} $active={active} $index={index} $dragSelected={dragSelected}>
                 {settings.indicateMoves && PieceIcon === undefined && canBeReplaced && <PossibleTarget />}
-                {PieceIcon !== undefined && 
-                    <Draggable 
-                        ref={ref} 
-                        disabled={disable || !(!pressed || active)} 
-                        onStart={() => onStart(index)} 
-                        onStop={onStop} 
-                        onDrag={onDrag} 
-                        position={{ y: 0, x: 0 }}
-                        bounds={bounds}
-                    >
-                        <DraggableDiv $active={active} $disable={disable} $dragSelected={dragSelected}>
-                            <PieceIcon 
-                                strokeWidth="8px" 
-                                stroke={settings.indicateMoves && canBeReplaced ? '#b44589' : 'black'} 
-                                color={cell.team === Team.White ? '#d1d1d1' : '#242424'}
-                            />
-                        </DraggableDiv>
-                    </Draggable>}
+                <Draggable
+                    ref={ref} 
+                    disabled={disable || cell.isEmpty() || !(!pressed || active)} 
+                    onStart={() => onStart(index)} 
+                    onStop={onStop} 
+                    onDrag={onDrag} 
+                    position={{ y: 0, x: 0 }}
+                    bounds={bounds}
+                >
+                    <DraggableDiv onClick={() => onClick(index)} $isEmpty={cell.isEmpty()} $active={active} $disable={disable} $dragSelected={dragSelected}>
+                        {PieceIcon !== undefined && <PieceIcon 
+                            strokeWidth="8px" 
+                            stroke={settings.indicateMoves && canBeReplaced ? '#b44589' : 'black'} 
+                            color={cell.team === Team.White ? '#d1d1d1' : '#242424'}
+                        />}
+                    </DraggableDiv>
+                </Draggable>
             </Container>
         </Border>
     )
@@ -101,15 +109,16 @@ const Container = styled("div", { shouldForwardProp: (propName) => propName !== 
     position: relative;
 `;
 
-const DraggableDiv = styled("div", { shouldForwardProp: (propName) => propName !== 'theme' && !propName.startsWith("$")})<{
+const DraggableDiv = styled("button", { shouldForwardProp: (propName) => propName !== 'theme' && !propName.startsWith("$")})<{
     $active: boolean;
     $dragSelected: boolean;
     $disable: boolean;
+    $isEmpty: boolean;
 }>`
     height: 100%;
     width: 100%;
     position: relative;
-    cursor: ${(props) => props.$disable ? "default" : "grab"};
+    cursor: ${(props) => props.$disable || props.$isEmpty ? "default" : "grab"};
     padding: ${(props) => props.$dragSelected ? 4.8 : 10}%;
     ${props => props.$active && "z-index: 1;"}
 

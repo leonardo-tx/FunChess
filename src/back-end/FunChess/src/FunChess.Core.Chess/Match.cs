@@ -32,6 +32,7 @@ public sealed class Match
 
             if (totalPlayerSpentSeconds >= SecondsLimit)
             {
+                player.SpentSeconds = SecondsLimit;
                 _boardMatchState = (MatchState)Board.NextTurn;
             }
             return _boardMatchState;
@@ -48,15 +49,29 @@ public sealed class Match
         if (player.AccountId != accountId) return false;
         
         float spentSeconds = (float)(DateTime.UtcNow - LastMoveDateTime).TotalSeconds;
-        float totalPlayerSpentSeconds = player.SpentSeconds + spentSeconds;
-        
         if (MatchState != MatchState.Running || !Board.MovePiece(move)) return false;
         
-        player.SpentSeconds = totalPlayerSpentSeconds;
+        player.SpentSeconds += spentSeconds;
         LastMoveDateTime = DateTime.UtcNow;
         _boardMatchState = Board.GetMatchState();
         
         return true;
+    }
+
+    public void Surrender(ulong accountId)
+    {
+        if (MatchState != MatchState.Running) return;
+        
+        Player player = GetPlayerById(accountId);
+        float spentSeconds = (float)(DateTime.UtcNow - LastMoveDateTime).TotalSeconds;
+
+        GetPlayerByTurn().SpentSeconds += spentSeconds;
+        if (player.Team == Team.White)
+        {
+            _boardMatchState = MatchState.BlackWin;
+            return;
+        }
+        _boardMatchState = MatchState.WhiteWin;
     }
 
     public Player GetPlayerById(ulong accountId)

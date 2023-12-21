@@ -6,22 +6,21 @@ import Image from "next/image";
 import defaultIcon from "@/lib/assets/user/default.jpg";
 import Match from "@/core/chess/Match";
 import Team from "@/core/chess/enums/Team";
-import useAuth from "@/data/auth/hooks/useAuth";
-import { getSimpleAccount } from "@/data/auth/fetchers/account-fetchers";
 import { BiTimer } from "react-icons/bi";
+import Link from "next/link";
+import useLang from "@/data/settings/hooks/useLang";
 
 interface Props {
     matchInfo: Match | null;
     updateTime: boolean;
     team: Team
-    isCurrentAccount?: boolean
+    account: Account | null;
 }
 
-export default function PlayerBanner({ matchInfo, updateTime, team, isCurrentAccount = false }: Props): JSX.Element {
+export default function PlayerBanner({ matchInfo, updateTime, team, account }: Props): JSX.Element {
     const [lastingSeconds, setLastingSeconds] = useState<number | null>(null);
     const [playerInfo, setPlayerInfo] = useState<{ team: Team, accountId: number, spentSeconds: number } | null>(null)
-    const [account, setAccount] = useState<Account | null>(null);
-    const { currentAccount } = useAuth();
+    const { t } = useLang();
 
     useEffect(() => {
         if (matchInfo === null) { setLastingSeconds(null); setPlayerInfo(null); return; }
@@ -43,18 +42,6 @@ export default function PlayerBanner({ matchInfo, updateTime, team, isCurrentAcc
         return () => clearInterval(interval);
     }, [updateTime, matchInfo, team]);
 
-    useEffect(() => {
-        if (isCurrentAccount) {
-            setAccount(currentAccount);
-            return;
-        }
-        if (playerInfo === null) {
-            setAccount(null);
-            return;
-        }
-        getSimpleAccount(playerInfo.accountId).then(response => setAccount(response.result ?? null))
-    }, [isCurrentAccount, currentAccount, playerInfo])
-
     const minutes = Math.floor((lastingSeconds ?? 0) / 60);
     const seconds = Math.floor((lastingSeconds ?? 0) % 60);
 
@@ -62,10 +49,10 @@ export default function PlayerBanner({ matchInfo, updateTime, team, isCurrentAcc
         <Banner>
             <Profile>
                 {account !== null &&
-                    <>
-                        <Image src={defaultIcon} alt="Ícone de perfil" />
+                    <ProfileLink href={`/profile?id=${account.id}`} target="_blank">
+                        <Image src={defaultIcon} alt={t("alt.icon-profile", account.username)} />
                         <Text>{account.username}</Text>
-                    </>
+                    </ProfileLink>
                 }
             </Profile>
             {lastingSeconds !== null &&
@@ -95,6 +82,12 @@ const Profile = styled.div`
         width: clamp(30px, min(100%, 5vw), 40px);
     }
 `
+
+const ProfileLink = styled(Link)`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`;
 
 const Timer = styled.div`
     padding: 5px 10px;
