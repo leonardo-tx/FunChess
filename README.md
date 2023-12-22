@@ -9,6 +9,9 @@ FunChess is developed with C# for the API and Typescript + React + NextJs for th
 **Play page**
 ![An image of a page with a chess board and match options](images/play-page.png?raw=true)
 
+**Online match**
+![An image of an online chess match with a victory alert](images/online-match.png?raw=true)
+
 **Online Chat page**
 ![An image of an online chat](images/online-chat.png?raw=true)
 
