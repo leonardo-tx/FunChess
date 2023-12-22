@@ -21,13 +21,6 @@ export default function GameSelection(): JSX.Element {
                             <Text fontWeight={300} fontSize="smaller">{t("play.online-mode-text")}</Text>
                         </VStack>
                     </MatchButton>
-                    <MatchButton href="/play/friend">
-                        <FaUserGroup size={30} />
-                        <VStack alignItems="flex-start">
-                            <Text>{t("play.friend-mode-title")}</Text>
-                            <Text fontWeight={300} fontSize="smaller">{t("play.friend-mode-text")}</Text>
-                        </VStack>
-                    </MatchButton>
                     <MatchButton href="/play/local">
                         <FaComputer size={30} />
                         <VStack alignItems="flex-start">
