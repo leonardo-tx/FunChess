@@ -18,6 +18,8 @@ import { useDisclosure } from "@chakra-ui/react";
 import Account from "@/core/auth/models/Account";
 import { getSimpleAccount } from "@/data/auth/fetchers/account-fetchers";
 import useAuth from "@/data/auth/hooks/useAuth";
+import { playAudio } from "@/data/sounds/audio-player";
+import DisconnectedModal from "@/lib/shared/components/DisconnectedModal";
 
 export default function PlayOnline(): JSX.Element {
     const [board, setBoard] = useState(new Board());
@@ -35,35 +37,37 @@ export default function PlayOnline(): JSX.Element {
         setConnection(connection);
 
         connection.on("End", (match: Match) => {
+            playAudio("game-end");
             setMatchInfo(match);
             onOpen();
+        });
+
+        connection.on("Match", (match: Match, boardText: string, team: Team) => {
+            const buffer = Buffer.from(boardText, "base64");
+            const board = Board.Parse(buffer);
+
+            setBoard(board);
+            setMatchInfo(match);
+            setTeam(team);
+            getSimpleAccount(match.players[team % 2].accountId).then(response => setOpponentAccount(response.result ?? null))
+            setPageLoaded(true);
+        });
+
+        connection.on("MatchStart", (match: Match, team: Team) => {
+            playAudio("game-start");
+            setBoard(new Board());
+            setMatchInfo(match);
+            setOnQueue(false);
+            setTeam(team);
+            getSimpleAccount(match.players[team % 2].accountId).then(response => setOpponentAccount(response.result ?? null))
         });
 
         atMatch().then(apiResponse => {
             const onMatch = apiResponse.result ?? false;
             if (onMatch) {
                 connection.start();
-                connection.on("Match", (match: Match, boardText: string, team: Team) => {
-                    const buffer = Buffer.from(boardText, "base64");
-                    const board = Board.Parse(buffer);
-        
-                    setBoard(board);
-                    setMatchInfo(match);
-                    setTeam(team);
-                    getSimpleAccount(match.players[team % 2].accountId).then(response => setOpponentAccount(response.result ?? null))
-                    setPageLoaded(true);
-
-                    connection.off("Match");
-                });
                 return;
             }
-            connection.on("MatchStart", (match: Match, team: Team) => {
-                setBoard(new Board());
-                setMatchInfo(match);
-                setOnQueue(false);
-                setTeam(team);
-                getSimpleAccount(match.players[team % 2].accountId).then(response => setOpponentAccount(response.result ?? null))
-            });
             setPageLoaded(true);
         });
         return () => { connection.stop(); }
@@ -111,6 +115,9 @@ export default function PlayOnline(): JSX.Element {
                 {matchInfo !== null ? <OnlineOnMatchContainer onSurrender={() => connection?.invoke("Surrender")} /> : <OnlineMatchSelection onQueue={onQueue} connectToQueue={connectToQueue} />}
             </Container>
             {matchInfo !== null && opponentAccount !== null && <EndModal onClose={onClose} isOpen={isOpen} matchInfo={matchInfo} team={team} opponentAccount={opponentAccount} />}
+            {connection !== null && 
+                <DisconnectedModal connection={connection} />
+            }
         </AuthorizeProvider>
     );
 }
@@ -138,6 +145,8 @@ const Container = styled("div", { shouldForwardProp: (propName) => propName !== 
     @media only screen and (max-width: 1024px) {
         flex-direction: ${props => props.$onMatch ? "column" : "column-reverse"};
         padding: 2px 5px;
+        justify-content: ${props => props.$onMatch ? "flex-start" : "flex-end"};
+        gap: 10px;
     }
 `;
 

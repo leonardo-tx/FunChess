@@ -26,6 +26,7 @@ interface ChessBoardInfo {
     selectedCell: number | null;
     targetCell: number | null;
     removeOnMouseUp: boolean;
+    cancelOnClick: boolean;
 }
 
 interface Props {
@@ -69,7 +70,7 @@ export default function ChessCell({ index, chessBoard, cell, canBeReplaced, onSt
                 {settings.indicateMoves && PieceIcon === undefined && canBeReplaced && <PossibleTarget />}
                 <Draggable
                     ref={ref} 
-                    disabled={disable || cell.isEmpty() || !(!pressed || active)} 
+                    disabled={disable || cell.isEmpty() || !(!pressed || active) || canBeReplaced} 
                     onStart={() => onStart(index)} 
                     onStop={onStop} 
                     onDrag={onDrag} 

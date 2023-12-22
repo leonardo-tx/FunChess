@@ -19,7 +19,7 @@ interface Props {
 
 export default function PlayerBanner({ matchInfo, updateTime, team, account }: Props): JSX.Element {
     const [lastingSeconds, setLastingSeconds] = useState<number | null>(null);
-    const [playerInfo, setPlayerInfo] = useState<{ team: Team, accountId: number, spentSeconds: number } | null>(null)
+    const [playerInfo, setPlayerInfo] = useState<{ team: Team, accountId: number, spentSeconds: number } | null>(null);
     const { t } = useLang();
 
     useEffect(() => {
@@ -28,15 +28,11 @@ export default function PlayerBanner({ matchInfo, updateTime, team, account }: P
         const playerInfo = matchInfo?.players[team - 1];
         setPlayerInfo(playerInfo);
 
-        if (!updateTime) {
-            setLastingSeconds(matchInfo.secondsLimit - playerInfo.spentSeconds);
-            return;
-        }
+        setLastingSeconds(matchInfo.secondsLimit - playerInfo.spentSeconds);
+        if (!updateTime) return;
 
         const interval = setInterval(() => {
-            const currentSpentSeconds = (Date.now() - matchInfo.timeStamp) / 1000;
-            const lastingSeconds = matchInfo.secondsLimit - playerInfo.spentSeconds - currentSpentSeconds;
-            setLastingSeconds(lastingSeconds < 0 ? 0 : lastingSeconds);
+            setLastingSeconds((oldLastingSeconds) => oldLastingSeconds! - 1 < 0 ? 0 : oldLastingSeconds! - 1);
         }, 1000)
         
         return () => clearInterval(interval);

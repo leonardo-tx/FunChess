@@ -2,6 +2,8 @@ import Cell from "./Cell";
 import DetailedTeam from "./DetailedTeam";
 import { BOARD_TOTAL_SIZE, getInitialBoard } from "./constants/board-constants";
 import CastlingPlay from "./enums/CastlingPlay";
+import MovementResult from "./enums/MovementResult";
+import SpecialMove from "./enums/SpecialMove";
 import Team from "./enums/Team";
 import King from "./pieces/King";
 import Move from "./structs/Move";
@@ -36,23 +38,34 @@ export default class Board {
 
     public readonly teams: Map<Team, DetailedTeam>;
 
-    public movePiece(move: Move): boolean {
-        if (!this.pieceCanMove(move)) return false;
+    public movePiece(move: Move): MovementResult {
+        const movementResult = this.pieceCanMove(move);
+        if (movementResult === MovementResult.None || movementResult === MovementResult.Illegal) return movementResult;
 
         this.internalBoard[move.previous.index].piece!.move(this, move);
         this.changeTurn();
-
-        return true;
+        
+        if (this.kingInDanger()) return MovementResult.Check;
+        return movementResult;
     }
 
-    public pieceCanMove(move: Move): boolean {
+    public pieceCanMove(move: Move): MovementResult {
         const selectedCell = this.internalBoard[move.previous.index];
-        if (selectedCell.isEmpty() || move.previous.index == move.next.index || !selectedCell.isFromTeam(this._turn)) return false;
+        if (selectedCell.isEmpty() || move.previous.index == move.next.index || !selectedCell.isFromTeam(this._turn)) return MovementResult.None;
 
         const targetCell = this.internalBoard[move.next.index];
-        if (!targetCell.isEmpty() && targetCell.isFromTeam(this._turn)) return false;
+        if (!targetCell.isEmpty() && targetCell.isFromTeam(this._turn)) {
+            if (this.kingInDanger()) return MovementResult.Illegal;
+            return MovementResult.None;
+        }
         
-        if (!selectedCell.piece!.moveIsValid(this, move)[0]) return false;
+        const moveIsValidTuple = selectedCell.piece!.moveIsValid(this, move);
+        if (!moveIsValidTuple[0]) {
+            if (this.kingInDanger()) return MovementResult.Illegal;
+            return MovementResult.None;
+        }
+
+        const kingAlreadyInDanger = this.kingInDanger();
 
         this.internalBoard[move.next.index] = selectedCell;
         this.internalBoard[move.previous.index] = Cell.Empty;
@@ -69,7 +82,11 @@ export default class Board {
         this.internalBoard[move.next.index] = targetCell;
         this.internalBoard[move.previous.index] = selectedCell;
         
-        return !kingInDanger;
+        if (kingInDanger) return kingAlreadyInDanger ? MovementResult.Illegal : MovementResult.None;
+        if (moveIsValidTuple[1] === SpecialMove.LeftCastling || moveIsValidTuple[1] === SpecialMove.RightCastling) return MovementResult.Castle;
+        if (targetCell.isEmpty()) return MovementResult.Move;
+
+        return MovementResult.Capture;
     }
 
     public kingInDanger(): boolean {

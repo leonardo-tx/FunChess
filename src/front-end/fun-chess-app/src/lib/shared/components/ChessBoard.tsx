@@ -8,6 +8,8 @@ import { DraggableEventHandler } from "react-draggable";
 import Move from "@/core/chess/structs/Move";
 import Position from "@/core/chess/structs/Position";
 import Board from "@/core/chess/Board";
+import MovementResult from "@/core/chess/enums/MovementResult";
+import Team from "@/core/chess/enums/Team";
 
 interface Props {
     board: Board;
@@ -24,19 +26,19 @@ interface ChessBoardInfo {
     selectedCell: number | null;
     targetCell: number | null;
     removeOnMouseUp: boolean;
-    cancelOnClick: boolean
+    cancelOnClick: boolean;
 }
 
-export default function ChessBoard({ board, onMove, inverse = false, disable = false }: Props): JSX.Element {
+export default function ChessBoard({ board, onMove, inverse = false, disable = false, }: Props): JSX.Element {
     const [chessBoard, setChessBoard] = useState<ChessBoardInfo>({ 
-        inverse: false, 
+        inverse, 
         sizeBoard: 0, 
-        disable: false, 
+        disable, 
         pressed: false, 
         selectedCell: null,
         targetCell: null,
         removeOnMouseUp: false,
-        cancelOnClick: false
+        cancelOnClick: false,
     });
     const { sizeBoard, selectedCell, targetCell, cancelOnClick } = chessBoard;
     const ref = useRef<HTMLDivElement>(null);
@@ -64,10 +66,18 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
                 newInfo.removeOnMouseUp = true;
                 return newInfo;
             }
+            if (selectedCell !== null) {
+                const movementResult = board.pieceCanMove(new Move(new Position(selectedCell), new Position(index)));
+                const moveIsValid = movementResult !== MovementResult.None && movementResult !== MovementResult.Illegal;
+                if (moveIsValid) {
+                    newInfo.targetCell = index;
+                    return newInfo;
+                }
+            }
             newInfo.selectedCell = index;
             return newInfo;
         });
-    }, []);
+    }, [board]);
 
     const onDrag: DraggableEventHandler = useCallback((_e, data) => {
         if (selectedCell === null) return;
@@ -88,7 +98,6 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
             const move = new Move(new Position(selectedCell), new Position(targetCell));
             moveIsValid = onMove(move);
         }
-        if (moveIsValid) playAudio("move-self");
         
         setChessBoard((oldChessBoard) => {
             const { selectedCell, targetCell, removeOnMouseUp } = oldChessBoard;
@@ -117,7 +126,6 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
             const move = new Move(new Position(selectedCell), new Position(targetCell !== null ? targetCell : index));
             moveIsValid = onMove(move);
         }
-        if (moveIsValid) playAudio("move-self");
 
         setChessBoard((oldChessBoard) => {
             const { pressed, selectedCell, targetCell, removeOnMouseUp } = oldChessBoard;
@@ -139,6 +147,9 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
                 if (moveIsValid) newInfo.selectedCell = null;
                 return newInfo;
             }
+            if (!moveIsValid) {
+                newInfo.selectedCell = index;
+            }
             
             if (moveIsValid || (pressed ? (removeOnMouseUp && index === selectedCell) : index === selectedCell)) {
                 newInfo.selectedCell = null;
@@ -155,7 +166,10 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
             const index = y * BOARD_LENGTH + x;
             elements.push(
                 <ChessCell
-                    canBeReplaced={selectedCell !== null && board.pieceCanMove(new Move(new Position(selectedCell), new Position(index)))}
+                    canBeReplaced={selectedCell !== null && (() => {
+                        const movementResult = board.pieceCanMove(new Move(new Position(selectedCell), new Position(index)));
+                        return movementResult !== MovementResult.None && movementResult !== MovementResult.Illegal;
+                    })()}
                     onStart={onStart}
                     onStop={onStop}
                     onDrag={onDrag}
@@ -174,20 +188,6 @@ export default function ChessBoard({ board, onMove, inverse = false, disable = f
             {elements}
         </GridBoard>
     )
-}
-
-async function playAudio(sound: string): Promise<void> {
-    const audioContext = new (window.AudioContext)();
-    const response = await fetch(`/sounds/${sound}.webm`);
-    const data = await response.arrayBuffer();
-    const buffer = await audioContext.decodeAudioData(data);
-
-    const source = audioContext.createBufferSource();
-    source.buffer = buffer;
-
-    source.connect(audioContext.destination);
-    source.start();
-    setTimeout(() => source.disconnect(), 2000);
 }
 
 const GridBoard = styled("div")`

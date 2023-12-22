@@ -78,9 +78,6 @@ export default function FriendsChat(): JSX.Element {
 
     return (
         <>
-            {connection !== null && 
-                <DisconnectedModal connection={connection} onReconnect={() => refreshAllMessages()} />
-            }
             <ChatLayout>
                 <FriendsSelector>
                     {friends.map((account) => (
@@ -106,6 +103,9 @@ export default function FriendsChat(): JSX.Element {
                     <Input type="text" placeholder={t("inputs.message-placeholder")} autoComplete="off" {...register("text")} />
                 </Box>
             </ChatLayout>
+            {connection !== null && 
+                <DisconnectedModal connection={connection} onReconnect={() => refreshAllMessages()} />
+            }
         </>
     );
 }

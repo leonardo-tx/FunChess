@@ -22,14 +22,21 @@ export default function EndModal({ onClose, isOpen, matchInfo, team, opponentAcc
     const { t } = useLang();
     const { currentAccount } = useAuth();
 
-    const endType = matchInfo.matchState as number === team as number 
-        ? EndType.Victory 
-        : matchInfo.matchState === MatchState.Stalemate ? EndType.Tie : EndType.Defeat
-    const opponentEndType = endType === EndType.Victory 
-        ? EndType.Defeat 
-        : endType === EndType.Tie ? EndType.Tie : EndType.Victory;
+    let endType = EndType.Tie;
+    let opponentEndType = EndType.Tie;
 
-    const getTitle = (): string => {
+    switch (matchInfo.matchState) {
+        case team as number:
+            endType = EndType.Victory;
+            opponentEndType = EndType.Defeat;
+            break;
+        case team as number % 2 + 1:
+            endType = EndType.Defeat;
+            opponentEndType = EndType.Victory;
+            break;
+    }
+
+    const getTitle = (endType: EndType): string => {
         switch (endType) {
             case EndType.Victory:
                 return t("play.victory-title");
@@ -44,16 +51,17 @@ export default function EndModal({ onClose, isOpen, matchInfo, team, opponentAcc
         <Modal size="xl" isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader textAlign="center">{getTitle()}</ModalHeader>
-                <ModalCloseButton />
+                <ModalHeader textAlign="center">{getTitle(endType)}</ModalHeader>
                 <ModalBody>
                     <HStack spacing={5} justifyContent="center">
                         <VStack>
+                            <TextWithColor $endType={endType}>{getTitle(endType)}</TextWithColor>
                             <ImageWithBorder $endType={endType} src={defaultIcon} alt={t("alt.icon-profile", currentAccount!.username)} />
                             <Text>{currentAccount!.username}</Text>
                         </VStack>
-                        <Text fontWeight="600">VS</Text>
+                        <Text fontWeight="600">X</Text>
                         <VStack>
+                            <TextWithColor $endType={opponentEndType}>{getTitle(opponentEndType)}</TextWithColor>
                             <ImageWithBorder $endType={opponentEndType} src={defaultIcon} alt={t("alt.icon-profile", opponentAccount.username)} />
                             <Text>{opponentAccount.username}</Text>
                         </VStack>
@@ -65,6 +73,12 @@ export default function EndModal({ onClose, isOpen, matchInfo, team, opponentAcc
         </Modal>
     );
 }
+
+const TextWithColor = styled(Text, { shouldForwardProp: (propName) => propName !== 'theme' && !propName.startsWith("$")})<{
+    $endType: EndType;
+}>`
+    color: ${(props) => props.$endType === EndType.Victory ? "#81c973" : props.$endType === EndType.Tie ? "#838383" : "#c26262"};
+`
 
 const ImageWithBorder = styled(Image, { shouldForwardProp: (propName) => propName !== 'theme' && !propName.startsWith("$")})<{
     $endType: EndType;

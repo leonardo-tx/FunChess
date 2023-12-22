@@ -4,7 +4,7 @@ import { JSX, useEffect, useState } from "react";
 
 interface Props {
     connection: HubConnection;
-    onReconnect: () => void;
+    onReconnect?: () => void;
 }
 
 export default function DisconnectedModal({ connection, onReconnect }: Props): JSX.Element {
@@ -32,7 +32,8 @@ export default function DisconnectedModal({ connection, onReconnect }: Props): J
             setLoading(false);
             return;
         }
-        onReconnect();
+        if (onReconnect !== undefined) onReconnect();
+        
         onClose();
         setLoading(false);
     }

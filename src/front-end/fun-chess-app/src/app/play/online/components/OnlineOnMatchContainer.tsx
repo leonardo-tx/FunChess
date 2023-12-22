@@ -27,4 +27,11 @@ const Container = styled.div`
     padding: 20px 40px;
     border-radius: 8px;
     height: 100%;
+
+    @media only screen and (max-width: 768px) {
+        height: auto;
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+    }
 `;
