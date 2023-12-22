@@ -2,9 +2,11 @@ namespace FunChess.Core.Hub.Services;
 
 public interface IConnectionService
 {
-    public bool Add(string connectionId);
+    public bool AddConnection(ulong accountId, string connectionId);
 
-    public bool Remove(string connectionId);
+    public bool RemoveConnection(ulong accountId);
 
-    public bool Exists(string connectionId);
+    public string? FindConnectionId(ulong accountId);
+
+    public bool ReplaceConnection(ulong accountId, string oldConnectionId, string newConnectionId);
 }

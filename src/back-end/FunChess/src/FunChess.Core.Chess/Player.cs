@@ -5,10 +5,10 @@ namespace FunChess.Core.Chess;
 
 public sealed class Player
 {
-    public Player(AccountConnection queueAccount, Team team)
+    public Player(AccountConnection accountConnection, Team team)
     {
-        AccountId = queueAccount.AccountId;
-        ConnectionId = queueAccount.ConnectionId;
+        AccountId = accountConnection.AccountId;
+        ConnectionId = accountConnection.ConnectionId;
         Team = team;
     }
     

@@ -7,25 +7,25 @@ namespace FunChess.DAL.Chess;
 
 public sealed class QueueService : IQueueService
 {
-    private readonly ConcurrentQueue<AccountConnection> _queue = new();
+    private readonly ConcurrentQueue<ulong> _queue = new();
     private readonly ConcurrentDictionary<ulong, Match?> _accountsOnMatch = new();
 
     public int QueueCount => _queue.Count;
 
-    public bool Enqueue(ulong accountId, string connectionId)
+    public bool Enqueue(ulong accountId)
     {
         if (!_accountsOnMatch.TryAdd(accountId, null)) return false;
         
-        _queue.Enqueue(new AccountConnection(accountId, connectionId));
+        _queue.Enqueue(accountId);
         return true;
     }
 
-    public AccountConnection Dequeue()
+    public ulong Dequeue()
     {
         if (_queue.IsEmpty) throw new Exception("Cannot dequeue, queue is empty.");
-        _ = _queue.TryDequeue(out AccountConnection? queueAccount);
+        _ = _queue.TryDequeue(out ulong accountId);
 
-        return queueAccount!;
+        return accountId;
     }
 
     public void RegisterMatchToAccounts(Match match)

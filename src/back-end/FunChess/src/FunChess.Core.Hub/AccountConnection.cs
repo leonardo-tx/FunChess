@@ -1,11 +1,15 @@
+using FunChess.Core.Hub.Services;
+
 namespace FunChess.Core.Hub;
 
-public sealed class AccountConnection
+public struct AccountConnection
 {
-    public AccountConnection(ulong accountId, string connectionId)
+    public AccountConnection(ulong? accountId, IConnectionService connectionService)
     {
-        AccountId = accountId;
-        ConnectionId = connectionId;
+        if (!accountId.HasValue) throw new ArgumentException("Account id cannot be null.");
+        
+        AccountId = accountId.Value;
+        ConnectionId = connectionService.FindConnectionId(AccountId) ?? throw new ArgumentException("User is not connected to hub.");
     }
     
     public ulong AccountId { get; }

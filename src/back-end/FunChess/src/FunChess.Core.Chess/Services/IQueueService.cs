@@ -6,9 +6,9 @@ public interface IQueueService
 {
     public int QueueCount { get; }
     
-    public bool Enqueue(ulong accountId, string connectionId);
+    public bool Enqueue(ulong accountId);
     
-    public AccountConnection Dequeue();
+    public ulong Dequeue();
 
     public void RegisterMatchToAccounts(Match match);
 

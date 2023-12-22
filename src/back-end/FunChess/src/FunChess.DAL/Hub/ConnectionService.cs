@@ -6,30 +6,27 @@ namespace FunChess.DAL.Hub;
 public sealed class ConnectionService : IConnectionService
 {
     private static readonly ConcurrentDictionary<Type, ConnectionService> Instances = new(); 
-    private readonly HashSet<string> _connectedIds = new();
-    
-    public bool Add(string connectionId)
+    private readonly ConcurrentDictionary<ulong, string> _accountIdToConnectionId = new();
+
+    public bool AddConnection(ulong accountId, string connectionId)
     {
-        lock (_connectedIds)
-        {
-            return _connectedIds.Add(connectionId);
-        }
+        return _accountIdToConnectionId.TryAdd(accountId, connectionId);
     }
 
-    public bool Remove(string connectionId)
+    public bool RemoveConnection(ulong accountId)
     {
-        lock (_connectedIds)
-        {
-            return _connectedIds.Remove(connectionId);
-        }
+        return _accountIdToConnectionId.TryRemove(accountId, out _);
     }
 
-    public bool Exists(string connectionId)
+    public string? FindConnectionId(ulong accountId)
     {
-        lock (_connectedIds)
-        {
-            return _connectedIds.Contains(connectionId);
-        }
+        _accountIdToConnectionId.TryGetValue(accountId, out string? connectionId);
+        return connectionId;
+    }
+
+    public bool ReplaceConnection(ulong accountId, string oldConnectionId, string newConnectionId)
+    {
+        return _accountIdToConnectionId.TryUpdate(accountId, newConnectionId, oldConnectionId);
     }
 
     public static IConnectionService GetInstance<T>() where T : Microsoft.AspNetCore.SignalR.Hub

@@ -3,6 +3,8 @@ using FunChess.Core.Client.Attributes;
 using FunChess.Core.Client.Dtos;
 using FunChess.Core.Client.Extensions;
 using FunChess.Core.Client.Services;
+using FunChess.Core.Hub.Services;
+using FunChess.DAL.Hub;
 using Microsoft.AspNetCore.SignalR;
 
 namespace FunChess.API.Hubs;
@@ -10,14 +12,13 @@ namespace FunChess.API.Hubs;
 [AuthorizeCustom]
 public sealed class FriendChatHub : Hub
 {
-    public FriendChatHub(IMessageService messageService, IFriendChatService friendChatService)
+    public FriendChatHub(IMessageService messageService)
     {
         _messageService = messageService;
-        _friendChatService = friendChatService;
     }
 
     private readonly IMessageService _messageService;
-    private readonly IFriendChatService _friendChatService;
+    private readonly IConnectionService _connectionService = ConnectionService.GetInstance<FriendChatHub>();
 
     public override Task OnConnectedAsync()
     {
@@ -27,14 +28,14 @@ public sealed class FriendChatHub : Hub
             Context.Abort();
             return Task.CompletedTask;
         }
-        string? connectionId = _friendChatService.FindConnectionId(id);
+        string? connectionId = _connectionService.FindConnectionId(id);
         if (connectionId is null)
         {
-            _friendChatService.AddConnection(id, Context.ConnectionId);
+            _connectionService.AddConnection(id, Context.ConnectionId);
             return Task.CompletedTask;
         }
         Clients.Client(connectionId).SendAsync("Disconnected");
-        _friendChatService.ReplaceConnection(id, connectionId, Context.ConnectionId);
+        _connectionService.ReplaceConnection(id, connectionId, Context.ConnectionId);
         return Task.CompletedTask;
     }
 
@@ -45,10 +46,10 @@ public sealed class FriendChatHub : Hub
         {
             return Task.CompletedTask;
         }
-        string currentConnectionId = _friendChatService.FindConnectionId(id)!;
+        string currentConnectionId = _connectionService.FindConnectionId(id)!;
         if (currentConnectionId == Context.ConnectionId)
         {
-            _friendChatService.RemoveConnection(id);
+            _connectionService.RemoveConnection(id);
         }
         return Task.CompletedTask;
     }
@@ -57,7 +58,7 @@ public sealed class FriendChatHub : Hub
     public async Task<MessageDtoOutput?> SendMessageMethod(MessageDtoInput messageInput)
     {
         ulong id = Context.User!.GetAccountId();
-        if (_friendChatService.FindConnectionId(id) != Context.ConnectionId)
+        if (_connectionService.FindConnectionId(id) != Context.ConnectionId)
         {
             Context.Abort();
             return null;
@@ -68,7 +69,7 @@ public sealed class FriendChatHub : Hub
             MessageDtoOutput? generatedMessage = await _messageService.SendAsync(id, messageInput);
             if (generatedMessage is null) return null;
 
-            string? connectionId = _friendChatService.FindConnectionId(messageInput.FriendId);
+            string? connectionId = _connectionService.FindConnectionId(messageInput.FriendId);
             if (connectionId is not null)
             {
                 await Clients.Client(connectionId).SendAsync("MessageReceived", generatedMessage);

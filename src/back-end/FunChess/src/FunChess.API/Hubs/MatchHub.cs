@@ -21,33 +21,49 @@ public sealed class MatchHub : Hub
     private readonly IQueueService _queueService;
     private readonly IConnectionService _connectionService = ConnectionService.GetInstance<MatchHub>();
 
-    public override async Task OnConnectedAsync()
+    public override Task OnConnectedAsync()
     {
         string? textId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
         if (textId is null || !ulong.TryParse(textId, out ulong id))
         {
             Context.Abort();
-            return;
+            return Task.CompletedTask;
         }
-        _connectionService.Add(Context.ConnectionId);
+        string? connectionId = _connectionService.FindConnectionId(id);
+        if (connectionId is null)
+        {
+            _connectionService.AddConnection(id, Context.ConnectionId);
+        }
+        else
+        {
+            Clients.Client(connectionId).SendAsync("Disconnected");
+            _connectionService.ReplaceConnection(id, connectionId, Context.ConnectionId);
+        }
         Match? match = _queueService.FindAccountMatch(id);
 
-        if (match is null) return;
+        if (match is null) return Task.CompletedTask;
         Player player = match.GetPlayerById(id);
         
-        if (_connectionService.Exists(player.ConnectionId))
-        {
-            Context.Abort();
-            return;
-        }
         player.ConnectionId = Context.ConnectionId;
+        match.UpdateTurnPlayerSpentSeconds();
         
-        await Clients.Client(Context.ConnectionId).SendAsync("Match", new SimpleMatch(match), match.Board.ToString(), player.Team);
+        Clients.Client(Context.ConnectionId).SendAsync("Match", new SimpleMatch(match), match.Board.ToString(), player.Team);
+        return Task.CompletedTask;
     }
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        _connectionService.Remove(Context.ConnectionId);
+        string? textId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (textId is null || !ulong.TryParse(textId, out ulong id))
+        {
+            return Task.CompletedTask;
+        }
+        string currentConnectionId = _connectionService.FindConnectionId(id)!;
+        if (currentConnectionId == Context.ConnectionId)
+        {
+            _queueService.RemoveAccountWithoutMatch(id);
+            _connectionService.RemoveConnection(id);
+        }
         return Task.CompletedTask;
     }
 
@@ -55,13 +71,23 @@ public sealed class MatchHub : Hub
     public Task<bool> EnqueueMethod()
     {
         ulong id = Context.User!.GetAccountId();
-        return Task.FromResult(_queueService.Enqueue(id, Context.ConnectionId));
+        if (_connectionService.FindConnectionId(id) != Context.ConnectionId)
+        {
+            Context.Abort();
+            return Task.FromResult(false);
+        }
+        return Task.FromResult(_queueService.Enqueue(id));
     }
 
     [HubMethodName("Move")]
     public async Task<bool> MoveMethod(string moveText)
     {
         ulong id = Context.User!.GetAccountId();
+        if (_connectionService.FindConnectionId(id) != Context.ConnectionId)
+        {
+            Context.Abort();
+            return false;
+        }
         if (!Move.TryParse(moveText, out Move? move)) return false;
         
         Match? match = _queueService.FindAccountMatch(id);
@@ -78,11 +104,17 @@ public sealed class MatchHub : Hub
     }
 
     [HubMethodName("Surrender")]
-    public async Task Surrender()
+    public Task Surrender()
     {
         ulong id = Context.User!.GetAccountId();
+        if (_connectionService.FindConnectionId(id) != Context.ConnectionId)
+        {
+            Context.Abort();
+            return Task.CompletedTask;
+        }
         Match? match = _queueService.FindAccountMatch(id);
 
         match?.Surrender(id);
+        return Task.CompletedTask;
     }
 }

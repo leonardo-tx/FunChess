@@ -15,6 +15,8 @@ public sealed class Match
     public Board Board { get; } = new();
     
     public float SecondsLimit { get; }
+    
+    public float SecondsAlreadyCountedForTurn { get; private set; }
 
     public DateTime LastMoveDateTime { get; private set; } = DateTime.UtcNow;
 
@@ -27,7 +29,7 @@ public sealed class Match
             if (_boardMatchState != MatchState.Running) return _boardMatchState;
             Player player = GetPlayerByTurn();
 
-            float spentSeconds = (float)(DateTime.UtcNow - LastMoveDateTime).TotalSeconds;
+            float spentSeconds = (float)(DateTime.UtcNow - LastMoveDateTime).TotalSeconds - SecondsAlreadyCountedForTurn;
             float totalPlayerSpentSeconds = player.SpentSeconds + spentSeconds;
 
             if (totalPlayerSpentSeconds >= SecondsLimit)
@@ -48,10 +50,11 @@ public sealed class Match
         Player player = GetPlayerByTurn();
         if (player.AccountId != accountId) return false;
         
-        float spentSeconds = (float)(DateTime.UtcNow - LastMoveDateTime).TotalSeconds;
+        float spentSeconds = (float)(DateTime.UtcNow - LastMoveDateTime).TotalSeconds - SecondsAlreadyCountedForTurn;
         if (MatchState != MatchState.Running || !Board.MovePiece(move)) return false;
         
         player.SpentSeconds += spentSeconds;
+        SecondsAlreadyCountedForTurn = 0;
         LastMoveDateTime = DateTime.UtcNow;
         _boardMatchState = Board.GetMatchState();
         
@@ -63,7 +66,7 @@ public sealed class Match
         if (MatchState != MatchState.Running) return;
         
         Player player = GetPlayerById(accountId);
-        float spentSeconds = (float)(DateTime.UtcNow - LastMoveDateTime).TotalSeconds;
+        float spentSeconds = (float)(DateTime.UtcNow - LastMoveDateTime).TotalSeconds - SecondsAlreadyCountedForTurn;
 
         GetPlayerByTurn().SpentSeconds += spentSeconds;
         if (player.Team == Team.White)
@@ -72,6 +75,15 @@ public sealed class Match
             return;
         }
         _boardMatchState = MatchState.WhiteWin;
+    }
+
+    public void UpdateTurnPlayerSpentSeconds()
+    {
+        Player player = GetPlayerByTurn();
+        float spentSeconds = (float)(DateTime.UtcNow - LastMoveDateTime).TotalSeconds - SecondsAlreadyCountedForTurn;
+
+        SecondsAlreadyCountedForTurn += spentSeconds;
+        player.SpentSeconds += spentSeconds;
     }
 
     public Player GetPlayerById(ulong accountId)
