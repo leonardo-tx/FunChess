@@ -27,8 +27,6 @@ Upon arrival, execute the following commands:
 
 ```bash
 npm install && npm run build && npm run start
-# or
-yarn install && yarn build && yarn start
 ```
 
 ### MSSQL Server
